@@ -1,8 +1,10 @@
 package apiClass;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,7 +19,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.codec.binary.Base64;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.opencv.core.Mat;
 /**
  * Servlet implementation class Processing2
  */
@@ -58,11 +63,12 @@ public class Processing2 extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Check that we have a file upload request
-				 System.out.println("inside post");
+				  System.out.println("inside post");
+				  
+				  String imgB64,fileType;
+				  File imgFile = new File("image.jpg");
+
 			      isMultipart = ServletFileUpload.isMultipartContent(request);
-			      response.setContentType("text/html");
-			      java.io.PrintWriter out = response.getWriter( );
-			      
 			      DiskFileItemFactory factory = new DiskFileItemFactory();
 			      
 			      // Create a new file upload handler
@@ -74,41 +80,73 @@ public class Processing2 extends HttpServlet {
 				
 			      // Process the uploaded file items
 			      Iterator i = fileItems.iterator();
-
 			      while ( i.hasNext () ) 
 			      {
 			         FileItem fi = (FileItem)i.next();
 			         if ( !fi.isFormField () )	
 			         {
-			        	 System.out.println("inside the iterator for image");
-			            // Get the uploaded file parameters
-			            String fieldName = fi.getFieldName();
-			            String fileName = fi.getName();
-			            long sizeInBytes = fi.getSize();
-			        
-			            
-			           InputStream finput = fi.getInputStream();
-			           byte[] imageBytes = new byte[(int)sizeInBytes];
-			           finput.read(imageBytes, 0, imageBytes.length);
-			           finput.close();
-			           String imageStr = Base64.encodeBase64String(imageBytes);
-			           System.out.println("CONVERTED TO BASE64");
-			           String imgB64 = "data:image/png;base64,"+ imageStr;
-			           request.setAttribute("imageBase64", imgB64);		           
+			          System.out.println("inside the iterator for image");
+			          
+			          //writing a temporary file  
+			          fi.write(imgFile); 
+			          String filePath = imgFile.getAbsolutePath();
+			          
+			          
+			          //Calling ImageEnhancement and getting back a preprocessed base64 image string
+			          ImageEnhancement ie = new ImageEnhancement();
+			          String processedImgBase64 = ie.imagePreprocessing(filePath);
+			          
+			          
+			          //Calling Vision API
+			          VisionAPICall vac = new VisionAPICall();
+			          JSONObject result = vac.performOCR(processedImgBase64);
+			          //request.setAttribute("jobj", jobj);
+			          
+			         
+			  		try {
+			  			
+			  			JSONObject body = new JSONObject(result.get("body"));
+			  			String bodytring=result.getString("body");
+			  			JSONObject bodyObject=new JSONObject(bodytring);
+			  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray("responses");
+			  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
+			  			JSONArray textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
+			  			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
+			  			String descriptionStr=firstObj.getString("description");
+			  			System.out.println("Description-"+descriptionStr);
+			  			request.setAttribute("Description", descriptionStr);
+			  			
+			  		
+			  		} catch (JSONException e) {
+			  			// TODO Auto-generated catch block
+			  			e.printStackTrace();}
+			          
+			          
+			          //Creating Base64 of original Image
+			          FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
+		              byte[] bytes = new byte[(int)imgFile.length()];
+		              fileInputStreamReader.read(bytes);
+		              String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
+
+			          String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
+			          request.setAttribute("imgBase64", imgBase64Jsp);
+			         
+			          
 			         }
 			         else{
 			        	 String fieldname = fi.getFieldName();
-			             String fieldvalue = fi.getString();
-		                 System.out.println("Uploaded File Template "+ fieldvalue);
-		                 request.setAttribute("fileType", fieldvalue);
+			             fileType = fi.getString();
+		                 System.out.println("Uploaded File Template "+ fileType);
+		                 request.setAttribute("fileType", fileType);
 			          }
 			         }
 			      
 			     }catch(Exception ex) {
 			        System.out.println(ex);	   } 
-			     RequestDispatcher dispatcher = request.getServletContext()
-			                .getRequestDispatcher("/ViewImage.jsp");
+			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);
+			        
+			        
 	}
 
 }

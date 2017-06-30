@@ -12,5 +12,11 @@
 	<classpathentry kind="lib" path="C:/Software/jar/commons-fileupload-1.3.jar"/>
 	<classpathentry kind="lib" path="C:/Software/jar/commons-io-2.5.jar"/>
 	<classpathentry kind="lib" path="C:/Software/jar/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="C:/Software/jar/json-20140107.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCv">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Software/opencv/build/java/x64"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -9,8 +9,8 @@
 <body>
 	 
 	<%=request.getAttribute("fileType")%><br><br>
-    <%=request.getAttribute("imageBase64") %>
-    <img src="<%=request.getAttribute("imageBase64")%>">
+	<img src="<%=request.getAttribute("imgBase64")%>"><br><br>
+    <%=request.getAttribute("Description") %>
     
     
 </body>
