@@ -65,6 +65,8 @@ public class Processing2 extends HttpServlet {
 		// Check that we have a file upload request
 				  System.out.println("inside post");
 				  
+				  String documentType = request.getParameter("type");
+				  
 				  String imgB64,fileType;
 				  File imgFile = new File("image.jpg");
 
@@ -85,22 +87,21 @@ public class Processing2 extends HttpServlet {
 			         FileItem fi = (FileItem)i.next();
 			         if ( !fi.isFormField () )	
 			         {
-			          System.out.println("inside the iterator for image");
-			          
-			          //writing a temporary file  
-			          fi.write(imgFile); 
-			          String filePath = imgFile.getAbsolutePath();
-			          
-			          
-			          //Calling ImageEnhancement and getting back a preprocessed base64 image string
-			          ImageEnhancement ie = new ImageEnhancement();
-			          String processedImgBase64 = ie.imagePreprocessing(filePath);
-			          
-			          
-			          //Calling Vision API
-			          VisionAPICall vac = new VisionAPICall();
-			          JSONObject result = vac.performOCR(processedImgBase64);
-			          //request.setAttribute("jobj", jobj);
+				          System.out.println("inside the iterator for image");
+				          
+				          //writing a temporary file  
+				          fi.write(imgFile); 
+				          String filePath = imgFile.getAbsolutePath();
+				          
+				          //Calling ImageEnhancement and getting back a preprocessed base64 image string
+				          ImageEnhancement ie = new ImageEnhancement();
+				          String processedImgBase64 = ie.imagePreprocessing(filePath, documentType);
+				          
+				          //Calling Vision API
+				          VisionAPICall vac = new VisionAPICall();
+				          JSONObject result = vac.performOCR(processedImgBase64);
+				     
+				          //request.setAttribute("jobj", jobj);
 			          
 			         
 			  		try {

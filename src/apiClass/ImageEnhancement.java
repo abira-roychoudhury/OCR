@@ -34,16 +34,18 @@ public class ImageEnhancement {
 	    return imgMat;
 	}
 	
-	public Mat preprocess(Mat imgMat){
+	public Mat preprocess(Mat imgMat, String documentType){
 		
 		//THRESHOLDING PARAMETERS
 	    final double min = 0, max = 255.0, threshold = 127.0;
 	    
 	    //CREATE AN EMPTY IMAGE
 	    Mat imgNew = new Mat(imgMat.height(), imgMat.width(), Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
-	    
-	    //PERFORM GLOBAL THRESHOLDING
-	    //Imgproc.threshold(imgMat, imgNew, threshold, max, Imgproc.THRESH_BINARY);
+	   
+	    if(documentType.equalsIgnoreCase("AadharCardPage1") || documentType.equalsIgnoreCase("AadharCardPage2")){
+	    	//PERFORM GLOBAL THRESHOLDING
+		    Imgproc.threshold(imgMat, imgMat, threshold, max, Imgproc.THRESH_BINARY);	
+	    }
 	    
 	    //PERFORM ADAPTIVE THRESHOLDING USING GAUSSIAN FILTER
 	    //Imgproc.adaptiveThreshold(imgMat, imgNew, max, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 15, 8);
@@ -65,12 +67,14 @@ public class ImageEnhancement {
 		return processedFile;
 	}
 	
-	public String imagePreprocessing(String filepath){
+	public String imagePreprocessing(String filepath, String documentType){
+		
 		Mat imgMat = loadOpenCvImage(filepath);
-		Mat imgMat2 = preprocess(imgMat);
+		Mat imgMat2 = preprocess(imgMat, documentType);
 		File img = saveImage(imgMat2);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
 		return imgBase64;
+		
 		
 	}
 
