@@ -23,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.core.Mat;
+
+import templates.DrivingLicense;
 /**
  * Servlet implementation class Processing2
  */
@@ -36,8 +38,7 @@ public class Processing2 extends HttpServlet {
 	private int maxMemSize = 4 * 1024;
 	private File file ;
 
-	
-	
+
 	public void init( ){
 	      // Get the file location where it would be stored.
 	      filePath = getServletContext().getInitParameter("file-upload");
@@ -117,6 +118,9 @@ public class Processing2 extends HttpServlet {
 			  			System.out.println("Description-"+descriptionStr);
 			  			request.setAttribute("Description", descriptionStr);
 			  			
+			  			DrivingLicense dl = new ParseDrivingLicense().parseDrivingLicense(descriptionStr);
+			  			
+			  			System.out.println(dl.toString());
 			  		
 			  		} catch (JSONException e) {
 			  			// TODO Auto-generated catch block
