@@ -1,26 +1,19 @@
 package templates;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class PanCard {
 	
-	private String firstName;
-	private String lastName;
+	private String name;
 	private String fatherName;
-	private Date dob;
+	private Calendar dob;
 	private String panNumber;
 	
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getFatherName() {
 		return fatherName;
@@ -28,10 +21,10 @@ public class PanCard {
 	public void setFatherName(String fatherName) {
 		this.fatherName = fatherName;
 	}
-	public Date getDob() {
+	public Calendar getDob() {
 		return dob;
 	}
-	public void setDob(Date dob) {
+	public void setDob(Calendar dob) {
 		this.dob = dob;
 	}
 	public String getPanNumber() {

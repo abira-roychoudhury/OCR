@@ -1,12 +1,23 @@
 package templates;
 
+import java.util.Calendar;
+
 public class AadharCard {
 	
 	private String firstName;
 	private String lastName;
 	private String middleName;
 	private int yearOfBirth;
-	private boolean gender;
+	private Calendar dob;
+	public Calendar getDob() {
+		return dob;
+	}
+
+	public void setDob(Calendar dob) {
+		this.dob = dob;
+	}
+
+	private String gender;
 	private String aadharNumber;
 	private String address;
 
@@ -42,11 +53,11 @@ public class AadharCard {
 		this.yearOfBirth = yearOfBirth;
 	}
 
-	public boolean getGender(){
+	public String getGender(){
 		return this.gender;
 	}
 	
-	public void setGender(boolean gender){
+	public void setGender(String gender){
 		this.gender = gender;
 	}
 
