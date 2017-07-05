@@ -13,40 +13,75 @@ public class ParsePanCard {
 		PanCard obj = new PanCard();
 		String splitDesc[] = content.split("\\n");
 		int i;
-		for(i = 0;i<splitDesc.length;i++){
-			if(splitDesc[i].indexOf("INDIA")>-1)
-			  break;
-		}		
-		String name,fname,dob,pan;
-		
-		//extracting name
-		name=splitDesc[++i];
-		if(EntityType.getType(name).equals("Non"))
-			name=splitDesc[++i]; 
-		
-		//extracting father's name
-		fname=splitDesc[++i];
-		if(EntityType.getType(fname).equals("Non"))
-			fname=splitDesc[++i];
-		
-		//extracting dob
-		dob=splitDesc[++i];
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String name="",fname="",dob="",pan="";
 		Calendar cal = Calendar.getInstance();
-		try{
-			cal.setTime(sdf.parse(dob));
-			//System.out.println("date:"+cal.getTime().toString());
-		}catch(Exception e){
-			System.err.println(e);	}	
+		if(content.contains("INDIA"))
+		{ //New type of PAN Card
+		 for(i = 0;i<splitDesc.length;i++){
+			if(splitDesc[i].indexOf("INDIA")>-1)
+			{
+				//extracting name
+				name=splitDesc[++i];
+				if(EntityType.getType(name).equals("Non"))
+					name=splitDesc[++i]; 
+				
+				//extracting father's name
+				fname=splitDesc[++i];
+				if(EntityType.getType(fname).equals("Non"))
+					fname=splitDesc[++i];
+				
+				//extracting dob
+				dob=splitDesc[++i];
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				try{
+					cal.setTime(sdf.parse(dob));
+					//System.out.println("date:"+cal.getTime().toString());
+				}catch(Exception e){
+					System.err.println(e);	}	
+				
+				//extracting pan
+				pan=splitDesc[i+2];
+			    break;
+			}
+		 }		
+		}
+		else
+		{
+			//Old type of PAN card
+			for(i = 0;i<splitDesc.length;i++){
+				if(splitDesc[i].toUpperCase().contains("PERMANENT ACCOUNT NUMBER"))
+					pan = splitDesc[i+1];
+				else if(splitDesc[i].toUpperCase().contains("NAME"))
+				{
+					if(splitDesc[i].toUpperCase().contains("FATHER"))
+						{
+							fname = splitDesc[i+1];
+							if(splitDesc[i+2].toUpperCase().contains("DATE"))
+								dob = splitDesc[i+3];
+							else
+							{
+								fname = fname + " " + splitDesc[i+2];
+								dob = splitDesc[i+4];
+							}
+							break;
+						}
+					else
+						{
+							name = splitDesc[i+1];
+							if(!splitDesc[i+2].toUpperCase().contains("FATHER"))
+								name = name + " " + splitDesc[i+2];
+						}					
+				 }					  
+			}
+		}
 		
-		//extracting pan
-		pan=splitDesc[i+2];
 		
 		//setting the PanCard object
 		obj.setName(name);
 		obj.setFatherName(fname);
 		obj.setDob(cal);
 		obj.setPanNumber(pan);
+		obj.setDobDisplay(dob);
 		
 		return obj;
 	}

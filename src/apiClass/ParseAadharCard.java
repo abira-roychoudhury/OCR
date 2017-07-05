@@ -7,26 +7,30 @@ import templates.AadharCard;
 
 public class ParseAadharCard {
 	
-	public AadharCard parseAadhaeCard(String content){
+	public AadharCard parseAadharCard(String content){
 		AadharCard obj = new AadharCard();
 		String splitDesc[] = content.split("\\n");
 		int i,year=0;
 		Calendar cal = Calendar.getInstance();
-		String name="",gender="",aadharNumber="";
+		String name="",gender="",aadharNumber="",dobstr="";
 		for(i = 0;i<splitDesc.length;i++)
 		{
 			if(splitDesc[i].contains("DOB"))
 			{
-				String dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf("DOB")+3).replace(":", "").trim();
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf("DOB")+3).replace(":", "").trim();
+				SimpleDateFormat sdf;
+				if(dobstr.contains("//"))
+				    sdf = new SimpleDateFormat("dd/MM/yyyy");
+				else
+					sdf = new SimpleDateFormat("dd-MM-yyyy");
 				try{
 					cal.setTime(sdf.parse(dobstr));
 				}catch(Exception e){
 					System.err.println(e);
 				}
 				aadharNumber = splitDesc[i+2];
-				name = splitDesc[i-1];
-				
+				name = splitDesc[i-1];	
+				break;
 			}
 			else if(splitDesc[i].contains("Birth"))
 			{
@@ -34,22 +38,22 @@ public class ParseAadharCard {
 				year = Integer.parseInt(yearstr);
 				aadharNumber = splitDesc[i+2];
 				name = splitDesc[i-1];
-				
-			}
-			else if(splitDesc[i].contains("Male")){ 
-				gender = "Male";
-				break; 
-			}
-			else if(splitDesc[i].contains("Female")){ 
-				gender = "Female";
 				break;
 			}
 		}
-		obj.setFirstName(name);
+		
+		if(content.contains("Male")) 
+			gender = "Male";
+			
+		else if(content.contains("Female")) 
+			gender = "Female";
+		
+		obj.setName(name);
 		obj.setGender(gender);
 		obj.setAadharNumber(aadharNumber);
 		obj.setYearOfBirth(year);
 		obj.setDob(cal);
+		obj.setDobDisplay(dobstr);
 		return obj;
 	}
 	
@@ -60,8 +64,8 @@ public class ParseAadharCard {
 		//String content = "GOVERNMENT OF Ner\nSukhrajdeep Sig\nHe / Year of Birth : 1987\ness\n2336 8826 0737 IIIIIIIII\nTEE - HTH 3ft FT Afar,\n";
 		//String content = "TRGT HR GAR\nGOVERNMENT OF INDIA\na\nofAaNT ACRT RIG\nShreenivas Nilesh Shinde\nUH aira I DOB: 06/09/2012\n|yfceij / MALE\nD\n|\n99999999 0099 RE\n3TTER - FAITH ATURITT 3fereMIR\n";
 		String content = "TH/Name\nSurprit Kaur\nart anêtes/DOB: 09-12-1989\nge Male\n10 1200\n1800 1200 1301\nHTIR - HIra AT HufeSIR\nA DHAR CARD MAKER PRANK\n";
-		AadharCard obj = pac.parseAadhaeCard(content);
-		System.out.println("Name : "+obj.getFirstName());
+		AadharCard obj = pac.parseAadharCard(content);
+		System.out.println("Name : "+obj.getName());
 		System.out.println("YEAR OF BIRTH : "+obj.getYearOfBirth());
 		System.out.println("Date of Birth : "+obj.getDob().getTime().toString());
 		System.out.println("Gender : "+obj.getGender());

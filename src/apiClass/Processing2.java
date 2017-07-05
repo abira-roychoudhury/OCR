@@ -5,8 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,9 +44,7 @@ public class Processing2 extends HttpServlet {
 
 
 	public void init( ){
-	      // Get the file location where it would be stored.
-	      filePath = getServletContext().getInitParameter("file-upload");
-	      System.out.println("inside init");
+	      System.out.println("inside init : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 	   }
     /**
      * @see HttpServlet#HttpServlet()
@@ -64,11 +66,9 @@ public class Processing2 extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Check that we have a file upload request
-				  System.out.println("inside post");
+				  System.out.println("inside post : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 				  
-				  String documentType = request.getParameter("type");
-				  
-				  String imgB64,fileType;
+				  String fileType="",descriptionStr="",filePath="";
 				  File imgFile = new File("image.jpg");
 
 			      isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -88,19 +88,39 @@ public class Processing2 extends HttpServlet {
 			         FileItem fi = (FileItem)i.next();
 			         if ( !fi.isFormField () )	
 			         {
-				          System.out.println("inside the iterator for image");
+				          System.out.println("inside the iterator for image : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 				          
 				          //writing a temporary file  
 				          fi.write(imgFile); 
-				          String filePath = imgFile.getAbsolutePath();
+				          filePath = imgFile.getAbsolutePath();
+				          
+				          
+			         }
+			         else{
+			        	 String fieldname = fi.getFieldName();
+			             fileType = fi.getString();
+			             System.out.println("Uploaded File fieldname "+ fieldname);
+		                 System.out.println("Uploaded File Template "+ fileType);
+		                 request.setAttribute("fileType", fileType);
+			          }
+			        }
+			       }catch(Exception ex) {
+			        System.out.println(ex);
+			        ex.printStackTrace();} 
 				          
 				          //Calling ImageEnhancement and getting back a preprocessed base64 image string
+			      		  System.out.println("calling ImageEnhancement : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 				          ImageEnhancement ie = new ImageEnhancement();
-				          String processedImgBase64 = ie.imagePreprocessing(filePath, documentType);
+				          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
+				          String processedImgBase64 = ie.convertToBase64(filePath);
+				          System.out.println("returning ImageEnhancement : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+				          
 				          
 				          //Calling Vision API
+				          System.out.println("calling VisionAPICall : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 				          VisionAPICall vac = new VisionAPICall();
 				          JSONObject result = vac.performOCR(processedImgBase64);
+				          System.out.println("returning VisionAPICall : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 				     
 				          //request.setAttribute("jobj", jobj);
 			          
@@ -114,15 +134,10 @@ public class Processing2 extends HttpServlet {
 			  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
 			  			JSONArray textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
 			  			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-			  			String descriptionStr=firstObj.getString("description");
-			  			System.out.println("Description-"+descriptionStr);
+			  			descriptionStr=firstObj.getString("description");
+			  			//System.out.println("Description-"+descriptionStr);
 			  			request.setAttribute("Description", descriptionStr);
-			  			
-			  			DrivingLicense dl = new ParseDrivingLicense().parseDrivingLicense(descriptionStr);
-			  			
-			  			System.out.println(dl.toString());
-			  		
-			  		} catch (JSONException e) {
+			  		}catch (JSONException e) {
 			  			// TODO Auto-generated catch block
 			  			e.printStackTrace();}
 			          
@@ -136,18 +151,15 @@ public class Processing2 extends HttpServlet {
 			          String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
 			          request.setAttribute("imgBase64", imgBase64Jsp);
 			         
-			          
-			         }
-			         else{
-			        	 String fieldname = fi.getFieldName();
-			             fileType = fi.getString();
-		                 System.out.println("Uploaded File Template "+ fileType);
-		                 request.setAttribute("fileType", fileType);
-			          }
-			         }
+			         
 			      
-			     }catch(Exception ex) {
-			        System.out.println(ex);	   } 
+			     //Parsing the description as per the template
+			       System.out.println("calling Templating : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+			      LinkedHashMap<String,String> document = new DocumentTemplating().parseContent(descriptionStr,fileType);
+			      request.setAttribute("document", document);
+			      System.out.println("returning templating : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+			      
+			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);
 			        

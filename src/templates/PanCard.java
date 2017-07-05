@@ -7,6 +7,7 @@ public class PanCard {
 	private String name;
 	private String fatherName;
 	private Calendar dob;
+	private String dobDisplay;
 	private String panNumber;
 	
 	public String getName() {
@@ -32,6 +33,12 @@ public class PanCard {
 	}
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+	public String getDobDisplay() {
+		return dobDisplay;
+	}
+	public void setDobDisplay(String dobDisplay) {
+		this.dobDisplay = dobDisplay;
 	}
 	
 }

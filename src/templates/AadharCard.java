@@ -4,48 +4,22 @@ import java.util.Calendar;
 
 public class AadharCard {
 	
-	private String firstName;
-	private String lastName;
-	private String middleName;
+	private String name;
 	private int yearOfBirth;
 	private Calendar dob;
-	public Calendar getDob() {
-		return dob;
-	}
-
-	public void setDob(Calendar dob) {
-		this.dob = dob;
-	}
-
+	private String dobDisplay;
 	private String gender;
 	private String aadharNumber;
 	private String address;
 
-	public String getFirstName(){
-		return this.firstName;
+	public String getName(){
+		return this.name;
 	}
 	
-	public void setFirstName(String firstName){
-		this.firstName = firstName;
+	public void setName(String name){
+		this.name = name;
 	}
-
-	public String getLastName(){
-		return this.lastName;
-	}
-	
-	public void setLastName(String lastName){
-		this.lastName = lastName;
-	}
-
-	public String getMiddleName(){
-		return this.middleName;
-	}
-	
-	public void setMiddleName(String middleName){
-		this.middleName = middleName;
-	}
-
-	public int getYearOfBirth(){
+    public int getYearOfBirth(){
 		return this.yearOfBirth;
 	}
 	
@@ -76,6 +50,22 @@ public class AadharCard {
 	public void setAddress(String address){
 		this.address = address;
 	}
+	public Calendar getDob() {
+		return dob;
+	}
+
+	public void setDob(Calendar dob) {
+		this.dob = dob;
+	}
+	
+	public String getDobDisplay() {
+		return dobDisplay;
+	}
+
+	public void setDobDisplay(String dobDisplay) {
+		this.dobDisplay = dobDisplay;
+	}
+
 	
 
 }

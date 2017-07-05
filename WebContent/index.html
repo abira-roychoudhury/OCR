@@ -18,8 +18,12 @@
 	      <label class="control-label">Upload Image</label>
 	      <input type="file" name ="file" class="filestyle" data-buttonText="Select a File"></br>
 	      <label class="control-label">Select document Type:</label></br>
-	      <label class="radio-inline"><input type="radio" name="type" value="PanCard">Pan Card</label>
-	      <label class="radio-inline"><input type="radio" name="type" value="VisitingCard">Visiting Card</label></br></br> 
+	      <select name="fileType">
+	        <option value=""></option>
+	        <option value="PanCard">Pan Card</option>
+  			<option value="AadharCardPage1">Aadhar Card</option>
+  			<option value="DrivingLicense">Driving License</option>
+  		   </select></br></br> 
 	      <input type="submit" class="btn btn-primary" value="Process">
 	     </form>   
 		</div>

@@ -5,6 +5,7 @@ import java.util.Calendar;
 public class DrivingLicense {
 	
 	private Calendar DOB;
+	private String dobDisplay;
 	private String name;
 	private String middleName;
 	private String address;
@@ -83,6 +84,14 @@ public class DrivingLicense {
 		DOB = dOB;
 	}
 	
+	public String getDobDisplay() {
+		return dobDisplay;
+	}
+
+	public void setDobDisplay(String dobDisplay) {
+		this.dobDisplay = dobDisplay;
+	}
+
 	public String toString(){
 		
 		String data = "DOB:"+this.getDOB().getTime()+"\n "

@@ -63,7 +63,7 @@ public class ImageEnhancement {
 
 		File processedFile = new File("gray.jpg");
         Imgcodecs.imwrite(processedFile.getAbsolutePath(), img);
-		System.out.println("New image saved at location : "+processedFile.getAbsolutePath());
+		//System.out.println("New image saved at location : "+processedFile.getAbsolutePath());
 		return processedFile;
 	}
 	
@@ -86,7 +86,7 @@ public class ImageEnhancement {
 			Path path = Paths.get(filePath);
 			byte[] data = Files.readAllBytes(path);
 			
-			System.out.println("data:"+data.length);
+			//System.out.println("data:"+data.length);
 			
 			//Image
 			imageData = Base64.encodeBase64URLSafeString(data);
