@@ -35,16 +35,9 @@ import templates.DrivingLicense;
 @WebServlet("/Processing2")
 public class Processing2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-	private boolean isMultipart;
-	private String filePath;
-	private int maxFileSize = 50 * 1024;
-	private int maxMemSize = 4 * 1024;
-	private File file ;
-
-
+   
 	public void init( ){
-	      System.out.println("inside init : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+	      //System.out.println("inside init : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
 	   }
     /**
      * @see HttpServlet#HttpServlet()
@@ -66,35 +59,32 @@ public class Processing2 extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Check that we have a file upload request
-				  System.out.println("inside post : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
-				  
-				  String fileType="",descriptionStr="",filePath="";
+				  //System.out.println("inside post : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
+				  Date start = new Date(),end = new Date();
+				  TimestampLogging  tl = new TimestampLogging();
+				  String fileName = "",fileType="",descriptionStr="",filePath="";
 				  File imgFile = new File("image.jpg");
-
-			      isMultipart = ServletFileUpload.isMultipartContent(request);
 			      DiskFileItemFactory factory = new DiskFileItemFactory();
-			      
-			      // Create a new file upload handler
+			       // Create a new file upload handler
 			      ServletFileUpload upload = new ServletFileUpload(factory);
-
 			      try{ 
 			      // Parse the request to get file items.
 			      List fileItems = upload.parseRequest(request);
-				
-			      // Process the uploaded file items
+				  // Process the uploaded file items
 			      Iterator i = fileItems.iterator();
 			      while ( i.hasNext () ) 
 			      {
 			         FileItem fi = (FileItem)i.next();
 			         if ( !fi.isFormField () )	
 			         {
-				          System.out.println("inside the iterator for image : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+				          //System.out.println("inside the iterator for image : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
 				          
-				          //writing a temporary file  
+			        	  fileName = fi.getName();
+				          //writing a temporary file 
+			        	  start = new Date();
 				          fi.write(imgFile); 
 				          filePath = imgFile.getAbsolutePath();
-				          
-				          
+				          end = new Date();			          
 			         }
 			         else{
 			        	 String fieldname = fi.getFieldName();
@@ -107,26 +97,29 @@ public class Processing2 extends HttpServlet {
 			       }catch(Exception ex) {
 			        System.out.println(ex);
 			        ex.printStackTrace();} 
+			      
+			      tl.fileDesc(fileName, fileType);
+			      tl.fileLog("Uploading image into file", start, end);
+			      
 				          
 				          //Calling ImageEnhancement and getting back a preprocessed base64 image string
-			      		  System.out.println("calling ImageEnhancement : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+			      		  start = new Date();
 				          ImageEnhancement ie = new ImageEnhancement();
-				          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
-				          String processedImgBase64 = ie.convertToBase64(filePath);
-				          System.out.println("returning ImageEnhancement : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+				          String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
+				          //String processedImgBase64 = ie.convertToBase64(filePath);
+				          end = new Date();
+				          tl.fileLog("Image Preprocessing", start, end);
 				          
 				          
 				          //Calling Vision API
-				          System.out.println("calling VisionAPICall : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+				          start = new Date();
 				          VisionAPICall vac = new VisionAPICall();
 				          JSONObject result = vac.performOCR(processedImgBase64);
-				          System.out.println("returning VisionAPICall : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
-				     
-				          //request.setAttribute("jobj", jobj);
+				          end = new Date();
+				          tl.fileLog("Vision API Call", start, end);
 			          
 			         
-			  		try {
-			  			
+			  		try {			  			
 			  			JSONObject body = new JSONObject(result.get("body"));
 			  			String bodytring=result.getString("body");
 			  			JSONObject bodyObject=new JSONObject(bodytring);
@@ -154,10 +147,12 @@ public class Processing2 extends HttpServlet {
 			         
 			      
 			     //Parsing the description as per the template
-			       System.out.println("calling Templating : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+			      start = new Date();
 			      LinkedHashMap<String,String> document = new DocumentTemplating().parseContent(descriptionStr,fileType);
 			      request.setAttribute("document", document);
-			      System.out.println("returning templating : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+			      end = new Date();
+			      tl.fileLog("Templating", start, end);
+			      tl.fileWrite();
 			      
 			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
