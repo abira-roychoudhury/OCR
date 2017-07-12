@@ -23,7 +23,7 @@ public class VisionAPICall {
 			
 			URL url = new URL(apiUrl+apiKey);
 			
-			System.setProperty("https.proxyHost", "hjproxy.persistent.co.in");
+			System.setProperty("https.proxyHost", "ptproxy.persistent.co.in");
 			System.setProperty("https.proxyPort", "8080");
 			
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
