@@ -11,6 +11,15 @@ public class AadharCard {
 	private String gender;
 	private String aadharNumber;
 	private String address;
+	private AadharCardCoord coordinates;
+
+	public AadharCardCoord getCoordinates() {
+		return coordinates;
+	}
+
+	public void setCoordinates(AadharCardCoord coordinates) {
+		this.coordinates = coordinates;
+	}
 
 	public String getName(){
 		return this.name;

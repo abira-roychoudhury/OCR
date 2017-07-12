@@ -1,31 +1,54 @@
 package apiClass;
 
 import java.util.LinkedHashMap;
+
+import org.json.JSONArray;
+
 import templates.*;
 
 public class DocumentTemplating {
 
-	public LinkedHashMap<String,String> parseContent(String content,String fileType ){
-		 LinkedHashMap<String,String> document=new LinkedHashMap<String,String>(); 
+	public LinkedHashMap<String,Object> parseContent(JSONArray textAnnotationArray,String fileType ){
+		 LinkedHashMap<String,Object> document=new LinkedHashMap<String,Object>();
+		 LinkedHashMap<String,String> displayDocument = new LinkedHashMap<String,String>();
+	     LinkedHashMap<String,int[][]> coordinates = new LinkedHashMap<String,int[][]>();
+		 String content = "";
 		 
 		 if(fileType.equals("PanCard"))
 		 {
-			 PanCard pc = new ParsePanCard().parsePanCard(content);
-			 document.put("Name", pc.getName());
-			 document.put("Father's Name", pc.getFatherName());
-			 document.put("DOB", pc.getDobDisplay());
-			 document.put("PAN Number", pc.getPanNumber());
+			 PanCard pc = new ParsePanCard().parsePanCard(textAnnotationArray);
+			 PanCardCoord pcc = pc.getCoordinates();
+			 			 
+			 displayDocument.put("Name", pc.getName());
+			 displayDocument.put("Father's Name", pc.getFatherName());
+			 displayDocument.put("DOB", pc.getDobDisplay());
+			 displayDocument.put("PAN Number", pc.getPanNumber());
+			 
+			 coordinates.put("Name", pcc.getName());
+			 coordinates.put("Father's Name", pcc.getFatherName());
+			 coordinates.put("DOB", pcc.getDobDisplay());
+			 coordinates.put("PAN Number", pcc.getPanNumber());
+			 
 		 }
 		 else if(fileType.equals("AadharCardPage1"))
 		 {
-			 AadharCard ac = new ParseAadharCard().parseAadharCard(content);
-			 document.put("Name", ac.getName());
-			 if(ac.getDobDisplay().equals(""))
-				 document.put("Year of Birth", Integer.toString(ac.getYearOfBirth()));
-			 else
-				 document.put("Date of Birth",ac.getDobDisplay());
-			 document.put("Gender", ac.getGender());
-			 document.put("Aadhar Number", ac.getAadharNumber());
+			 AadharCard ac = new ParseAadharCard().parseAadharCard(textAnnotationArray);
+			 AadharCardCoord acc = ac.getCoordinates();
+			 
+			 displayDocument.put("Name", ac.getName());
+			 coordinates.put("Name", acc.getName());
+			 if(ac.getDobDisplay().equals("")){
+				 displayDocument.put("Year of Birth", Integer.toString(ac.getYearOfBirth()));
+			     coordinates.put("Year of Birth", acc.getYearOfBirth());}
+			 else{
+				 displayDocument.put("Date of Birth",ac.getDobDisplay());
+				 coordinates.put("Date of Birth", acc.getDobDisplay());}
+			 displayDocument.put("Gender", ac.getGender());
+			 coordinates.put("Gender", acc.getGender());
+			 displayDocument.put("Aadhar Number", ac.getAadharNumber());
+			 coordinates.put("Aadhar Number", acc.getAadharNumber());
+			 
+			 
 		 }
 		 else if(fileType.equals("DrivingLicense"))
 		 {
@@ -37,6 +60,8 @@ public class DocumentTemplating {
 			 document.put("Blood Group", dl.getBloodGroup());
 			 document.put("DOB ", dl.getDobDisplay());			 
 		 }	
-		return document;
+		 document.put("displayDocument", displayDocument);
+		 document.put("coordinates", coordinates);	
+		 return document;
 	}
 }

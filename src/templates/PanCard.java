@@ -9,7 +9,14 @@ public class PanCard {
 	private Calendar dob;
 	private String dobDisplay;
 	private String panNumber;
+	private PanCardCoord coordinates;
 	
+	public PanCardCoord getCoordinates() {
+		return coordinates;
+	}
+	public void setCoordinates(PanCardCoord coordinates) {
+		this.coordinates = coordinates;
+	}
 	public String getName() {
 		return name;
 	}

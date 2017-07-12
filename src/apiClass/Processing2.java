@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import org.opencv.core.Mat;
 
 import templates.DrivingLicense;
+import templates.PanCardCoord;
 /**
  * Servlet implementation class Processing2
  */
@@ -63,6 +64,7 @@ public class Processing2 extends HttpServlet {
 				  Date start = new Date(),end = new Date();
 				  TimestampLogging  tl = new TimestampLogging();
 				  String fileName = "",fileType="",descriptionStr="",filePath="";
+				  JSONArray textAnnotationArray = new JSONArray();
 				  File imgFile = new File("image.jpg");
 			      DiskFileItemFactory factory = new DiskFileItemFactory();
 			       // Create a new file upload handler
@@ -77,9 +79,7 @@ public class Processing2 extends HttpServlet {
 			         FileItem fi = (FileItem)i.next();
 			         if ( !fi.isFormField () )	
 			         {
-				          //System.out.println("inside the iterator for image : "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
-				          
-			        	  fileName = fi.getName();
+				          fileName = fi.getName();
 				          //writing a temporary file 
 			        	  start = new Date();
 				          fi.write(imgFile); 
@@ -105,8 +105,8 @@ public class Processing2 extends HttpServlet {
 				          //Calling ImageEnhancement and getting back a preprocessed base64 image string
 			      		  start = new Date();
 				          ImageEnhancement ie = new ImageEnhancement();
-				          String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
-				          //String processedImgBase64 = ie.convertToBase64(filePath);
+				          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
+				          String processedImgBase64 = ie.convertToBase64(filePath);
 				          end = new Date();
 				          tl.fileLog("Image Preprocessing", start, end);
 				          
@@ -125,7 +125,7 @@ public class Processing2 extends HttpServlet {
 			  			JSONObject bodyObject=new JSONObject(bodytring);
 			  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray("responses");
 			  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
-			  			JSONArray textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
+			  			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
 			  			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			  			descriptionStr=firstObj.getString("description");
 			  			//System.out.println("Description-"+descriptionStr);
@@ -148,12 +148,33 @@ public class Processing2 extends HttpServlet {
 			      
 			     //Parsing the description as per the template
 			      start = new Date();
-			      LinkedHashMap<String,String> document = new DocumentTemplating().parseContent(descriptionStr,fileType);
+			      LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);
 			      request.setAttribute("document", document);
 			      end = new Date();
 			      tl.fileLog("Templating", start, end);
 			      tl.fileWrite();
 			      
+			      
+			      LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get("displayDocument");
+			      LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get("coordinates");
+			     			      
+			      String jsonCoord = "{";
+			      for(String key : coordinates.keySet())
+		    		{
+		    			int coord[][] = coordinates.get(key);
+		    		    jsonCoord = jsonCoord+"\""+key+"\":[";
+		    		    for(int i=0;i<4;i++)
+		    		       	jsonCoord = jsonCoord+"{\"x\":"+coord[0][i]+",\"y\":"+coord[1][i]+"},";
+		    		    jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
+		    		    jsonCoord = jsonCoord+"],";
+					}
+			      jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
+			      jsonCoord = jsonCoord+"}";
+			      
+			      System.out.println("jsonCoord : "+jsonCoord);
+			      request.setAttribute("displaydocument", displayDocument);
+			      request.setAttribute("coordinates", coordinates);
+			      request.setAttribute("jsonCoord", jsonCoord);
 			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);

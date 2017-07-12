@@ -1,14 +1,77 @@
 package apiClass;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import templates.AadharCard;
+import templates.AadharCardCoord;
 
 public class ParseAadharCard {
 	
-	public AadharCard parseAadharCard(String content){
+	public AadharCard parseAadharCard(JSONArray textAnnotationArray){
 		AadharCard obj = new AadharCard();
+		try{
+			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
+			String descriptionStr=firstObj.getString("description");
+			obj = parseContent(descriptionStr,obj);		
+			obj = parseCoord(textAnnotationArray,obj);	
+			}catch(JSONException je){ je.printStackTrace();
+			}catch(Exception e){ e.printStackTrace();
+			 }
+			return obj;
+		
+	}
+	
+	
+	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj){
+		AadharCardCoord coord = new AadharCardCoord();
+		int n=0,yr=0,d=0,g=0,a=1,ad=1,i=1;
+		int nl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
+		
+		for(;i<textAnnotationArray.length();i++){
+			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
+			String description = jobj.getString("description");
+			
+			//setting the coordinates for name
+			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
+				System.out.println("name found");
+				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				if(n==0){
+					for(int j=0;j<4;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						System.out.println("coords : "+x+" "+y);
+						coord.setName(x, 0, j);
+						coord.setName(y, 1, j);
+					}
+					n++;
+				}
+				else{
+					for(int j=1;j<3;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setName(x, 0, j);
+						coord.setName(y, 1, j);
+					}
+				}
+				nl = nl+description.length()+1;
+			}
+		}
+		obj.setCoordinates(coord);
+		return obj;
+	}
+	
+	
+	public AadharCard parseContent(String content,AadharCard obj){
 		String splitDesc[] = content.split("\\n");
 		int i,year=0;
 		Calendar cal = Calendar.getInstance();
@@ -57,19 +120,4 @@ public class ParseAadharCard {
 		return obj;
 	}
 	
-	public static void main(String args[]){
-		ParseAadharCard pac = new ParseAadharCard();
-		//String content = "D\nFree at\nSRG THRYER\nGOVERNMENT OF INDIAWARE\n3iard Frter the\nAnkit Jagdish Koshti\nGFH af/ Year of Birth: 1989\nyEY / Male\n2532 5045 6220\nCTER THE HUTCHICT CITIGER\n";
-		//String content = "GOVERNMENT OF INDIA\na la RF\nVijender Singh\nGTCH at 1 Year of Birth : 1988\nO\n3379 7203 6560 LEFK\nATEIR – ATH HIGHit FT SHfereHR\n";
-		//String content = "GOVERNMENT OF Ner\nSukhrajdeep Sig\nHe / Year of Birth : 1987\ness\n2336 8826 0737 IIIIIIIII\nTEE - HTH 3ft FT Afar,\n";
-		//String content = "TRGT HR GAR\nGOVERNMENT OF INDIA\na\nofAaNT ACRT RIG\nShreenivas Nilesh Shinde\nUH aira I DOB: 06/09/2012\n|yfceij / MALE\nD\n|\n99999999 0099 RE\n3TTER - FAITH ATURITT 3fereMIR\n";
-		String content = "TH/Name\nSurprit Kaur\nart anêtes/DOB: 09-12-1989\nge Male\n10 1200\n1800 1200 1301\nHTIR - HIra AT HufeSIR\nA DHAR CARD MAKER PRANK\n";
-		AadharCard obj = pac.parseAadharCard(content);
-		System.out.println("Name : "+obj.getName());
-		System.out.println("YEAR OF BIRTH : "+obj.getYearOfBirth());
-		System.out.println("Date of Birth : "+obj.getDob().getTime().toString());
-		System.out.println("Gender : "+obj.getGender());
-		System.out.println("Aadhar Number : "+obj.getAadharNumber());
-	}
-
 }
