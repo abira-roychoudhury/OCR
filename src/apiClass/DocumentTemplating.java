@@ -24,11 +24,33 @@ public class DocumentTemplating {
 			 displayDocument.put("DOB", pc.getDobDisplay());
 			 displayDocument.put("PAN Number", pc.getPanNumber());
 			 
-			 coordinates.put("Name", pcc.getName());
-			 coordinates.put("Father's Name", pcc.getFatherName());
-			 coordinates.put("DOB", pcc.getDobDisplay());
-			 coordinates.put("PAN Number", pcc.getPanNumber());
+			 try{
+				 coordinates.put("Name", pcc.getName());
+			 }
+			 catch(Exception e){
+				 coordinates.put("Name", new int[2][4]);
+			 }
 			 
+			 try{
+				 coordinates.put("Father's Name", pcc.getFatherName()); 
+			 }
+			 catch(Exception e){
+				 coordinates.put("Father's Name", new int[2][4]); 
+			 }
+			 
+			 try{
+				 coordinates.put("DOB", pcc.getDobDisplay());
+			 }
+			 catch(Exception e){
+				 coordinates.put("DOB", new int[2][4]);
+			 }
+			 
+			 try{
+				 coordinates.put("PAN Number", pcc.getPanNumber());
+			 }
+			 catch(Exception e){
+				 coordinates.put("PAN Number", new int[2][4]);
+			 }
 		 }
 		 else if(fileType.equals("AadharCardPage1"))
 		 {
@@ -36,18 +58,34 @@ public class DocumentTemplating {
 			 AadharCardCoord acc = ac.getCoordinates();
 			 
 			 displayDocument.put("Name", ac.getName());
-			 coordinates.put("Name", acc.getName());
+			 
+			 try {
+				 coordinates.put("Name", acc.getName());
+			 } catch (Exception e) {
+				 coordinates.put("Name", new int[2][4] );
+			 }
+			 
 			 if(ac.getDobDisplay().equals("")){
 				 displayDocument.put("Year of Birth", Integer.toString(ac.getYearOfBirth()));
-			     coordinates.put("Year of Birth", acc.getYearOfBirth());}
-			 else{
-				 displayDocument.put("Date of Birth",ac.getDobDisplay());
-				 coordinates.put("Date of Birth", acc.getDobDisplay());}
-			 displayDocument.put("Gender", ac.getGender());
-			 coordinates.put("Gender", acc.getGender());
-			 displayDocument.put("Aadhar Number", ac.getAadharNumber());
-			 coordinates.put("Aadhar Number", acc.getAadharNumber());
 			 
+				 coordinates.put("Year of Birth", acc.getYearOfBirth());
+			 
+			 }
+			 else
+			 {
+				 displayDocument.put("Date of Birth",ac.getDobDisplay());
+			
+				 coordinates.put("Date of Birth", acc.getDobDisplay());
+			 
+			 }
+			 
+			 displayDocument.put("Gender", ac.getGender());
+			 
+			 coordinates.put("Gender", acc.getGender());
+			 
+			 displayDocument.put("Aadhar Number", ac.getAadharNumber());
+			 
+			 coordinates.put("Aadhar Number", acc.getAadharNumber());
 			 
 		 }
 		 else if(fileType.equals("DrivingLicense"))

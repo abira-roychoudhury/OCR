@@ -52,6 +52,9 @@ public class VisionAPICall {
 			}
 
 			result.put("body", output);
+			
+			System.out.println("API CALL Successfull");
+			
 			conn.disconnect();
 		}
 		catch(Exception e){

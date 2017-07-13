@@ -1,5 +1,6 @@
 package apiClass;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,7 +13,16 @@ public class TimestampLogging {
 	
 	public TimestampLogging()
 	{
-		logFilePath = "D:\\OCRDemo\\Server_disk\\Log_File.txt";
+		File logFile = new File("Log_File.txt");
+		
+		try {
+			logFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+		
+		System.out.println("LogFile path :"+logFile.getAbsolutePath());
+		logFilePath = logFile.getPath();
 		logs = "";
 	}
 	

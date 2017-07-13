@@ -111,7 +111,6 @@ public class Processing2 extends HttpServlet {
 				          end = new Date();
 				          tl.fileLog("Image Preprocessing", start, end);
 				          
-				          
 				          //Calling Vision API
 				          start = new Date();
 				          VisionAPICall vac = new VisionAPICall();
