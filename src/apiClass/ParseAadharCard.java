@@ -30,16 +30,15 @@ public class ParseAadharCard {
 	
 	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj){
 		AadharCardCoord coord = new AadharCardCoord();
-		int n=0,yr=0,d=0,g=0,a=1,ad=1,i=1;
+		int n=0,yr=0,d=0,g=0,a=0,ad=0,i=1;
 		int nl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
-		
+		String year =  Integer.toString(obj.getYearOfBirth());
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString("description");
 			
 			//setting the coordinates for name
 			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
-				System.out.println("name found");
 				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
 				if(n==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -47,7 +46,6 @@ public class ParseAadharCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt("x");
 						int y = xy.getInt("y");
-						System.out.println("coords : "+x+" "+y);
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
@@ -64,6 +62,114 @@ public class ParseAadharCard {
 					}
 				}
 				nl = nl+description.length()+1;
+			}
+
+			//setting the coordinates for year of birth
+			else if(obj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length()){
+					JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+					if(yr==0){
+						for(int j=0;j<4;j++){ //iterate columns
+							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+							JSONObject xy = (JSONObject) vertices.get(j);
+							int x = xy.getInt("x");
+							int y = xy.getInt("y");
+							coord.setYearOfBirth(x, 0, j);
+							coord.setYearOfBirth(y, 1, j);
+						}
+						yr++;
+					}
+					else{
+						for(int j=1;j<3;j++){ //iterate columns
+							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+							JSONObject xy = (JSONObject) vertices.get(j);
+							int x = xy.getInt("x");
+							int y = xy.getInt("y");
+							coord.setYearOfBirth(x, 0, j);
+							coord.setYearOfBirth(y, 1, j);
+						}
+					}
+					yrl = yrl+description.length();
+				}
+			
+			//setting the coordinates for date of birth
+			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length()){
+				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				if(d==0){
+					for(int j=0;j<4;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setDobDisplay(x, 0, j);
+						coord.setDobDisplay(y, 1, j);
+					}
+					d++;
+				}
+				else{
+					for(int j=1;j<3;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setDobDisplay(x, 0, j);
+						coord.setDobDisplay(y, 1, j);
+					}
+				}
+				dl = dl+description.length();
+			}
+
+			//setting the coordinates for gender
+			else if(obj.getGender().contains(description) && gl< obj.getGender().length()){
+				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				if(g==0){
+					for(int j=0;j<4;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setGender(x, 0, j);
+						coord.setGender(y, 1, j);
+					}
+					g++;
+				}
+				else{
+					for(int j=1;j<3;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setGender(x, 0, j);
+						coord.setGender(y, 1, j);
+					}
+				}
+				gl = gl+description.length();	
+			}
+
+			//setting the coordinates for aadhar card number
+			else if(obj.getAadharNumber().contains(description) && al< obj.getAadharNumber().length()){
+				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				if(a==0){
+					for(int j=0;j<4;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setAadharNumber(x, 0, j);
+						coord.setAadharNumber(y, 1, j);
+					}
+					a++;
+				}
+				else{
+					for(int j=1;j<3;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt("x");
+						int y = xy.getInt("y");
+						coord.setAadharNumber(x, 0, j);
+						coord.setAadharNumber(y, 1, j);
+					}
+				}
+				al = al+description.length()+1;	
 			}
 		}
 		obj.setCoordinates(coord);

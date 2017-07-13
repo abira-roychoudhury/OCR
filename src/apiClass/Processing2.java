@@ -61,6 +61,7 @@ public class Processing2 extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Check that we have a file upload request
 				  //System.out.println("inside post : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
+				//try{
 				  Date start = new Date(),end = new Date();
 				  TimestampLogging  tl = new TimestampLogging();
 				  String fileName = "",fileType="",descriptionStr="",filePath="";
@@ -132,7 +133,8 @@ public class Processing2 extends HttpServlet {
 			  			request.setAttribute("Description", descriptionStr);
 			  		}catch (JSONException e) {
 			  			// TODO Auto-generated catch block
-			  			e.printStackTrace();}
+			  			e.printStackTrace();
+			  			}
 			          
 			          
 			          //Creating Base64 of original Image
@@ -178,6 +180,11 @@ public class Processing2 extends HttpServlet {
 			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);
+				/*}catch(Exception e){
+					 response.setContentType("text/plain");
+					 PrintWriter out = response.getWriter();
+					 out.println("An Error has occured");
+				}*/
 			        
 			        
 	}

@@ -52,14 +52,44 @@ public class DocumentTemplating {
 		 }
 		 else if(fileType.equals("DrivingLicense"))
 		 {
-			 DrivingLicense dl = new ParseDrivingLicense().parseDrivingLicense(content);
-			 document.put("Name", dl.getName());
-			 document.put("S/D/W of", dl.getMiddleName());
-			 document.put("Address", dl.getAddress());
-			 document.put("PIN", dl.getPin());
-			 document.put("Blood Group", dl.getBloodGroup());
-			 document.put("DOB ", dl.getDobDisplay());			 
+			 DrivingLicense dl = new ParseDrivingLicense().parseDrivingLicense(textAnnotationArray);
+			 DrivingLicenseCoord dlc = dl.getCoordinates();
+			 
+			 displayDocument.put("Name", dl.getName());
+			 displayDocument.put("S/D/W of", dl.getMiddleName());
+			 displayDocument.put("Address", dl.getAddress());
+			 displayDocument.put("PIN", dl.getPin());
+			 displayDocument.put("Blood Group", dl.getBloodGroup());
+			 displayDocument.put("DOB ", dl.getDobDisplay());	
+			 
+			 coordinates.put("Name", dlc.getName());
+			 coordinates.put("S/D/W of", dlc.getMiddleName());
+			 coordinates.put("Address", dlc.getAddress());
+			 coordinates.put("PIN", dlc.getPin());
+			 coordinates.put("Blood Group", dlc.getBloodGroup());
+			 coordinates.put("DOB ", dlc.getDobDisplay());	
 		 }	
+		 
+		 else if(fileType.equals("VoterCard"))
+		 {
+			 VoterCard vl = new ParseVoterCard().parseVoterCard(textAnnotationArray);
+			 VoterCardCoord vlc = vl.getCoordinates();
+			 
+			 displayDocument.put("Elector's Name", vl.getName());
+			 displayDocument.put("Father's Name", vl.getFatherName());
+			 displayDocument.put("Sex", vl.getSex());
+			 displayDocument.put("DOB ", vl.getDobDisplay());	
+			 
+			 
+			 coordinates.put("Elector's Name", vlc.getName());
+			 coordinates.put("Father's Name", vlc.getFatherName());
+			 coordinates.put("Sex", vlc.getSex());
+			 coordinates.put("DOB ", vlc.getDobDisplay());
+			
+		 }	
+		 
+		 
+		 
 		 document.put("displayDocument", displayDocument);
 		 document.put("coordinates", coordinates);	
 		 return document;

@@ -11,7 +11,16 @@ public class DrivingLicense {
 	private String address;
 	private String pin;
 	private String bloodGroup;
+	private DrivingLicenseCoord coordinates;
 	
+	public DrivingLicenseCoord getCoordinates() {
+		return coordinates;
+	}
+
+	public void setCoordinates(DrivingLicenseCoord coordinates) {
+		this.coordinates = coordinates;
+	}
+
 	public String getPin() {
 		return pin;
 	}
