@@ -6,8 +6,14 @@ public class VoterCardCoord {
 	private int fatherName[][] = new int[2][4];
 	private int sex[][] = new int[2][4];
 	private int dobDisplay[][] = new int[2][4];
+	private int voterId[][] = new int[2][4];
 	
-	
+	public int[][] getVoterId() {
+		return voterId;
+	}
+	public void setVoterId(int value, int r, int c) {
+		this.voterId[r][c] = value;
+	}
 	public int[][] getDobDisplay() {
 		return dobDisplay;
 	}

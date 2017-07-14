@@ -21,6 +21,8 @@ public class VisionAPICall {
 		
 		try{	
 			
+			System.out.println("Calling Vision API");
+			
 			URL url = new URL(apiUrl+apiKey);
 			
 			System.setProperty("https.proxyHost", "ptproxy.persistent.co.in");
@@ -52,8 +54,6 @@ public class VisionAPICall {
 			}
 
 			result.put("body", output);
-			
-			System.out.println("API CALL Successfull");
 			
 			conn.disconnect();
 		}

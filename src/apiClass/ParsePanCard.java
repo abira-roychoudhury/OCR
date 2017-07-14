@@ -20,10 +20,10 @@ public class ParsePanCard {
 	public PanCard parsePanCard(JSONArray textAnnotationArray){
 		PanCard obj = new PanCard();
 		try{
-		JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-		String descriptionStr=firstObj.getString("description");
-		obj = parseContent(descriptionStr,obj);		
-		obj = parseCoord(textAnnotationArray,obj);	
+			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
+			String descriptionStr=firstObj.getString("description");
+			obj = parseContent(descriptionStr,obj);		
+			obj = parseCoord(textAnnotationArray,obj);	
 		}catch(JSONException je){ 
 			je.printStackTrace();
 		}catch(Exception e){ 
@@ -37,12 +37,14 @@ public class ParsePanCard {
 		int n=0,f=0,d=0,p=0,i=1;
 		int nl=0,fl=0,dl=0,pl=0;
 		PanCardCoord coord = new PanCardCoord();
+		
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString("description");
 			if(description.toUpperCase().contains("INDIA"))
 				break;
-		}			
+		}
+		
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString("description");
@@ -158,14 +160,14 @@ public class ParsePanCard {
 				pl = pl+description.length();
 			}			
 		}
+		
 		obj.setCoordinates(coord);
 		return obj;
 	}
 	
 	
-	
-	
 	public PanCard parseContent(String content, PanCard obj){
+		
 		String splitDesc[] = content.split("\\n");
 		int i;
 		String name="",fname="",dob="",pan="";

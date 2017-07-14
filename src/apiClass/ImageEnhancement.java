@@ -23,7 +23,12 @@ public class ImageEnhancement {
 			
 	public Mat loadOpenCvImage(final String filePath) {
 		//LOAD THE LIBRARY
+
+		//File nativeFile = new File(Core.NATIVE_LIBRARY_NAME + ".dll");
+		//System.load(nativeFile.getAbsolutePath());
+		
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		
 		//LOAD IMAGE IN GRAYSCALE
 	    Mat imgMat = Imgcodecs.imread(filePath, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
 	    return imgMat;

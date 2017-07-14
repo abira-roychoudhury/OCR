@@ -106,8 +106,8 @@ public class Processing2 extends HttpServlet {
 				          //Calling ImageEnhancement and getting back a preprocessed base64 image string
 			      		  start = new Date();
 				          ImageEnhancement ie = new ImageEnhancement();
-				          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
-				          String processedImgBase64 = ie.convertToBase64(filePath);
+				          String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
+				          //String processedImgBase64 = ie.convertToBase64(filePath);
 				          end = new Date();
 				          tl.fileLog("Image Preprocessing", start, end);
 				          
@@ -121,8 +121,8 @@ public class Processing2 extends HttpServlet {
 			         
 			  		try {			  			
 			  			JSONObject body = new JSONObject(result.get("body"));
-			  			String bodytring=result.getString("body");
-			  			JSONObject bodyObject=new JSONObject(bodytring);
+			  			String bodystring=result.getString("body");
+			  			JSONObject bodyObject=new JSONObject(bodystring);
 			  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray("responses");
 			  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
 			  			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
@@ -131,9 +131,8 @@ public class Processing2 extends HttpServlet {
 			  			//System.out.println("Description-"+descriptionStr);
 			  			request.setAttribute("Description", descriptionStr);
 			  		}catch (JSONException e) {
-			  			// TODO Auto-generated catch block
 			  			e.printStackTrace();
-			  			}
+			  		}
 			          
 			          
 			          //Creating Base64 of original Image

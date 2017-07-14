@@ -7,11 +7,16 @@ public class VoterCard {
 	private String name;
 	private String fatherName;
 	private String sex;
+	private String voterId;
 	private VoterCardCoord coordinates;
 	
 	
-		
-	
+	public String getVoterId() {
+		return voterId;
+	}
+	public void setVoterId(String voterId) {
+		this.voterId = voterId;
+	}
 	public VoterCardCoord getCoordinates() {
 		return coordinates;
 	}

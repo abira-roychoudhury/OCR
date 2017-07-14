@@ -113,12 +113,15 @@ public class DocumentTemplating {
 			 VoterCard vl = new ParseVoterCard().parseVoterCard(textAnnotationArray);
 			 VoterCardCoord vlc = vl.getCoordinates();
 			 
+			 
+			 displayDocument.put("Voter Id", vl.getVoterId());
 			 displayDocument.put("Elector's Name", vl.getName());
 			 displayDocument.put("Father's Name", vl.getFatherName());
 			 displayDocument.put("Sex", vl.getSex());
 			 displayDocument.put("DOB ", vl.getDobDisplay());	
 			 
 			 
+			 coordinates.put("Voter Id", vlc.getVoterId());
 			 coordinates.put("Elector's Name", vlc.getName());
 			 coordinates.put("Father's Name", vlc.getFatherName());
 			 coordinates.put("Sex", vlc.getSex());

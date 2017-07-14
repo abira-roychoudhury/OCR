@@ -178,13 +178,19 @@ public class ParseAadharCard {
 	
 	
 	public AadharCard parseContent(String content,AadharCard obj){
+		content = content.concat("\\n EOF");
+		
 		String splitDesc[] = content.split("\\n");
 		int i,year=0;
 		Calendar cal = Calendar.getInstance();
 		String name="",gender="",aadharNumber="",dobstr="";
+		
+		
 		for(i = 0;i<splitDesc.length;i++)
 		{
-			if(splitDesc[i].contains("DOB"))
+			if(splitDesc[i].matches("\\d{4} \\d{4} \\d{4}"))
+				aadharNumber = splitDesc[i];
+			else if(splitDesc[i].contains("DOB"))
 			{
 				dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf("DOB")+3).replace(":", "").trim();
 				SimpleDateFormat sdf;
@@ -197,23 +203,21 @@ public class ParseAadharCard {
 				}catch(Exception e){
 					System.err.println(e);
 				}
-				aadharNumber = splitDesc[i+2];
-				name = splitDesc[i-1];	
-				break;
+				
+				name = splitDesc[i-1];					
 			}
 			else if(splitDesc[i].contains("Birth"))
 			{
 				String yearstr = splitDesc[i].substring(splitDesc[i].lastIndexOf("Birth")+5).replace(":", "").trim();
 				year = Integer.parseInt(yearstr);
-				aadharNumber = splitDesc[i+2];
+				
 				name = splitDesc[i-1];
-				break;
+				
 			}
 		}
 		
 		if(content.contains("Male")) 
-			gender = "Male";
-			
+			gender = "Male";			
 		else if(content.contains("Female")) 
 			gender = "Female";
 		
