@@ -69,7 +69,8 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 				</div>
 				<div class="panel-body">
 					Upload Image : <%=request.getAttribute("Upload Image") %><br>
-					Image Preprocessing : <%=request.getAttribute("Upload Image") %><br>
+					<%-- Image Preprocessing : <%=request.getAttribute("Upload Image") %><br> --%>
+					Base 64 conversion : <%=request.getAttribute("Upload Image") %><br>
 					Vision API Call : <%=request.getAttribute("Vision API Call") %><br>
 					Templating : <%=request.getAttribute("Templating") %><br>
 					

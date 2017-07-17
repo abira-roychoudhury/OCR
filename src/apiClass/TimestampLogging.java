@@ -14,6 +14,7 @@ public class TimestampLogging {
 	public TimestampLogging()
 	{
 		File logFile = new File("Log_File.txt");
+		
 		//File logFile = new File("Log_File_IE.txt");
 		
 		try {

@@ -105,12 +105,19 @@ public class Processing2 extends HttpServlet {
 			      
 		          //Calling ImageEnhancement and getting back a preprocessed base64 image string
 	      		  start = new Date();		          
+	      		  
 	      		  ImageEnhancement ie = new ImageEnhancement();
 		          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);		          
-		          String processedImgBase64 = ie.convertToBase64(filePath);		          
-		          end = new Date();
-		          diff = tl.fileLog("Image Preprocessing", start, end);
-		          request.setAttribute("Image Preprocessing", diff);
+		          
+	      		  
+	      		  String processedImgBase64 = ie.convertToBase64(filePath);		          
+		          
+	      		  end = new Date();
+		          //diff = tl.fileLog("Image Preprocessing", start, end);
+		          //request.setAttribute("Image Preprocessing", diff);
+		          
+		          diff = tl.fileLog("Base 64 conversion", start, end);
+		          request.setAttribute("Base 64 conversion", diff);
 		          
 		          
 		          //Calling Vision API
