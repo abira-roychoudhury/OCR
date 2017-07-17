@@ -100,25 +100,26 @@ public class Processing2 extends HttpServlet {
 			        ex.printStackTrace();} 
 			      
 			      tl.fileDesc(fileName, fileType);
-			      tl.fileLog("Uploading image into file", start, end);
+			      int diff = tl.fileLog("Uploading image into file", start, end);
+			      request.setAttribute("Upload Image", diff);
 			      
 		          //Calling ImageEnhancement and getting back a preprocessed base64 image string
-	      		  start = new Date();
-		          
+	      		  start = new Date();		          
 	      		  ImageEnhancement ie = new ImageEnhancement();
-		          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
-		          
-		          String processedImgBase64 = ie.convertToBase64(filePath);
-		          
+		          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);		          
+		          String processedImgBase64 = ie.convertToBase64(filePath);		          
 		          end = new Date();
-		          tl.fileLog("Image Preprocessing", start, end);
+		          diff = tl.fileLog("Image Preprocessing", start, end);
+		          request.setAttribute("Image Preprocessing", diff);
+		          
 		          
 		          //Calling Vision API
 		          start = new Date();
 		          VisionAPICall vac = new VisionAPICall();
 		          JSONObject result = vac.performOCR(processedImgBase64);
 		          end = new Date();
-		          tl.fileLog("Vision API Call", start, end);
+		          diff = tl.fileLog("Vision API Call", start, end);
+		          request.setAttribute("Vision API Call", diff);
 	          
 			         
 		  		try {			  			
@@ -151,7 +152,8 @@ public class Processing2 extends HttpServlet {
 			      LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);
 			      request.setAttribute("document", document);
 			      end = new Date();
-			      tl.fileLog("Templating", start, end);
+			      diff = tl.fileLog("Templating", start, end);
+			      request.setAttribute("Templating", diff);
 			      tl.fileWrite();
 			      
 			      

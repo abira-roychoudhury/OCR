@@ -40,7 +40,6 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 			</div>
 		</div>
 		<div class="col-md-6">
-
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
@@ -59,9 +58,25 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 					</form>
 				</div>
 			</div>
-			
 		</div>
 	</div>
+	<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Timestamp Logs
+					</h3>
+				</div>
+				<div class="panel-body">
+					Upload Image : <%=request.getAttribute("Upload Image") %><br>
+					Image Preprocessing : <%=request.getAttribute("Upload Image") %><br>
+					Vision API Call : <%=request.getAttribute("Vision API Call") %><br>
+					Templating : <%=request.getAttribute("Templating") %><br>
+					
+					
+				</div>
+			</div>
+		</div>
 </div>
 
 <!-- Modal -->

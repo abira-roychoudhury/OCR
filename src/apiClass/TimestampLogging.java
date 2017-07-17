@@ -27,9 +27,10 @@ public class TimestampLogging {
 		logs = "";
 	}
 	
-	public void fileLog(String functionName, Date start, Date end){
+	public int fileLog(String functionName, Date start, Date end){
 		int diff = (int) (end.getTime() - start.getTime());
 		logs = logs +"\n"+ functionName +"    "+diff;
+		return diff;
 	}
 	
 	public void fileDesc(String fileName, String fileType){
