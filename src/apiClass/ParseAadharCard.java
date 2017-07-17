@@ -146,7 +146,7 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for aadhar card number
-			else if(obj.getAadharNumber().contains(description) && al< obj.getAadharNumber().length()){
+			else if(Arrays.asList(obj.getAadharNumber().split("\\s+")).contains(description) && al< obj.getAadharNumber().length()){
 				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
 				if(a==0){
 					for(int j=0;j<4;j++){ //iterate columns
