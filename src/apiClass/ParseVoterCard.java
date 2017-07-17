@@ -3,6 +3,8 @@ package apiClass;
 import java.util.Arrays;
 
 import apiClass.EntityType;
+import modal.Constants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +18,7 @@ public class ParseVoterCard {
 		VoterCard obj = new VoterCard();
 		try{
 		JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-		String descriptionStr=firstObj.getString("description");
+		String descriptionStr=firstObj.getString(Constants.VisionResponse.description);
 		obj = parseContent(descriptionStr,obj);		
 		obj = parseCoord(textAnnotationArray,obj);	
 		}catch(JSONException je){ 
@@ -33,27 +35,27 @@ public class ParseVoterCard {
 		int nl=0,fl=0,dl=0,sl=0;
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj.getString("description");
+			String description = jobj.getString(Constants.VisionResponse.description);
 			if(description.toUpperCase().contains("CARD"))
 				break;
 		}
 		
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj.getString("description");
+			String description = jobj.getString(Constants.VisionResponse.description);
 			if(description.equals("/"))
 				continue;
 			
 			//Setting coordinates VoterId
 			if(Arrays.asList(obj.getVoterId().split("\\s+")).contains(description) && nl< obj.getVoterId().length()){
 				System.out.println("inside VoterId");
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(n==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setVoterId(x, 0, j);
 						coord.setVoterId(y, 1, j);
 					}
@@ -61,10 +63,10 @@ public class ParseVoterCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setVoterId(x, 0, j);
 						coord.setVoterId(y, 1, j);
 					}
@@ -74,13 +76,13 @@ public class ParseVoterCard {
 			//setting the coordinates for name
 			else if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
 				System.out.println("inside name");
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(n==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
@@ -88,10 +90,10 @@ public class ParseVoterCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
@@ -102,13 +104,13 @@ public class ParseVoterCard {
 			//setting the coordinates for father's name
 			else if(Arrays.asList(obj.getFatherName().split("\\s+")).contains(description) && fl< obj.getFatherName().length()){
 				System.out.println("inside father's name");
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(f==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setFatherName(x, 0, j);
 						coord.setFatherName(y, 1, j);
 					}
@@ -116,10 +118,10 @@ public class ParseVoterCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setFatherName(x, 0, j);
 						coord.setFatherName(y, 1, j);
 					}
@@ -129,13 +131,13 @@ public class ParseVoterCard {
 			
 			//setting the coordinates for PanCard number 
 			else if(obj.getSex().contains(description) && sl<obj.getSex().length()){
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(s==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setSex(x, 0, j);
 						coord.setSex(y, 1, j);
 					}
@@ -143,10 +145,10 @@ public class ParseVoterCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setSex(x, 0, j);
 						coord.setSex(y, 1, j);
 					}
@@ -156,13 +158,13 @@ public class ParseVoterCard {
 			
 			//setting the coordinates for date 
 			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length()){
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(d==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setDobDisplay(x, 0, j);
 						coord.setDobDisplay(y, 1, j);
 					}
@@ -170,10 +172,10 @@ public class ParseVoterCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setDobDisplay(x, 0, j);
 						coord.setDobDisplay(y, 1, j);
 					}

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
+import modal.Constants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +19,7 @@ public class ParseAadharCard {
 		AadharCard obj = new AadharCard();
 		try{
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-			String descriptionStr=firstObj.getString("description");
+			String descriptionStr=firstObj.getString(Constants.VisionResponse.description);
 			obj = parseContent(descriptionStr,obj);		
 			obj = parseCoord(textAnnotationArray,obj);	
 			}catch(JSONException je){ je.printStackTrace();
@@ -35,17 +37,17 @@ public class ParseAadharCard {
 		String year =  Integer.toString(obj.getYearOfBirth());
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj.getString("description");
+			String description = jobj.getString(Constants.VisionResponse.description);
 			
 			//setting the coordinates for name
 			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(n==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
@@ -53,10 +55,10 @@ public class ParseAadharCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
@@ -66,13 +68,13 @@ public class ParseAadharCard {
 
 			//setting the coordinates for year of birth
 			else if(obj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length()){
-					JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+					JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 					if(yr==0){
 						for(int j=0;j<4;j++){ //iterate columns
-							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 							JSONObject xy = (JSONObject) vertices.get(j);
-							int x = xy.getInt("x");
-							int y = xy.getInt("y");
+							int x = xy.getInt(Constants.VisionResponse.x);
+							int y = xy.getInt(Constants.VisionResponse.y);
 							coord.setYearOfBirth(x, 0, j);
 							coord.setYearOfBirth(y, 1, j);
 						}
@@ -80,10 +82,10 @@ public class ParseAadharCard {
 					}
 					else{
 						for(int j=1;j<3;j++){ //iterate columns
-							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 							JSONObject xy = (JSONObject) vertices.get(j);
-							int x = xy.getInt("x");
-							int y = xy.getInt("y");
+							int x = xy.getInt(Constants.VisionResponse.x);
+							int y = xy.getInt(Constants.VisionResponse.y);
 							coord.setYearOfBirth(x, 0, j);
 							coord.setYearOfBirth(y, 1, j);
 						}
@@ -93,13 +95,13 @@ public class ParseAadharCard {
 			
 			//setting the coordinates for date of birth
 			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length()){
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(d==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setDobDisplay(x, 0, j);
 						coord.setDobDisplay(y, 1, j);
 					}
@@ -107,10 +109,10 @@ public class ParseAadharCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setDobDisplay(x, 0, j);
 						coord.setDobDisplay(y, 1, j);
 					}
@@ -120,13 +122,13 @@ public class ParseAadharCard {
 
 			//setting the coordinates for gender
 			else if(obj.getGender().contains(description) && gl< obj.getGender().length()){
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(g==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setGender(x, 0, j);
 						coord.setGender(y, 1, j);
 					}
@@ -134,10 +136,10 @@ public class ParseAadharCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setGender(x, 0, j);
 						coord.setGender(y, 1, j);
 					}
@@ -147,13 +149,13 @@ public class ParseAadharCard {
 
 			//setting the coordinates for aadhar card number
 			else if(Arrays.asList(obj.getAadharNumber().split("\\s+")).contains(description) && al< obj.getAadharNumber().length()){
-				JSONObject boundingPoly = jobj.getJSONObject("boundingPoly");
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(a==0){
 					for(int j=0;j<4;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setAadharNumber(x, 0, j);
 						coord.setAadharNumber(y, 1, j);
 					}
@@ -161,10 +163,10 @@ public class ParseAadharCard {
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
-						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray("vertices");
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
-						int x = xy.getInt("x");
-						int y = xy.getInt("y");
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
 						coord.setAadharNumber(x, 0, j);
 						coord.setAadharNumber(y, 1, j);
 					}
@@ -190,14 +192,14 @@ public class ParseAadharCard {
 		{
 			if(splitDesc[i].matches("\\d{4} \\d{4} \\d{4}"))
 				aadharNumber = splitDesc[i];
-			else if(splitDesc[i].contains("DOB"))
+			else if(splitDesc[i].contains(Constants.AadharCardPage1.dob))
 			{
-				dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf("DOB")+3).replace(":", "").trim();
+				dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.AadharCardPage1.dob)+3).replace(Constants.colon, "").trim();
 				SimpleDateFormat sdf;
 				if(dobstr.contains("//"))
-				    sdf = new SimpleDateFormat("dd/MM/yyyy");
+				    sdf = new SimpleDateFormat(Constants.dateFormatSlash);
 				else
-					sdf = new SimpleDateFormat("dd-MM-yyyy");
+					sdf = new SimpleDateFormat(Constants.dateFormatDashed);
 				try{
 					cal.setTime(sdf.parse(dobstr));
 				}catch(Exception e){
@@ -206,20 +208,19 @@ public class ParseAadharCard {
 				
 				name = splitDesc[i-1];					
 			}
-			else if(splitDesc[i].contains("Birth"))
+			else if(splitDesc[i].contains(Constants.birth))
 			{
-				String yearstr = splitDesc[i].substring(splitDesc[i].lastIndexOf("Birth")+5).replace(":", "").trim();
-				year = Integer.parseInt(yearstr);
-				
+				String yearstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.birth)+5).replace(Constants.colon, "").trim();
+				year = Integer.parseInt(yearstr);				
 				name = splitDesc[i-1];
 				
 			}
 		}
 		
-		if(content.contains("Male")) 
-			gender = "Male";			
-		else if(content.contains("Female")) 
-			gender = "Female";
+		if(content.contains(Constants.male)) 
+			gender = Constants.male;			
+		else if(content.contains(Constants.female)) 
+			gender = Constants.female;
 		
 		obj.setName(name);
 		obj.setGender(gender);

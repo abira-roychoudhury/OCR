@@ -2,6 +2,8 @@ package apiClass;
 
 import java.util.LinkedHashMap;
 
+import modal.Constants;
+
 import org.json.JSONArray;
 
 import templates.*;
@@ -14,190 +16,190 @@ public class DocumentTemplating {
 	     LinkedHashMap<String,int[][]> coordinates = new LinkedHashMap<String,int[][]>();
 		 String content = "";
 		 
-		 if(fileType.equals("PanCard"))
+		 if(fileType.equals(Constants.PanCard.panCard))
 		 {
 			 PanCard pc = new ParsePanCard().parsePanCard(textAnnotationArray);
 			 PanCardCoord pcc = pc.getCoordinates();
 			 			 
-			 displayDocument.put("Name", pc.getName());
-			 displayDocument.put("Father's Name", pc.getFatherName());
-			 displayDocument.put("DOB", pc.getDobDisplay());
-			 displayDocument.put("PAN Number", pc.getPanNumber());
+			 displayDocument.put(Constants.PanCard.name, pc.getName());
+			 displayDocument.put(Constants.PanCard.fatherName, pc.getFatherName());
+			 displayDocument.put(Constants.PanCard.dob, pc.getDobDisplay());
+			 displayDocument.put(Constants.PanCard.panNumber, pc.getPanNumber());
 			 
 			 try{
-				 coordinates.put("Name", pcc.getName());
+				 coordinates.put(Constants.PanCard.name, pcc.getName());
 			 }
 			 catch(Exception e){
-				 coordinates.put("Name", new int[2][4]);
-			 }
-			 
-			 try{
-				 coordinates.put("Father's Name", pcc.getFatherName()); 
-			 }
-			 catch(Exception e){
-				 coordinates.put("Father's Name", new int[2][4]); 
+				 coordinates.put(Constants.PanCard.name, new int[2][4]);
 			 }
 			 
 			 try{
-				 coordinates.put("DOB", pcc.getDobDisplay());
+				 coordinates.put(Constants.PanCard.fatherName, pcc.getFatherName()); 
 			 }
 			 catch(Exception e){
-				 coordinates.put("DOB", new int[2][4]);
+				 coordinates.put(Constants.PanCard.fatherName, new int[2][4]); 
 			 }
 			 
 			 try{
-				 coordinates.put("PAN Number", pcc.getPanNumber());
+				 coordinates.put(Constants.PanCard.dob, pcc.getDobDisplay());
 			 }
 			 catch(Exception e){
-				 coordinates.put("PAN Number", new int[2][4]);
+				 coordinates.put(Constants.PanCard.dob, new int[2][4]);
+			 }
+			 
+			 try{
+				 coordinates.put(Constants.PanCard.panNumber, pcc.getPanNumber());
+			 }
+			 catch(Exception e){
+				 coordinates.put(Constants.PanCard.panNumber, new int[2][4]);
 			 }
 		 }
-		 else if(fileType.equals("AadharCardPage1"))
+		 else if(fileType.equals(Constants.AadharCardPage1.aadharCard))
 		 {
 			 AadharCard ac = new ParseAadharCard().parseAadharCard(textAnnotationArray);
 			 AadharCardCoord acc = ac.getCoordinates();
 			 
-			 displayDocument.put("Name", ac.getName());
+			 displayDocument.put(Constants.AadharCardPage1.name, ac.getName());
 			 
 			 try {
-				 coordinates.put("Name", acc.getName());
+				 coordinates.put(Constants.AadharCardPage1.name, acc.getName());
 			 } catch (Exception e) {
-				 coordinates.put("Name", new int[2][4] );
+				 coordinates.put(Constants.AadharCardPage1.name, new int[2][4] );
 			 }
 			 
 			 if(ac.getDobDisplay().equals("")){	 
-				 displayDocument.put("Year of Birth", Integer.toString(ac.getYearOfBirth()));
+				 displayDocument.put(Constants.AadharCardPage1.year, Integer.toString(ac.getYearOfBirth()));
 			 
 				 try {
-					 coordinates.put("Year of Birth", acc.getYearOfBirth());
+					 coordinates.put(Constants.AadharCardPage1.year, acc.getYearOfBirth());
 				 } catch (Exception e) {
-					 coordinates.put("Year of Birth", new int[2][4] );
+					 coordinates.put(Constants.AadharCardPage1.year, new int[2][4] );
 				 }
 			 
 			 }
 			 else
 			 {
-				 displayDocument.put("Date of Birth",ac.getDobDisplay());
+				 displayDocument.put(Constants.AadharCardPage1.dob,ac.getDobDisplay());
 			
 				 try {
-					 coordinates.put("Date of Birth", acc.getDobDisplay());
+					 coordinates.put(Constants.AadharCardPage1.dob, acc.getDobDisplay());
 				 } catch (Exception e) {
-					 coordinates.put("Date of Birth", new int[2][4] );
+					 coordinates.put(Constants.AadharCardPage1.dob, new int[2][4] );
 				 }
 			 
 			 }
 			
-			 displayDocument.put("Gender", ac.getGender());
+			 displayDocument.put(Constants.AadharCardPage1.gender, ac.getGender());
 			
 			 try {
-				 coordinates.put("Gender", acc.getGender());
+				 coordinates.put(Constants.AadharCardPage1.gender, acc.getGender());
 			 } catch (Exception e) {
-				 coordinates.put("Gender", new int[2][4] );
+				 coordinates.put(Constants.AadharCardPage1.gender, new int[2][4] );
 			 }
 			
-			 displayDocument.put("Aadhar Number", ac.getAadharNumber());
+			 displayDocument.put(Constants.AadharCardPage1.aadharNumber, ac.getAadharNumber());
 			 
 			 try {
-				 coordinates.put("Aadhar Number", acc.getAadharNumber());
+				 coordinates.put(Constants.AadharCardPage1.aadharNumber, acc.getAadharNumber());
 			 } catch (Exception e) {
-				 coordinates.put("Aadhar Number", new int[2][4] );
+				 coordinates.put(Constants.AadharCardPage1.aadharNumber, new int[2][4] );
 			 }
 			 
 		 }
-		 else if(fileType.equals("DrivingLicense"))
+		 else if(fileType.equals(Constants.DrivingLicense.drivingLicense))
 		 {
 			 DrivingLicense dl = new ParseDrivingLicense().parseDrivingLicense(textAnnotationArray);
 			 DrivingLicenseCoord dlc = dl.getCoordinates();
 			 
-			 displayDocument.put("Name", dl.getName());
-			 displayDocument.put("S/D/W of", dl.getMiddleName());
-			 displayDocument.put("Address", dl.getAddress());
-			 displayDocument.put("PIN", dl.getPin());
-			 displayDocument.put("Blood Group", dl.getBloodGroup());
-			 displayDocument.put("DOB ", dl.getDobDisplay());	
+			 displayDocument.put(Constants.DrivingLicense.name, dl.getName());
+			 displayDocument.put(Constants.DrivingLicense.middleName, dl.getMiddleName());
+			 displayDocument.put(Constants.DrivingLicense.address, dl.getAddress());
+			 displayDocument.put(Constants.DrivingLicense.pin, dl.getPin());
+			 displayDocument.put(Constants.DrivingLicense.bloodGroup, dl.getBloodGroup());
+			 displayDocument.put(Constants.DrivingLicense.dob, dl.getDobDisplay());	
 			 
 			 try {
-				 coordinates.put("Name", dlc.getName());
+				 coordinates.put(Constants.DrivingLicense.name, dlc.getName());
 			 } catch (Exception e) {
-				 coordinates.put("Name", new int[2][4] );
+				 coordinates.put(Constants.DrivingLicense.name, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("S/D/W of", dlc.getMiddleName());
+				 coordinates.put(Constants.DrivingLicense.middleName, dlc.getMiddleName());
 			 } catch (Exception e) {
-				 coordinates.put("S/D/W of", new int[2][4] );
+				 coordinates.put(Constants.DrivingLicense.middleName, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("Address", dlc.getAddress());
+				 coordinates.put(Constants.DrivingLicense.address, dlc.getAddress());
 			 } catch (Exception e) {
-				 coordinates.put("Address", new int[2][4] );
+				 coordinates.put(Constants.DrivingLicense.address, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("PIN", dlc.getPin());
+				 coordinates.put(Constants.DrivingLicense.pin, dlc.getPin());
 			 } catch (Exception e) {
-				 coordinates.put("PIN", new int[2][4] );
+				 coordinates.put(Constants.DrivingLicense.pin, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("Blood Group", dlc.getBloodGroup());
+				 coordinates.put(Constants.DrivingLicense.bloodGroup, dlc.getBloodGroup());
 			 } catch (Exception e) {
-				 coordinates.put("Blood Group", new int[2][4] );
+				 coordinates.put(Constants.DrivingLicense.bloodGroup, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("DOB ", dlc.getDobDisplay());
+				 coordinates.put(Constants.DrivingLicense.dob, dlc.getDobDisplay());
 			 } catch (Exception e) {
-				 coordinates.put("DOB ", new int[2][4] );
+				 coordinates.put(Constants.DrivingLicense.dob, new int[2][4] );
 			 }
 		 }	
 		 
-		 else if(fileType.equals("VoterCard"))
+		 else if(fileType.equals(Constants.VoterCard.voterCard))
 		 {
 			 VoterCard vl = new ParseVoterCard().parseVoterCard(textAnnotationArray);
 			 VoterCardCoord vlc = vl.getCoordinates();
 			 
-			 displayDocument.put("Voter Id", vl.getVoterId());
-			 displayDocument.put("Elector's Name", vl.getName());
-			 displayDocument.put("Father's Name", vl.getFatherName());
-			 displayDocument.put("Sex", vl.getSex());
-			 displayDocument.put("DOB ", vl.getDobDisplay());	
+			 displayDocument.put(Constants.VoterCard.voterId, vl.getVoterId());
+			 displayDocument.put(Constants.VoterCard.electorName, vl.getName());
+			 displayDocument.put(Constants.VoterCard.fatherName, vl.getFatherName());
+			 displayDocument.put(Constants.VoterCard.sex, vl.getSex());
+			 displayDocument.put(Constants.VoterCard.dob, vl.getDobDisplay());	
 			 
 			 try {
-				 coordinates.put("Voter Id", vlc.getVoterId());
+				 coordinates.put(Constants.VoterCard.voterId, vlc.getVoterId());
 			 } catch (Exception e) {
-				 coordinates.put("Voter Id", new int[2][4] );
+				 coordinates.put(Constants.VoterCard.voterId, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("Elector's Name", vlc.getName());
+				 coordinates.put(Constants.VoterCard.electorName, vlc.getName());
 			 } catch (Exception e) {
-				 coordinates.put("Elector's Name", new int[2][4] );
+				 coordinates.put(Constants.VoterCard.electorName, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("Father's Name", vlc.getFatherName());
+				 coordinates.put(Constants.VoterCard.fatherName, vlc.getFatherName());
 			 } catch (Exception e) {
-				 coordinates.put("Father's Name", new int[2][4] );
+				 coordinates.put(Constants.VoterCard.fatherName, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("Sex", vlc.getSex());
+				 coordinates.put(Constants.VoterCard.sex, vlc.getSex());
 			 } catch (Exception e) {
-				 coordinates.put("Sex", new int[2][4] );
+				 coordinates.put(Constants.VoterCard.sex, new int[2][4] );
 			 }
 			 
 			 try {
-				 coordinates.put("DOB ", vlc.getDobDisplay());
+				 coordinates.put(Constants.VoterCard.dob, vlc.getDobDisplay());
 			 } catch (Exception e) {
-				 coordinates.put("DOB ", new int[2][4] );
+				 coordinates.put(Constants.VoterCard.dob, new int[2][4] );
 			 }
 			
 		 }	
 		 
-		 document.put("displayDocument", displayDocument);
-		 document.put("coordinates", coordinates);	
+		 document.put(Constants.displaydocument, displayDocument);
+		 document.put(Constants.coordinates, coordinates);	
 		 return document;
 	}
 }

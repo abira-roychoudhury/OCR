@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
+import modal.Constants;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -66,7 +68,7 @@ public class Processing2 extends HttpServlet {
 				  TimestampLogging  tl = new TimestampLogging();
 				  String fileName = "",fileType="",descriptionStr="",filePath="";
 				  JSONArray textAnnotationArray = new JSONArray();
-				  File imgFile = new File("image.jpg");
+				  File imgFile = new File(Constants.imgFile);
 			      DiskFileItemFactory factory = new DiskFileItemFactory();
 			       // Create a new file upload handler
 			      ServletFileUpload upload = new ServletFileUpload(factory);
@@ -84,40 +86,36 @@ public class Processing2 extends HttpServlet {
 				          //writing a temporary file 
 			        	  start = new Date();
 				          fi.write(imgFile); 
+				          fi.delete();
 				          filePath = imgFile.getAbsolutePath();
 				          end = new Date();			          
 			         }
 			         else{
 			        	 String fieldname = fi.getFieldName();
 			             fileType = fi.getString();
-			             System.out.println("Uploaded File fieldname "+ fieldname);
-		                 System.out.println("Uploaded File Template "+ fileType);
-		                 request.setAttribute("fileType", fileType);
-			          }
-			        }
+			             request.setAttribute(Constants.fileType, fileType);
+			             }
+			         }
 			       }catch(Exception ex) {
 			        System.out.println(ex);
 			        ex.printStackTrace();} 
 			      
 			      tl.fileDesc(fileName, fileType);
-			      int diff = tl.fileLog("Uploading image into file", start, end);
-			      request.setAttribute("Upload Image", diff);
+			      int diff = tl.fileLog(Constants.uploadImage, start, end);
+			      request.setAttribute(Constants.uploadImage, diff);
 			      
 		          //Calling ImageEnhancement and getting back a preprocessed base64 image string
 	      		  start = new Date();		          
-	      		  
 	      		  ImageEnhancement ie = new ImageEnhancement();
 		          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);		          
-		          
-	      		  
+		           		  
 	      		  String processedImgBase64 = ie.convertToBase64(filePath);		          
+		           end = new Date();
+		          //diff = tl.fileLog(Constants.imagePreprocessing, start, end);
+		          //request.setAttribute(Constants.imagePreprocessing, diff);
 		          
-	      		  end = new Date();
-		          //diff = tl.fileLog("Image Preprocessing", start, end);
-		          //request.setAttribute("Image Preprocessing", diff);
-		          
-		          diff = tl.fileLog("Base 64 conversion", start, end);
-		          request.setAttribute("Base 64 conversion", diff);
+		          diff = tl.fileLog(Constants.base64conversion, start, end);
+		          request.setAttribute(Constants.base64conversion, diff);
 		          
 		          
 		          //Calling Vision API
@@ -125,21 +123,20 @@ public class Processing2 extends HttpServlet {
 		          VisionAPICall vac = new VisionAPICall();
 		          JSONObject result = vac.performOCR(processedImgBase64);
 		          end = new Date();
-		          diff = tl.fileLog("Vision API Call", start, end);
-		          request.setAttribute("Vision API Call", diff);
+		          diff = tl.fileLog(Constants.visionAPICall, start, end);
+		          request.setAttribute(Constants.visionAPICall, diff);
 	          
 			         
 		  		try {			  			
-		  			JSONObject body = new JSONObject(result.get("body"));
-		  			String bodystring=result.getString("body");
+		  			JSONObject body = new JSONObject(result.get(Constants.VisionResponse.body));
+		  			String bodystring=result.getString(Constants.VisionResponse.body);
 		  			JSONObject bodyObject=new JSONObject(bodystring);
-		  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray("responses");
+		  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray(Constants.VisionResponse.responses);
 		  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
-		  			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
+		  			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray(Constants.VisionResponse.textAnnotations);
 		  			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-		  			descriptionStr=firstObj.getString("description");
-		  			//System.out.println("Description-"+descriptionStr);
-		  			request.setAttribute("Description", descriptionStr);
+		  			descriptionStr=firstObj.getString(Constants.VisionResponse.description);
+		  			request.setAttribute(Constants.description, descriptionStr);
 		  		}catch (JSONException e) {
 		  			e.printStackTrace();
 		  		}
@@ -150,22 +147,21 @@ public class Processing2 extends HttpServlet {
 	              byte[] bytes = new byte[(int)imgFile.length()];
 	              fileInputStreamReader.read(bytes);
 	              String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
-
-		          String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
-		          request.setAttribute("imgBase64", imgBase64Jsp);
-			         
+	              String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
+		          request.setAttribute(Constants.imgBase64, imgBase64Jsp);
+		          			         
 			     //Parsing the description as per the template
 			      start = new Date();
 			      LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);
-			      request.setAttribute("document", document);
+			      request.setAttribute(Constants.document, document);
 			      end = new Date();
-			      diff = tl.fileLog("Templating", start, end);
-			      request.setAttribute("Templating", diff);
+			      diff = tl.fileLog(Constants.templating, start, end);
+			      request.setAttribute(Constants.templating, diff);
 			      tl.fileWrite();
 			      
 			      
-			      LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get("displayDocument");
-			      LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get("coordinates");
+			      LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);
+			      LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get(Constants.coordinates);
 			     			      
 			      String jsonCoord = "{";
 			      for(String key : coordinates.keySet())
@@ -180,10 +176,9 @@ public class Processing2 extends HttpServlet {
 			      jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
 			      jsonCoord = jsonCoord+"}";
 			      
-			      System.out.println("jsonCoord : "+jsonCoord);
-			      request.setAttribute("displaydocument", displayDocument);
-			      request.setAttribute("coordinates", coordinates);
-			      request.setAttribute("jsonCoord", jsonCoord);
+			      request.setAttribute(Constants.displaydocument, displayDocument);
+			      request.setAttribute(Constants.coordinates, coordinates);
+			      request.setAttribute(Constants.jsonCoord, jsonCoord);
 			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);
