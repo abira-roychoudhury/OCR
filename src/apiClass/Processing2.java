@@ -102,50 +102,50 @@ public class Processing2 extends HttpServlet {
 			      tl.fileDesc(fileName, fileType);
 			      tl.fileLog("Uploading image into file", start, end);
 			      
-				          
-				          //Calling ImageEnhancement and getting back a preprocessed base64 image string
-			      		  start = new Date();
-				          ImageEnhancement ie = new ImageEnhancement();
-				          String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
-				          //String processedImgBase64 = ie.convertToBase64(filePath);
-				          end = new Date();
-				          tl.fileLog("Image Preprocessing", start, end);
-				          
-				          //Calling Vision API
-				          start = new Date();
-				          VisionAPICall vac = new VisionAPICall();
-				          JSONObject result = vac.performOCR(processedImgBase64);
-				          end = new Date();
-				          tl.fileLog("Vision API Call", start, end);
-			          
+		          //Calling ImageEnhancement and getting back a preprocessed base64 image string
+	      		  start = new Date();
+		          
+	      		  ImageEnhancement ie = new ImageEnhancement();
+		          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);
+		          
+		          String processedImgBase64 = ie.convertToBase64(filePath);
+		          
+		          end = new Date();
+		          tl.fileLog("Image Preprocessing", start, end);
+		          
+		          //Calling Vision API
+		          start = new Date();
+		          VisionAPICall vac = new VisionAPICall();
+		          JSONObject result = vac.performOCR(processedImgBase64);
+		          end = new Date();
+		          tl.fileLog("Vision API Call", start, end);
+	          
 			         
-			  		try {			  			
-			  			JSONObject body = new JSONObject(result.get("body"));
-			  			String bodystring=result.getString("body");
-			  			JSONObject bodyObject=new JSONObject(bodystring);
-			  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray("responses");
-			  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
-			  			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
-			  			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-			  			descriptionStr=firstObj.getString("description");
-			  			//System.out.println("Description-"+descriptionStr);
-			  			request.setAttribute("Description", descriptionStr);
-			  		}catch (JSONException e) {
-			  			e.printStackTrace();
-			  		}
+		  		try {			  			
+		  			JSONObject body = new JSONObject(result.get("body"));
+		  			String bodystring=result.getString("body");
+		  			JSONObject bodyObject=new JSONObject(bodystring);
+		  			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray("responses");
+		  			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
+		  			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray("textAnnotations");
+		  			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
+		  			descriptionStr=firstObj.getString("description");
+		  			//System.out.println("Description-"+descriptionStr);
+		  			request.setAttribute("Description", descriptionStr);
+		  		}catch (JSONException e) {
+		  			e.printStackTrace();
+		  		}
 			          
 			          
-			          //Creating Base64 of original Image
-			          FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
-		              byte[] bytes = new byte[(int)imgFile.length()];
-		              fileInputStreamReader.read(bytes);
-		              String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
+		          //Creating Base64 of original Image
+		          FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
+	              byte[] bytes = new byte[(int)imgFile.length()];
+	              fileInputStreamReader.read(bytes);
+	              String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
 
-			          String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
-			          request.setAttribute("imgBase64", imgBase64Jsp);
+		          String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
+		          request.setAttribute("imgBase64", imgBase64Jsp);
 			         
-			         
-			      
 			     //Parsing the description as per the template
 			      start = new Date();
 			      LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);

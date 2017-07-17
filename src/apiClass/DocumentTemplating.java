@@ -65,27 +65,43 @@ public class DocumentTemplating {
 				 coordinates.put("Name", new int[2][4] );
 			 }
 			 
-			 if(ac.getDobDisplay().equals("")){
+			 if(ac.getDobDisplay().equals("")){	 
 				 displayDocument.put("Year of Birth", Integer.toString(ac.getYearOfBirth()));
 			 
-				 coordinates.put("Year of Birth", acc.getYearOfBirth());
+				 try {
+					 coordinates.put("Year of Birth", acc.getYearOfBirth());
+				 } catch (Exception e) {
+					 coordinates.put("Year of Birth", new int[2][4] );
+				 }
 			 
 			 }
 			 else
 			 {
 				 displayDocument.put("Date of Birth",ac.getDobDisplay());
 			
-				 coordinates.put("Date of Birth", acc.getDobDisplay());
+				 try {
+					 coordinates.put("Date of Birth", acc.getDobDisplay());
+				 } catch (Exception e) {
+					 coordinates.put("Date of Birth", new int[2][4] );
+				 }
 			 
 			 }
-			 
+			
 			 displayDocument.put("Gender", ac.getGender());
-			 
-			 coordinates.put("Gender", acc.getGender());
-			 
+			
+			 try {
+				 coordinates.put("Gender", acc.getGender());
+			 } catch (Exception e) {
+				 coordinates.put("Gender", new int[2][4] );
+			 }
+			
 			 displayDocument.put("Aadhar Number", ac.getAadharNumber());
 			 
-			 coordinates.put("Aadhar Number", acc.getAadharNumber());
+			 try {
+				 coordinates.put("Aadhar Number", acc.getAadharNumber());
+			 } catch (Exception e) {
+				 coordinates.put("Aadhar Number", new int[2][4] );
+			 }
 			 
 		 }
 		 else if(fileType.equals("DrivingLicense"))
@@ -100,12 +116,41 @@ public class DocumentTemplating {
 			 displayDocument.put("Blood Group", dl.getBloodGroup());
 			 displayDocument.put("DOB ", dl.getDobDisplay());	
 			 
-			 coordinates.put("Name", dlc.getName());
-			 coordinates.put("S/D/W of", dlc.getMiddleName());
-			 coordinates.put("Address", dlc.getAddress());
-			 coordinates.put("PIN", dlc.getPin());
-			 coordinates.put("Blood Group", dlc.getBloodGroup());
-			 coordinates.put("DOB ", dlc.getDobDisplay());	
+			 try {
+				 coordinates.put("Name", dlc.getName());
+			 } catch (Exception e) {
+				 coordinates.put("Name", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("S/D/W of", dlc.getMiddleName());
+			 } catch (Exception e) {
+				 coordinates.put("S/D/W of", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("Address", dlc.getAddress());
+			 } catch (Exception e) {
+				 coordinates.put("Address", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("PIN", dlc.getPin());
+			 } catch (Exception e) {
+				 coordinates.put("PIN", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("Blood Group", dlc.getBloodGroup());
+			 } catch (Exception e) {
+				 coordinates.put("Blood Group", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("DOB ", dlc.getDobDisplay());
+			 } catch (Exception e) {
+				 coordinates.put("DOB ", new int[2][4] );
+			 }
 		 }	
 		 
 		 else if(fileType.equals("VoterCard"))
@@ -113,23 +158,43 @@ public class DocumentTemplating {
 			 VoterCard vl = new ParseVoterCard().parseVoterCard(textAnnotationArray);
 			 VoterCardCoord vlc = vl.getCoordinates();
 			 
-			 
 			 displayDocument.put("Voter Id", vl.getVoterId());
 			 displayDocument.put("Elector's Name", vl.getName());
 			 displayDocument.put("Father's Name", vl.getFatherName());
 			 displayDocument.put("Sex", vl.getSex());
 			 displayDocument.put("DOB ", vl.getDobDisplay());	
 			 
+			 try {
+				 coordinates.put("Voter Id", vlc.getVoterId());
+			 } catch (Exception e) {
+				 coordinates.put("Voter Id", new int[2][4] );
+			 }
 			 
-			 coordinates.put("Voter Id", vlc.getVoterId());
-			 coordinates.put("Elector's Name", vlc.getName());
-			 coordinates.put("Father's Name", vlc.getFatherName());
-			 coordinates.put("Sex", vlc.getSex());
-			 coordinates.put("DOB ", vlc.getDobDisplay());
+			 try {
+				 coordinates.put("Elector's Name", vlc.getName());
+			 } catch (Exception e) {
+				 coordinates.put("Elector's Name", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("Father's Name", vlc.getFatherName());
+			 } catch (Exception e) {
+				 coordinates.put("Father's Name", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("Sex", vlc.getSex());
+			 } catch (Exception e) {
+				 coordinates.put("Sex", new int[2][4] );
+			 }
+			 
+			 try {
+				 coordinates.put("DOB ", vlc.getDobDisplay());
+			 } catch (Exception e) {
+				 coordinates.put("DOB ", new int[2][4] );
+			 }
 			
 		 }	
-		 
-		 
 		 
 		 document.put("displayDocument", displayDocument);
 		 document.put("coordinates", coordinates);	
