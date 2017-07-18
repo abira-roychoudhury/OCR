@@ -15,6 +15,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
@@ -52,7 +53,8 @@ public class ImageEnhancement {
 	}
 
 	public File saveImage(Mat img){
-		File processedFile = new File("gray.jpg");
+		Date d = new Date();
+		File processedFile = new File("Img"+d.getTime()+".jpg");
         Imgcodecs.imwrite(processedFile.getAbsolutePath(), img);
 		System.out.println("New image saved at location : "+processedFile.getAbsolutePath());
 		return processedFile;
@@ -64,6 +66,8 @@ public class ImageEnhancement {
 		//Mat imgMat3 = imageCompress(imgMat2);
 		File img = saveImage(imgMat2);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
+		
+		img.delete();
 		return imgBase64;		
 	}
 

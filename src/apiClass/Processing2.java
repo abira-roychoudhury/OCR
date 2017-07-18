@@ -150,6 +150,11 @@ public class Processing2 extends HttpServlet {
 	              String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
 	              String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
 		          request.setAttribute(Constants.imgBase64, imgBase64Jsp);
+		          
+		          //Closing ImageFile
+		          fileInputStreamReader.close();
+		          //deleting image file
+			      imgFile.delete();
 		          			         
 			     //Parsing the description as per the template
 			      start = new Date();
@@ -181,9 +186,6 @@ public class Processing2 extends HttpServlet {
 			      request.setAttribute(Constants.coordinates, coordinates);
 			      request.setAttribute(Constants.jsonCoord, jsonCoord);
 			      
-			      //deleting image file
-			      imgFile.delete();
-			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);
 				/*}catch(Exception e){
