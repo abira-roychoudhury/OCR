@@ -170,10 +170,13 @@ public class ParsePanCard {
 	
 	public PanCard parseContent(String content, PanCard obj){
 		
-		String splitDesc[] = content.split("\\n");
+		
 		int i;
 		String name="",fname="",dob="",pan="";
 		Calendar cal = Calendar.getInstance();
+		
+		content = filterContent(content);
+		String splitDesc[] = content.split("\\n");
 		
 		if(content.contains(Constants.india))
 			
@@ -181,18 +184,16 @@ public class ParsePanCard {
 		 for(i = 0;i<splitDesc.length;i++){
 			if(splitDesc[i].indexOf(Constants.india)>-1)
 			{
-				i++;
+				
 				//extracting name
-				name=splitDesc[i];
-				if(!EntityType.getType(name).equals(Constants.NLPResponse.person) && !name.matches("^[A-Z]+$"))
-					name=splitDesc[++i]; 
-				
+				name=splitDesc[++i];/*
+				if(!name.matches("^[ A-Z]+$"))
+					name=splitDesc[++i];
+				*/
 				//extracting father's name
-				fname=splitDesc[i];
-				System.out.println("entity type : "+EntityType.getType(fname));
-				
-				if(!EntityType.getType(fname).equals(Constants.NLPResponse.person) && !fname.matches("^[A-Z]+$"))
-					fname=splitDesc[++i];
+				fname=splitDesc[++i];	/*	
+				if(!fname.matches("^[ A-Z]+$"))
+					fname=splitDesc[++i];*/
 				
 				//extracting dob
 				dob=splitDesc[++i];
@@ -204,7 +205,10 @@ public class ParsePanCard {
 					System.err.println(e);	}	
 				
 				//extracting pan
-				pan=splitDesc[i+2];
+				pan=splitDesc[i+1];
+				if(!pan.matches("^[A-Z0-9]{10}$"))
+					pan = "";
+				
 			    break;
 			}
 		 }		
@@ -246,6 +250,25 @@ public class ParsePanCard {
 		obj.setDobDisplay(dob);
 		
 		return obj;
+	}
+
+
+	private String filterContent(String content) {
+		
+		String lines[] = content.split("\n");
+		String filteredContent = "";
+		
+		for (String line : lines)
+		{
+			String filteredToken = "";
+			String tokens[] = line.split(" ");
+			for(String token : tokens)
+				if(token.matches("^[A-Z0-9/]+$"))
+					filteredToken = filteredToken + " " + token;
+			if(!filteredToken.isEmpty())		
+				filteredContent = filteredContent + "\n" + filteredToken.trim();
+		}
+		return filteredContent;
 	}
 
 	
