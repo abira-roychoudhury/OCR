@@ -253,13 +253,13 @@ public class ParseDrivingLicense {
 				obj.setName(name.toUpperCase().replace(Constants.colon, "").trim());
 				
 				//Find MiddleName
-				String middleName = tokens[i+1].substring(tokens[i+1].toLowerCase().lastIndexOf("of")+2);
+				String middleName = tokens[i+1].substring(tokens[i+1].toLowerCase().lastIndexOf(Constants.DrivingLicense.of.toLowerCase())+2);
 				obj.setMiddleName(middleName.toUpperCase().replace(Constants.colon, "").trim());
 				i++;				
 			}
 			//Find Address
-			else if(token.toLowerCase().contains("add")){
-				String address = token.substring(token.toLowerCase().lastIndexOf("add")+3);
+			else if(token.toLowerCase().contains(Constants.DrivingLicense.add.toLowerCase())){
+				String address = token.substring(token.toLowerCase().lastIndexOf(Constants.DrivingLicense.add.toLowerCase())+3);
 				if(!tokens[i+1].toLowerCase().contains(Constants.DrivingLicense.pin.toLowerCase()))
 					address = address.concat(tokens[i+1]);
 				obj.setAddress(address.replace(Constants.colon, ""));

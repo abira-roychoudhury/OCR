@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import modal.Constants;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,41 +16,40 @@ public class EntityType {
 	
 	public static String getType(String desc){
 		JSONObject result =  NlpCall(desc);
-		JSONObject body = new JSONObject(result.get("body"));
-		String bodyString=result.getString("body");
+		JSONObject body = new JSONObject(result.get(Constants.NLPResponse.body));
+		String bodyString=result.getString(Constants.NLPResponse.body);
 		JSONObject bodyObject=new JSONObject(bodyString);
-		JSONArray entitiesArray=(JSONArray) bodyObject.getJSONArray("entities");
+		JSONArray entitiesArray=(JSONArray) bodyObject.getJSONArray(Constants.NLPResponse.entities);
 		if(entitiesArray != null && entitiesArray.length() > 0 )
 		{
 			JSONObject entityDict=entitiesArray.getJSONObject(0);
-			String entityName = entityDict.getString("name");
-			String entityType = entityDict.getString("type");
-			//System.out.println(entityName+"  "+entityType);
+			String entityName = entityDict.getString(Constants.NLPResponse.name);
+			String entityType = entityDict.getString(Constants.NLPResponse.type);
 			return entityType;
 		}		
-		return "Non";
+		return Constants.NLPResponse.non;
 	}
 	
 	public static JSONArray getEntityArray(String desc){
 		JSONObject result =  NlpCall(desc);
-		JSONObject body = new JSONObject(result.get("body"));
-		String bodyString=result.getString("body");
+		JSONObject body = new JSONObject(result.get(Constants.NLPResponse.body));
+		String bodyString=result.getString(Constants.NLPResponse.body);
 		JSONObject bodyObject=new JSONObject(bodyString);
-		JSONArray entitiesArray=(JSONArray) bodyObject.getJSONArray("entities");
+		JSONArray entitiesArray=(JSONArray) bodyObject.getJSONArray(Constants.NLPResponse.entities);
 		return entitiesArray;
 	}
 	
 	public static JSONObject NlpCall(String text){
-	String apiUrl = "https://language.googleapis.com/v1beta2/documents:analyzeEntities?";
-	String apiKey = "key=AIzaSyBvIc_jHtviAsiXwQbQbAY3LdMdhY2BBQ8";
+	String apiUrl = Constants.nlpApiUrl;
+	String apiKey = Constants.nlpApiKey;
 	JSONObject result = new JSONObject();
 	
 	try{	
 		
 		URL url = new URL(apiUrl+apiKey);
 		
-		System.setProperty("https.proxyHost", "ptproxy.persistent.co.in");
-		System.setProperty("https.proxyPort", "8080");
+		System.setProperty("https.proxyHost", Constants.proxyHost);
+		System.setProperty("https.proxyPort", Constants.proxyPort);
 		
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
@@ -75,7 +76,7 @@ public class EntityType {
 			//System.out.println(output);
 		}
 
-		result.put("body", output);
+		result.put(Constants.NLPResponse.body, output);
 		conn.disconnect();
 		//System.out.println(result);
 		

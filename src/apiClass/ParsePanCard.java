@@ -172,25 +172,25 @@ public class ParsePanCard {
 		int i;
 		String name="",fname="",dob="",pan="";
 		Calendar cal = Calendar.getInstance();
-		if(content.contains("INDIA"))
+		if(content.contains(Constants.india))
 			
 		{ //New type of PAN Card
 		 for(i = 0;i<splitDesc.length;i++){
-			if(splitDesc[i].indexOf("INDIA")>-1)
+			if(splitDesc[i].indexOf(Constants.india)>-1)
 			{
 				//extracting name
 				name=splitDesc[++i];
-				if(EntityType.getType(name).equals("Non"))
+				if(EntityType.getType(name).equals(Constants.NLPResponse.non))
 					name=splitDesc[++i]; 
 				
 				//extracting father's name
 				fname=splitDesc[++i];
-				if(EntityType.getType(fname).equals("Non"))
+				if(EntityType.getType(fname).equals(Constants.NLPResponse.non))
 					fname=splitDesc[++i];
 				
 				//extracting dob
 				dob=splitDesc[++i];
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
 				try{
 					cal.setTime(sdf.parse(dob));
 					//System.out.println("date:"+cal.getTime().toString());
@@ -207,14 +207,14 @@ public class ParsePanCard {
 		{
 			//Old type of PAN card
 			for(i = 0;i<splitDesc.length;i++){
-				if(splitDesc[i].toUpperCase().contains("PERMANENT ACCOUNT NUMBER"))
+				if(splitDesc[i].toUpperCase().contains(Constants.PanCard.pan))
 					pan = splitDesc[i+1];
-				else if(splitDesc[i].toUpperCase().contains("NAME"))
+				else if(splitDesc[i].toUpperCase().contains(Constants.PanCard.name.toUpperCase()))
 				{
-					if(splitDesc[i].toUpperCase().contains("FATHER"))
+					if(splitDesc[i].toUpperCase().contains(Constants.PanCard.father.toUpperCase()))
 						{
 							fname = splitDesc[i+1];
-							if(splitDesc[i+2].toUpperCase().contains("DATE"))
+							if(splitDesc[i+2].toUpperCase().contains(Constants.date.toUpperCase()))
 								dob = splitDesc[i+3];
 							else
 							{
@@ -226,7 +226,7 @@ public class ParsePanCard {
 					else
 						{
 							name = splitDesc[i+1];
-							if(!splitDesc[i+2].toUpperCase().contains("FATHER"))
+							if(!splitDesc[i+2].toUpperCase().contains(Constants.PanCard.father.toUpperCase()))
 								name = name + " " + splitDesc[i+2];
 						}					
 				 }					  

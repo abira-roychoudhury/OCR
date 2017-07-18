@@ -50,7 +50,7 @@ public class VisionAPICall {
 				//System.out.println(output);
 			}
 
-			result.put("body", output);
+			result.put(Constants.VisionResponse.body, output);
 			
 			conn.disconnect();
 		}

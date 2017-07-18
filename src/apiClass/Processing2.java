@@ -175,7 +175,7 @@ public class Processing2 extends HttpServlet {
 					}
 			      jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
 			      jsonCoord = jsonCoord+"}";
-			      
+			      System.out.println("json "+jsonCoord);
 			      request.setAttribute(Constants.displaydocument, displayDocument);
 			      request.setAttribute(Constants.coordinates, coordinates);
 			      request.setAttribute(Constants.jsonCoord, jsonCoord);

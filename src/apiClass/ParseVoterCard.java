@@ -31,12 +31,12 @@ public class ParseVoterCard {
 	
 	public VoterCard parseCoord(JSONArray textAnnotationArray, VoterCard obj){
 		VoterCardCoord coord = new VoterCardCoord();
-		int n=0,f=0,d=0,s=0,i=1;
-		int nl=0,fl=0,dl=0,sl=0;
+		int n=0,f=0,d=0,s=0,v=0,i=1;
+		int nl=0,fl=0,dl=0,sl=0,vl=0;
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString(Constants.VisionResponse.description);
-			if(description.toUpperCase().contains("CARD"))
+			if(description.toUpperCase().contains(Constants.VoterCard.card.toUpperCase()))
 				break;
 		}
 		
@@ -47,10 +47,9 @@ public class ParseVoterCard {
 				continue;
 			
 			//Setting coordinates VoterId
-			if(Arrays.asList(obj.getVoterId().split("\\s+")).contains(description) && nl< obj.getVoterId().length()){
-				System.out.println("inside VoterId");
+			if(Arrays.asList(obj.getVoterId().split("\\s+")).contains(description) && vl< obj.getVoterId().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(n==0){
+				if(v==0){
 					for(int j=0;j<4;j++){ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
@@ -59,7 +58,7 @@ public class ParseVoterCard {
 						coord.setVoterId(x, 0, j);
 						coord.setVoterId(y, 1, j);
 					}
-					n++;
+					v++;
 				}
 				else{
 					for(int j=1;j<3;j++){ //iterate columns
@@ -71,10 +70,10 @@ public class ParseVoterCard {
 						coord.setVoterId(y, 1, j);
 					}
 				}
-				nl = nl+description.length()+1;
+				vl = vl+description.length()+1;
 			}
 			//setting the coordinates for name
-			else if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
+			else if(Arrays.asList(obj.getName().split("\\s+")).contains(description.toUpperCase()) && nl< obj.getName().length()){
 				System.out.println("inside name");
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(n==0){
@@ -102,7 +101,7 @@ public class ParseVoterCard {
 			}
 			
 			//setting the coordinates for father's name
-			else if(Arrays.asList(obj.getFatherName().split("\\s+")).contains(description) && fl< obj.getFatherName().length()){
+			else if(Arrays.asList(obj.getFatherName().split("\\s+")).contains(description.toUpperCase()) && fl< obj.getFatherName().length()){
 				System.out.println("inside father's name");
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(f==0){
@@ -194,36 +193,35 @@ public class ParseVoterCard {
 
 			String token = tokens[i];
 
-			if(token.toLowerCase().contains("card")){
+			if(token.toLowerCase().contains(Constants.VoterCard.card.toLowerCase())){
 				String voterId = tokens[i+1];
 				obj.setVoterId(voterId);
-				System.out.println("VoterID "+obj.getVoterId());
 			}
-			else if(token.toLowerCase().contains("elector") || token.toLowerCase().contains("electors")){
-				String name = token.substring(token.toLowerCase().indexOf("name")+4);
+			else if(token.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase())){
+				String name = token.substring(token.toLowerCase().indexOf(Constants.VoterCard.name.toLowerCase())+4);
 				
-				if(EntityType.getType(tokens[i+1]).equals("PERSON"))
+				if(EntityType.getType(tokens[i+1]).equals(Constants.NLPResponse.person.toUpperCase()))
 					name = name.concat(" "+tokens[i+1]);
 				
-				obj.setName(name.toUpperCase().replace(":", "").trim());
+				obj.setName(name.toUpperCase().replace(Constants.colon, "").trim());
 			}
-			else if(token.toLowerCase().contains("father") || token.toLowerCase().contains("fathers")){
-				String name = token.substring(token.toLowerCase().lastIndexOf("name")+4);
+			else if(token.toLowerCase().contains(Constants.VoterCard.father.toLowerCase())){
+				String name = token.substring(token.toLowerCase().lastIndexOf(Constants.VoterCard.name.toLowerCase())+4);
 				
-				if(EntityType.getType(tokens[i+1]).equals("PERSON"))
+				if(EntityType.getType(tokens[i+1]).equals(Constants.NLPResponse.person.toUpperCase()))
 					name = name.concat(" "+tokens[i+1]);
 				
-				obj.setFatherName(name.toUpperCase().replace(":", "").trim());
+				obj.setFatherName(name.toUpperCase().replace(Constants.colon, "").trim());
 			}
-			else if(token.toLowerCase().contains("sex")){
-				String sex = "Male";
-				if(token.toLowerCase().contains("female"))
-					sex = "Female";
+			else if(token.toLowerCase().contains(Constants.VoterCard.sex.toLowerCase())){
+				String sex = Constants.male;
+				if(token.toLowerCase().contains(Constants.female.toLowerCase()))
+					sex = Constants.female;
 				obj.setSex(sex);
 			}
-			else if(token.toLowerCase().contains("birth")){
-				String dob = token.substring(token.toLowerCase().lastIndexOf("birth")+5);
-				obj.setDobDisplay(dob.toUpperCase().replace(":", "").trim());
+			else if(token.toLowerCase().contains(Constants.birth.toLowerCase())){
+				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.birth.toLowerCase())+5);
+				obj.setDobDisplay(dob.toUpperCase().replace(Constants.colon, "").trim());
 			}
 		}
 		return obj;
