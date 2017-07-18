@@ -222,6 +222,7 @@ public class ParseVoterCard {
 			else if(token.toLowerCase().contains(Constants.birth.toLowerCase())){
 				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.birth.toLowerCase())+5);
 				obj.setDobDisplay(dob.toUpperCase().replace(Constants.colon, "").trim());
+			
 			}
 		}
 		return obj;
