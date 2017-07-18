@@ -5,6 +5,8 @@ import apiClass.EntityType;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import modal.Constants;
 
@@ -172,20 +174,24 @@ public class ParsePanCard {
 		int i;
 		String name="",fname="",dob="",pan="";
 		Calendar cal = Calendar.getInstance();
+		
 		if(content.contains(Constants.india))
 			
 		{ //New type of PAN Card
 		 for(i = 0;i<splitDesc.length;i++){
 			if(splitDesc[i].indexOf(Constants.india)>-1)
 			{
+				i++;
 				//extracting name
-				name=splitDesc[++i];
-				if(EntityType.getType(name).equals(Constants.NLPResponse.non))
+				name=splitDesc[i];
+				if(!EntityType.getType(name).equals(Constants.NLPResponse.person) && !name.matches("^[A-Z]+$"))
 					name=splitDesc[++i]; 
 				
 				//extracting father's name
-				fname=splitDesc[++i];
-				if(EntityType.getType(fname).equals(Constants.NLPResponse.non))
+				fname=splitDesc[i];
+				System.out.println("entity type : "+EntityType.getType(fname));
+				
+				if(!EntityType.getType(fname).equals(Constants.NLPResponse.person) && !fname.matches("^[A-Z]+$"))
 					fname=splitDesc[++i];
 				
 				//extracting dob

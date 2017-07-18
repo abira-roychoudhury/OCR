@@ -5,7 +5,7 @@ public class Constants {
 	
 	
 	//Inside servlet Processing2
-	public static final String imgFile = "image.jpg";
+	public static final String imgFile = "image";
 	
 	//request attributes parameter
 	public static final String fileType = "fileType";

@@ -68,7 +68,8 @@ public class Processing2 extends HttpServlet {
 				  TimestampLogging  tl = new TimestampLogging();
 				  String fileName = "",fileType="",descriptionStr="",filePath="";
 				  JSONArray textAnnotationArray = new JSONArray();
-				  File imgFile = new File(Constants.imgFile);
+				  String imgName = Constants.imgFile+start.getTime()+".jpg";
+				  File imgFile = new File(imgName);
 			      DiskFileItemFactory factory = new DiskFileItemFactory();
 			       // Create a new file upload handler
 			      ServletFileUpload upload = new ServletFileUpload(factory);
@@ -179,6 +180,9 @@ public class Processing2 extends HttpServlet {
 			      request.setAttribute(Constants.displaydocument, displayDocument);
 			      request.setAttribute(Constants.coordinates, coordinates);
 			      request.setAttribute(Constants.jsonCoord, jsonCoord);
+			      
+			      //deleting image file
+			      imgFile.delete();
 			     
 			     RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			        dispatcher.forward(request, response);
