@@ -1,12 +1,8 @@
 package apiClass;
 
-import apiClass.EntityType;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import modal.Constants;
 
@@ -53,7 +49,6 @@ public class ParsePanCard {
 			
 			//setting the coordinates for name
 			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
-				System.out.println("name found");
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(n==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -61,7 +56,6 @@ public class ParsePanCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						System.out.println("coords : "+x+" "+y);
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
@@ -174,13 +168,16 @@ public class ParsePanCard {
 		int i;
 		String name="",fname="",dob="",pan="";
 		Calendar cal = Calendar.getInstance();
+		System.out.println("inside parsecontent pan card");
 		
-		content = filterContent(content);
-		String splitDesc[] = content.split("\\n");
 		
-		if(content.contains(Constants.india))
-			
+		
+		
+		if(content.contains(Constants.PanCard.name))
 		{ //New type of PAN Card
+		 System.out.println("inside new pan card");
+		 content = filterContent(content);
+		 String splitDesc[] = content.split("\\n");
 		 for(i = 0;i<splitDesc.length;i++){
 			if(splitDesc[i].indexOf(Constants.india)>-1)
 			{
@@ -216,11 +213,16 @@ public class ParsePanCard {
 		else
 		{
 			//Old type of PAN card
+			System.out.println("inside old");
+			String splitDesc[] = content.split("\\n");
 			for(i = 0;i<splitDesc.length;i++){
-				if(splitDesc[i].toUpperCase().contains(Constants.PanCard.pan))
-					pan = splitDesc[i+1];
+				System.out.println(splitDesc[i]);
+				if(splitDesc[i].toUpperCase().contains(Constants.PanCard.pan.toUpperCase()))
+					{System.out.println("inside pan");
+					pan = splitDesc[i+1];}
 				else if(splitDesc[i].toUpperCase().contains(Constants.PanCard.name.toUpperCase()))
 				{
+					System.out.println("inside name");
 					if(splitDesc[i].toUpperCase().contains(Constants.PanCard.father.toUpperCase()))
 						{
 							fname = splitDesc[i+1];
