@@ -61,13 +61,18 @@ public class Constants {
 	public static final String dateFormatDashed = "dd-MM-yyyy";
 	
 	//gender
-	public static final String male = "Male";
-	public static final String female = "Female";
+	public static final String male = "MALE";
+	public static final String female = "FEMALE";
 	
 	public static final String birth = "Birth";
+	public static final String year = "Year";
 	public static final String date = "Date";
+	public static final String dob = "DOB";
 	public static final String colon = ":";
 	public static final String india = "INDIA";
+	public static final String govt = "GOVTOF";
+	public static final String department = "DEPARTMENT";
+	public static final String ITdepartment = "INCOME TAX DEPARTMENT";
 	
 
 	//Pan Card Constants
@@ -114,5 +119,15 @@ public class Constants {
 		public static final String name = "Name";
 		public static final String father = "Father";
 	}
+	
+	//TRY all combinations of INDIA
+	public static final String india1 = "INDIA";
+	public static final String india2 = "INDLA";
+	public static final String india3 = "LNDIA";
+	public static final String india4 = "LNDLA";
+	public static final String india5 = "INOIA";
+	public static final String india6 = "INOLA";
+	public static final String india7 = "LNOIA";
+	public static final String india8 = "LNOLA";
 	
 }

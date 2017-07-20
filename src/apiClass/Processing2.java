@@ -1,37 +1,37 @@
 package apiClass;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.RequestDispatcher;
 
 import modal.Constants;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opencv.core.Mat;
-
-import templates.DrivingLicense;
-import templates.PanCardCoord;
 /**
  * Servlet implementation class Processing2
  */
@@ -97,9 +97,47 @@ public class Processing2 extends HttpServlet {
 			             request.setAttribute(Constants.fileType, fileType);
 			             }
 			         }
-			       }catch(Exception ex) {
+			       }
+			      catch(Exception ex) 
+			      {
 			        System.out.println(ex);
-			        ex.printStackTrace();} 
+			        ex.printStackTrace();
+			        } 
+			      
+			      
+			      System.out.println("ORIGINAL SIZE: " + imgFile.length()/1000 + " KB");
+			      boolean comp = false;
+			      double filesize = imgFile.length()/1000;
+			      File compressedImageFile = null;
+			      if(filesize > 1000)
+			      {
+			    	  comp = true;
+			    	//-----------------------------------------------------------
+				      File input = new File(filePath);
+				      BufferedImage image = ImageIO.read(input);
+
+				      compressedImageFile = new File("compress.png");  
+				      OutputStream os = new FileOutputStream(compressedImageFile);
+
+				      Iterator<ImageWriter>writers = ImageIO.getImageWritersByFormatName("jpg");
+				      ImageWriter writer = (ImageWriter) writers.next();
+
+				      ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+				      writer.setOutput(ios);
+
+				      ImageWriteParam param = writer.getDefaultWriteParam();
+				      // Check if canWriteCompressed is true
+				      if(param.canWriteCompressed()) 
+				      {
+				         param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+				         param.setCompressionQuality(0.01f);
+				      }
+				      // End of check
+				      writer.write(null, new IIOImage(image, null, null), param);
+				      //--------------------------------------------------------------
+				      
+				      System.out.println("COMPRESSED SIZE: " + compressedImageFile.length()/1000 + " KB");
+			      }
 			      
 			      tl.fileDesc(fileName, fileType);
 			      int diff = tl.fileLog(Constants.uploadImage, start, end);
@@ -110,7 +148,11 @@ public class Processing2 extends HttpServlet {
 	      		  ImageEnhancement ie = new ImageEnhancement();
 		          //String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);		          
 		           		  
-	      		  String processedImgBase64 = ie.convertToBase64(filePath);		          
+	      		 String processedImgBase64 = "";
+	      		  if(comp)
+	      			  processedImgBase64 = ie.convertToBase64(compressedImageFile.getAbsolutePath());
+	      		  else
+	      			  processedImgBase64 = ie.convertToBase64(filePath);		          
 		           end = new Date();
 		          //diff = tl.fileLog(Constants.imagePreprocessing, start, end);
 		          //request.setAttribute(Constants.imagePreprocessing, diff);

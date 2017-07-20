@@ -26,24 +26,29 @@ public class ParseAadharCard {
 			}catch(Exception e){ e.printStackTrace();
 			 }
 			return obj;
-		
 	}
 	
 	
-	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj){
+	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj)
+	{
 		AadharCardCoord coord = new AadharCardCoord();
 		int n=0,yr=0,d=0,g=0,a=0,ad=0,i=1;
 		int nl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
 		String year =  Integer.toString(obj.getYearOfBirth());
-		for(;i<textAnnotationArray.length();i++){
+		
+		for(;i<textAnnotationArray.length();i++)
+		{
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString(Constants.VisionResponse.description);
 			
 			//setting the coordinates for name
-			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
+			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length())
+			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(n==0){
-					for(int j=0;j<4;j++){ //iterate columns
+				if(n==0)
+				{
+					for(int j=0;j<4;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -53,8 +58,10 @@ public class ParseAadharCard {
 					}
 					n++;
 				}
-				else{
-					for(int j=1;j<3;j++){ //iterate columns
+				else
+				{
+					for(int j=1;j<3;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -67,10 +74,14 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for year of birth
-			else if(obj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length()){
+			else if(obj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length())
+			{
 					JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-					if(yr==0){
-						for(int j=0;j<4;j++){ //iterate columns
+					
+					if(yr==0)
+					{
+						for(int j=0;j<4;j++)
+						{ //iterate columns
 							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 							JSONObject xy = (JSONObject) vertices.get(j);
 							int x = xy.getInt(Constants.VisionResponse.x);
@@ -80,8 +91,10 @@ public class ParseAadharCard {
 						}
 						yr++;
 					}
-					else{
-						for(int j=1;j<3;j++){ //iterate columns
+					else
+					{
+						for(int j=1;j<3;j++)
+						{ //iterate columns
 							JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 							JSONObject xy = (JSONObject) vertices.get(j);
 							int x = xy.getInt(Constants.VisionResponse.x);
@@ -94,9 +107,11 @@ public class ParseAadharCard {
 				}
 			
 			//setting the coordinates for date of birth
-			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length()){
+			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length())
+			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(d==0){
+				if(d==0)
+				{
 					for(int j=0;j<4;j++){ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
@@ -107,8 +122,10 @@ public class ParseAadharCard {
 					}
 					d++;
 				}
-				else{
-					for(int j=1;j<3;j++){ //iterate columns
+				else
+				{
+					for(int j=1;j<3;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -121,10 +138,13 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for gender
-			else if(obj.getGender().contains(description) && gl< obj.getGender().length()){
+			else if(obj.getGender().contains(description) && gl< obj.getGender().length())
+			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(g==0){
-					for(int j=0;j<4;j++){ //iterate columns
+				if(g==0)
+				{
+					for(int j=0;j<4;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -134,8 +154,10 @@ public class ParseAadharCard {
 					}
 					g++;
 				}
-				else{
-					for(int j=1;j<3;j++){ //iterate columns
+				else
+				{
+					for(int j=1;j<3;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -150,8 +172,10 @@ public class ParseAadharCard {
 			//setting the coordinates for aadhar card number
 			else if(Arrays.asList(obj.getAadharNumber().split("\\s+")).contains(description) && al< obj.getAadharNumber().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(a==0){
-					for(int j=0;j<4;j++){ //iterate columns
+				if(a==0)
+				{
+					for(int j=0;j<4;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -161,8 +185,10 @@ public class ParseAadharCard {
 					}
 					a++;
 				}
-				else{
-					for(int j=1;j<3;j++){ //iterate columns
+				else
+				{
+					for(int j=1;j<3;j++)
+					{ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
@@ -179,7 +205,8 @@ public class ParseAadharCard {
 	}
 	
 	
-	public AadharCard parseContent(String content,AadharCard obj){
+	public AadharCard parseContent(String content,AadharCard obj)
+	{
 		content = content.concat("\\n EOF");
 		
 		String splitDesc[] = content.split("\\n");
@@ -187,40 +214,95 @@ public class ParseAadharCard {
 		Calendar cal = Calendar.getInstance();
 		String name="",gender="",aadharNumber="",dobstr="";
 		
-		
 		for(i = 0;i<splitDesc.length;i++)
 		{
-			if(splitDesc[i].matches("\\d{4} \\d{4} \\d{4}"))
-				aadharNumber = splitDesc[i];
+			System.out.println(splitDesc[i]);
+			
+			String number = extractNumber(splitDesc[i].replace(" ", "").trim());
+			System.out.println(number);
+			
+			if(number.length() == 14)
+			{
+				try
+				{
+					aadharNumber = number;
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
 			else if(splitDesc[i].contains(Constants.AadharCardPage1.dob))
 			{
-				dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.AadharCardPage1.dob)+3).replace(Constants.colon, "").trim();
-				SimpleDateFormat sdf;
-				if(dobstr.contains("//"))
-				    sdf = new SimpleDateFormat(Constants.dateFormatSlash);
-				else
-					sdf = new SimpleDateFormat(Constants.dateFormatDashed);
-				try{
-					cal.setTime(sdf.parse(dobstr));
-				}catch(Exception e){
+				try
+				{
+					dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.AadharCardPage1.dob)+3).replace(Constants.colon, "").trim();
+					SimpleDateFormat sdf;
+					
+					if(dobstr.contains("//"))
+					    sdf = new SimpleDateFormat(Constants.dateFormatSlash);
+					else
+						sdf = new SimpleDateFormat(Constants.dateFormatDashed);
+					
+						cal.setTime(sdf.parse(dobstr));
+				}
+				catch(Exception e)
+				{
 					System.err.println(e);
 				}
 				
 				name = splitDesc[i-1];					
 			}
-			else if(splitDesc[i].contains(Constants.birth))
+			else if(splitDesc[i].contains(Constants.birth) || splitDesc[i].contains(Constants.year))
 			{
-				String yearstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.birth)+5).replace(Constants.colon, "").trim();
-				year = Integer.parseInt(yearstr);				
-				name = splitDesc[i-1];
-				
+				try
+				{
+					String yearstr = extractDateNumber(splitDesc[i]);
+					System.out.println(yearstr);
+					yearstr = yearstr.substring(yearstr.length()-4,yearstr.length());
+					
+					year = Integer.parseInt(yearstr);
+
+					name = splitDesc[i-1];
+					int j = i;
+					while(name.length() < 5)
+						name = splitDesc[--j];
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			else if(splitDesc[i].contains(Constants.dob))
+			{
+				try
+				{
+					String yearstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.birth)+5).replace(Constants.colon, "").trim();
+					year = Integer.parseInt(yearstr);
+					
+					name = splitDesc[i-1];
+					int j = i;
+					while(name.length() < 5)
+						name = splitDesc[--j];
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		
-		if(content.contains(Constants.male)) 
-			gender = Constants.male;			
-		else if(content.contains(Constants.female)) 
-			gender = Constants.female;
+		try
+		{
+			if(content.toUpperCase().contains(Constants.female)) 
+				gender = Constants.female;
+			else if(content.toUpperCase().contains(Constants.male)) 
+				gender = Constants.male;		
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		obj.setName(name);
 		obj.setGender(gender);
@@ -229,6 +311,57 @@ public class ParseAadharCard {
 		obj.setDob(cal);
 		obj.setDobDisplay(dobstr);
 		return obj;
+	}
+	
+	
+	//Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
+	public static String extractNumber(final String str) 
+	{                
+		int i=0;
+	    if(str == null || str.isEmpty()) return "";
+
+	    StringBuilder sb = new StringBuilder();
+	    boolean found = false;
+	    for(char c : str.toCharArray())
+	    {
+	        if(Character.isDigit(c) && sb.length()<14)
+	        {
+	        	if(i>1 && i%4==0)
+	        		sb.append(" ");
+	            sb.append(c);
+	            i++;
+	            found = true;
+	        } 
+	        else if(found)
+	        {
+	            // If we already found a digit before and this char is not a digit, stop looping
+	            break;                
+	        }
+	    }
+	    return sb.toString();
+	}
+	
+	public static String extractDateNumber(final String str) 
+	{                
+	    if(str == null || str.isEmpty()) return "";
+
+	    StringBuilder sb = new StringBuilder();
+	    boolean found = false;
+	    for(char c : str.toCharArray())
+	    {
+	        if(Character.isDigit(c) && sb.length()<5)
+	        {
+	            sb.append(c);
+	            if(sb.length()==4)
+	            	found = true;
+	        } 
+	        else if(found)
+	        {
+	            // If we already found a digit before and this char is not a digit, stop looping
+	            break;                
+	        }
+	    }
+	    return sb.toString();
 	}
 	
 }
