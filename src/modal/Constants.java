@@ -93,6 +93,7 @@ public class Constants {
 		public static final String dob = "DOB";
 		public static final String gender = "Gender";
 		public static final String aadharNumber = "Aadhar Number";
+		public static final String government = "Government";
 	}
 	//Driving License Constants
 	public static class DrivingLicense{
@@ -105,6 +106,7 @@ public class Constants {
 		public static final String bloodGroup = "Blood Group";
 		public static final String add = "add";
 		public static final String of = "of";
+		public static final String driving = "Driving";
 	}
 	//Voter Card Constants
 	public static class VoterCard{

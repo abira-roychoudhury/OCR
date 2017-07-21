@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -185,61 +186,69 @@ public class Processing2 extends HttpServlet {
 		}
 
 		//checking for correct File type
-		if(descriptionStr.contains(Constants.ITdepartment) && fileType.equals(Constants.PanCard.panCard) ||
-		   descriptionStr.contains(Constants.ITdepartment) && fileType.equals(Constants.PanCard.panCard) ||	)
+		if(descriptionStr.toLowerCase().contains(Constants.ITdepartment.toLowerCase()) && fileType.equals(Constants.PanCard.panCard) ||
+				descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()) && fileType.equals(Constants.VoterCard.voterCard) ||	
+				descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()) && fileType.equals(Constants.DrivingLicense.drivingLicense) ||
+				descriptionStr.toLowerCase().contains(Constants.AadharCardPage1.government.toLowerCase()) && fileType.equals(Constants.AadharCardPage1.aadharCard))
+		{	
 
 
 
-		//Creating Base64 of original Image
-		FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
-		byte[] bytes = new byte[(int)imgFile.length()];
-		fileInputStreamReader.read(bytes);
-		String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
-		String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
-		request.setAttribute(Constants.imgBase64, imgBase64Jsp);
-
-		//Closing ImageFile
-		fileInputStreamReader.close();
-		//deleting image file
-		imgFile.delete();
-
-		//Parsing the description as per the template
-		start = new Date();
-		LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);
-		request.setAttribute(Constants.document, document);
-		end = new Date();
-		diff = tl.fileLog(Constants.templating, start, end);
-		request.setAttribute(Constants.templating, diff);
-		tl.fileWrite();
 
 
-		LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);
-		LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get(Constants.coordinates);
+			//Creating Base64 of original Image
+			FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
+			byte[] bytes = new byte[(int)imgFile.length()];
+			fileInputStreamReader.read(bytes);
+			String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
+			String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
+			request.setAttribute(Constants.imgBase64, imgBase64Jsp);
 
-		String jsonCoord = "{";
-		for(String key : coordinates.keySet())
-		{
-			int coord[][] = coordinates.get(key);
-			jsonCoord = jsonCoord+"\""+key+"\":[";
-			for(int i=0;i<4;i++)
-				jsonCoord = jsonCoord+"{\"x\":"+coord[0][i]+",\"y\":"+coord[1][i]+"},";
+			//Closing ImageFile
+			fileInputStreamReader.close();
+			//deleting image file
+			imgFile.delete();
+
+			//Parsing the description as per the template
+			start = new Date();
+			LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);
+			request.setAttribute(Constants.document, document);
+			end = new Date();
+			diff = tl.fileLog(Constants.templating, start, end);
+			request.setAttribute(Constants.templating, diff);
+			tl.fileWrite();
+
+
+			LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);
+			LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get(Constants.coordinates);
+
+			String jsonCoord = "{";
+			for(String key : coordinates.keySet())
+			{
+				int coord[][] = coordinates.get(key);
+				jsonCoord = jsonCoord+"\""+key+"\":[";
+				for(int i=0;i<4;i++)
+					jsonCoord = jsonCoord+"{\"x\":"+coord[0][i]+",\"y\":"+coord[1][i]+"},";
+				jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
+				jsonCoord = jsonCoord+"],";
+			}
 			jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
-			jsonCoord = jsonCoord+"],";
-		}
-		jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
-		jsonCoord = jsonCoord+"}";
-		System.out.println("json "+jsonCoord);
-		request.setAttribute(Constants.displaydocument, displayDocument);
-		request.setAttribute(Constants.coordinates, coordinates);
-		request.setAttribute(Constants.jsonCoord, jsonCoord);
+			jsonCoord = jsonCoord+"}";
+			System.out.println("json "+jsonCoord);
+			request.setAttribute(Constants.displaydocument, displayDocument);
+			request.setAttribute(Constants.coordinates, coordinates);
+			request.setAttribute(Constants.jsonCoord, jsonCoord);
 
-		RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
-		dispatcher.forward(request, response);
-		/*}catch(Exception e){
-					 response.setContentType("text/plain");
-					 PrintWriter out = response.getWriter();
-					 out.println("An Error has occured");
-				}*/
+
+			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
+			dispatcher.forward(request, response);
+		}
+		else
+		{
+			response.setContentType("text/plain");
+			PrintWriter out = response.getWriter();
+			out.println("The Image file uploaded and the File Type selected does not match");
+		}
 
 
 	}
