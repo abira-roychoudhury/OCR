@@ -3,6 +3,8 @@ package apiClass;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import modal.Constants;
 
@@ -315,12 +317,11 @@ public class ParsePanCard {
 				System.out.println(splitDesc[i]);
 				if (splitDesc[i].toUpperCase().contains(Constants.PanCard.pan.toUpperCase())) 
 				{
-					System.out.println("inside pan");
 					pan = splitDesc[i + 1];
 				}
 				else if (splitDesc[i].toUpperCase().contains(Constants.PanCard.name.toUpperCase())) 
 				{
-					System.out.println("inside name");
+					//System.out.println("inside name");
 					if (splitDesc[i].toUpperCase().contains(Constants.PanCard.father.toUpperCase())) 
 					{
 						fname = splitDesc[i + 1];
@@ -340,6 +341,22 @@ public class ParsePanCard {
 							name = name + " " + splitDesc[i + 2];
 					}
 				}
+				else if (splitDesc[i].toUpperCase().contains(Constants.date.toUpperCase()))
+				{
+					dob = splitDesc[i + 1];
+				}
+			}
+			dob = dob.split(" ")[0];
+			System.out.println("dob : "+dob);
+			
+			Pattern pattern = Pattern.compile("[A-Z0-9]{10}");
+			Matcher matcher = pattern.matcher(pan);
+			if (matcher.find())
+			{
+				try{
+					pan = matcher.group(0);
+				}catch(Exception e){}
+			    
 			}
 		}
 		// setting the PanCard object
