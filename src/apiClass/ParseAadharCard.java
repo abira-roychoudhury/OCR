@@ -2,7 +2,49 @@ package apiClass;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+
+
+
+
+
+
+
+
+
+import javax.imageio.ImageIO;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import modal.Constants;
 
@@ -11,16 +53,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import templates.AadharCard;
+import templates.AadharCardAddress;
 import templates.AadharCardCoord;
 
 public class ParseAadharCard {
 	
-	public AadharCard parseAadharCard(JSONArray textAnnotationArray){
+	public AadharCard parseAadharCard(JSONArray textAnnotationArray,String filePath){
 		AadharCard obj = new AadharCard();
 		try{
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			String descriptionStr=firstObj.getString(Constants.VisionResponse.description);
-			obj = parseContent(descriptionStr,obj);		
+			obj = parseContent(descriptionStr,filePath,obj);		
 			obj = parseCoord(textAnnotationArray,obj);	
 			}catch(JSONException je){ je.printStackTrace();
 			}catch(Exception e){ e.printStackTrace();
@@ -107,7 +150,7 @@ public class ParseAadharCard {
 				}
 			
 			//setting the coordinates for date of birth
-			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length())
+			/*else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(d==0)
@@ -135,7 +178,7 @@ public class ParseAadharCard {
 					}
 				}
 				dl = dl+description.length();
-			}
+			}*/
 
 			//setting the coordinates for gender
 			else if(obj.getGender().contains(description) && gl< obj.getGender().length())
@@ -205,10 +248,9 @@ public class ParseAadharCard {
 	}
 	
 	
-	public AadharCard parseContent(String content,AadharCard obj)
+	public AadharCard parseContent(String content,String filePath,AadharCard obj)throws WriterException, IOException,NotFoundException
 	{
-		content = content.concat("\\n EOF");
-		
+		/*content = content.concat("\\n EOF");
 		String splitDesc[] = content.split("\\n");
 		int i,year=0;
 		Calendar cal = Calendar.getInstance();
@@ -302,24 +344,82 @@ public class ParseAadharCard {
 		catch(Exception e)
 		{
 			e.printStackTrace();
+		} */
+		
+		int yob = 0,d=0;
+		String uid="",name="",gender="",aadharNumber="",dobstr="";
+		Calendar cal = Calendar.getInstance();
+		AadharCardAddress addr = new AadharCardAddress();
+		String resultQR = QRScan.scanQR(filePath);
+		
+		if(resultQR.contains("dob")){
+			dobstr=resultQR.substring(resultQR.lastIndexOf("dob=\"")+5,resultQR.lastIndexOf("\""));
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
+			try {
+				cal.setTime(sdf.parse(dobstr));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			d=1;
 		}
 		
+		String tokens[] = resultQR.split("\" ");
+		for(String token : tokens){
+			token=token.trim();
+			if(token.contains("uid"))
+				uid=token.substring(token.lastIndexOf("=")+2);
+			else if(token.contains("name"))
+				name=token.substring(token.lastIndexOf("=")+2);
+			else if(token.contains("gender"))
+				gender=(token.substring(token.lastIndexOf("=")+2).equals("M")?"Male":"Female");
+			else if(token.contains("yob"))
+				yob=Integer.parseInt(token.substring(token.lastIndexOf("=")+2));
+			
+			else if(token.contains("co"))
+				addr.setCo(token.substring(token.lastIndexOf("=")+2));	
+			else if(token.contains("house"))
+				addr.setHouse(token.substring(token.lastIndexOf("=")+2));	
+			else if(token.contains("street"))
+				addr.setStreet(token.substring(token.lastIndexOf("=")+2));	
+			else if(token.contains("lm"))
+				addr.setLm(token.substring(token.lastIndexOf("=")+2));	
+			else if(token.contains("loc"))
+				addr.setLoc(token.substring(token.lastIndexOf("=")+2));
+			else if(token.contains("vtc"))
+				addr.setVtc(token.substring(token.lastIndexOf("=")+2));	
+			else if(token.contains("po"))
+				addr.setPo(token.substring(token.lastIndexOf("=")+2));
+			else if(token.contains("dist"))
+				addr.setDist(token.substring(token.lastIndexOf("=")+2));
+			else if(token.contains("subdist"))
+				addr.setSubdist(token.substring(token.lastIndexOf("=")+2));	
+			else if(token.contains("state"))
+				addr.setState(token.substring(token.lastIndexOf("=")+2));
+			else if(token.contains("pc"))
+			{
+				if(d==0)
+					addr.setPc(token.substring(token.lastIndexOf("=")+2,token.lastIndexOf("\"")));
+				else
+					addr.setPc(token.substring(token.lastIndexOf("=")+2));
+			}
+		}
+		
+		aadharNumber = uid.substring(0,4)+" "+uid.substring(4,8)+" "+uid.substring(8);
 		obj.setName(name);
 		obj.setGender(gender);
 		obj.setAadharNumber(aadharNumber);
-		obj.setYearOfBirth(year);
+		obj.setYearOfBirth(yob);
+		obj.setAddress(addr);
 		obj.setDob(cal);
 		obj.setDobDisplay(dobstr);
 		return obj;
 	}
-	
 	
 	//Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
 	public static String extractNumber(final String str) 
 	{                
 		int i=0;
 	    if(str == null || str.isEmpty()) return "";
-
 	    StringBuilder sb = new StringBuilder();
 	    boolean found = false;
 	    for(char c : str.toCharArray())

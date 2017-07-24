@@ -1,10 +1,21 @@
 package apiClass;
 
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
 
 import modal.Constants;
 
@@ -12,18 +23,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.common.HybridBinarizer;
+
 import templates.PanCard;
 import templates.PanCardCoord;
 
 public class ParsePanCard {
 
-	public PanCard parsePanCard(JSONArray textAnnotationArray) {
+	public PanCard parsePanCard(JSONArray textAnnotationArray,String filePath) {
 		PanCard obj = new PanCard();
 		try {
 			JSONObject firstObj = (JSONObject) textAnnotationArray.get(0);
 			String descriptionStr = firstObj
 					.getString(Constants.VisionResponse.description);
-			obj = parseContent(descriptionStr, obj);
+			obj = parseContent(descriptionStr,filePath,obj);
 			obj = parseCoord(textAnnotationArray, obj);
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -48,14 +74,16 @@ public class ParsePanCard {
 
 		for (; i < textAnnotationArray.length(); i++) {
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj
-					.getString(Constants.VisionResponse.description);
+			String description = jobj.getString(Constants.VisionResponse.description);
+			
+			if(description.contains("/"))
+				continue;
+			
+			System.out.println(description);
 
 			// setting the coordinates for name
-			if (Arrays.asList(obj.getName().split("\\s+"))
-					.contains(description) && nl < obj.getName().length()) {
-				JSONObject boundingPoly = jobj
-						.getJSONObject(Constants.VisionResponse.boundingPoly);
+			if (Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl < obj.getName().length()) {
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if (n == 0) {
 					for (int j = 0; j < 4; j++) { // iterate columns
 						JSONArray vertices = (JSONArray) boundingPoly
@@ -143,8 +171,7 @@ public class ParsePanCard {
 			}
 
 			// setting the coordinates for PanCard number
-			else if (obj.getPanNumber().contains(description)
-					&& pl < obj.getPanNumber().length()) {
+			else if (obj.getPanNumber().equals(description)&& pl < obj.getPanNumber().length()) {
 				JSONObject boundingPoly = jobj
 						.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if (p == 0) {
@@ -177,7 +204,7 @@ public class ParsePanCard {
 		return obj;
 	}
 
-	public PanCard parseContent(String content, PanCard obj) 
+	public PanCard parseContent(String content, String filePath, PanCard obj) 
 	{
 		int i;
 		String name = "", fname = "", dob = "", pan = "";
@@ -311,7 +338,7 @@ public class ParsePanCard {
 		{
 			// Old type of PAN card
 			System.out.println("inside old");
-			String splitDesc[] = content.split("\\n");
+			/*String splitDesc[] = content.split("\\n");
 			for (i = 0; i < splitDesc.length; i++) 
 			{
 				System.out.println(splitDesc[i]);
@@ -357,6 +384,28 @@ public class ParsePanCard {
 					pan = matcher.group(0);
 				}catch(Exception e){}
 			    
+			}*/
+			
+			String resultQR = QRScan.scanQR(filePath);
+			String tokens[] = resultQR.split("\n");
+			for(String token :tokens)
+			{
+				if(token.contains(Constants.PanCard.name) && !token.contains(Constants.PanCard.father))
+					name = token.substring(token.lastIndexOf(":")+1).trim();
+				else if(token.contains(Constants.PanCard.father))
+					fname = token.substring(token.lastIndexOf(":")+1).trim();
+				else if(token.contains(Constants.PanCard.dob))
+				{
+					dob = token.substring(token.lastIndexOf(":")+1).trim();
+					SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
+					try {
+						cal.setTime(sdf.parse(dob));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+				else if(token.contains(Constants.PanCard.panAbb))
+					pan = token.substring(token.lastIndexOf(":")+1).trim();
 			}
 		}
 		// setting the PanCard object
@@ -367,6 +416,52 @@ public class ParsePanCard {
 		obj.setDobDisplay(dob);
 
 		return obj;
+	}
+	
+	public String readQRCode(String filePath, String charset, Map<DecodeHintType,Object> hintMap, Map<DecodeHintType,Object> hintPure)
+			throws FileNotFoundException, IOException, NotFoundException {
+		BufferedImage image = ImageIO.read(new FileInputStream(filePath));
+		LuminanceSource source = new BufferedImageLuminanceSource(image);
+		BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
+		Reader reader = new MultiFormatReader();
+		ReaderException savedException = null;
+		try {
+			// Look for pure barcode
+			Result theResult = reader.decode(bitmap, hintPure);
+			if (theResult != null) {
+				return theResult.getText();
+			}
+		} catch (ReaderException re) {
+			savedException = re;
+		}
+		try {
+			// Look for normal barcode in photo
+			Result theResult = reader.decode(bitmap, hintMap);
+			if (theResult != null) {
+				return theResult.getText();
+			}
+		} catch (ReaderException re) {
+			savedException = re;
+		}
+		try {
+			// Try again with other binarizer
+			BinaryBitmap hybridBitmap = new BinaryBitmap(new HybridBinarizer(source));
+			Result theResult = reader.decode(hybridBitmap, hintMap);
+			if (theResult != null) {
+				return theResult.getText();
+			}
+		} catch (ReaderException re) {
+			savedException = re;
+		}
+		try {
+			throw savedException == null ? NotFoundException.getNotFoundInstance() : savedException;
+		} catch (FormatException | ChecksumException e) {
+			System.out.println(e.toString());
+		} catch (ReaderException e) { // Including NotFoundException
+			System.out.println(e.toString());
+		}
+
+		return "";
 	}
 
 	private String filterContent(String content) 

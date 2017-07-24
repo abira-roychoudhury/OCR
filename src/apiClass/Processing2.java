@@ -204,19 +204,22 @@ public class Processing2 extends HttpServlet {
 			String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
 			request.setAttribute(Constants.imgBase64, imgBase64Jsp);
 
-			//Closing ImageFile
-			fileInputStreamReader.close();
-			//deleting image file
-			imgFile.delete();
+			
+			
 
 			//Parsing the description as per the template
 			start = new Date();
-			LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType);
+			LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType,filePath);
 			request.setAttribute(Constants.document, document);
 			end = new Date();
 			diff = tl.fileLog(Constants.templating, start, end);
 			request.setAttribute(Constants.templating, diff);
 			tl.fileWrite();
+			
+			//Closing ImageFile
+			fileInputStreamReader.close();
+			//deleting image file
+			imgFile.delete();
 
 
 			LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);

@@ -15,5 +15,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Software/jar/core-3.3.0.jar"/>
+	<classpathentry kind="lib" path="C:/Software/jar/javase-3.3.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

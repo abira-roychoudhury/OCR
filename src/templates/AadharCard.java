@@ -10,7 +10,7 @@ public class AadharCard {
 	private String dobDisplay;
 	private String gender;
 	private String aadharNumber;
-	private String address;
+	private AadharCardAddress address;
 	private AadharCardCoord coordinates;
 
 	public AadharCardCoord getCoordinates() {
@@ -53,10 +53,10 @@ public class AadharCard {
 	}
 
 	public String getAddress(){
-		return this.address;
+		return this.address.toString();
 	}
 	
-	public void setAddress(String address){
+	public void setAddress(AadharCardAddress address){
 		this.address = address;
 	}
 	public Calendar getDob() {
@@ -74,7 +74,4 @@ public class AadharCard {
 	public void setDobDisplay(String dobDisplay) {
 		this.dobDisplay = dobDisplay;
 	}
-
-	
-
 }

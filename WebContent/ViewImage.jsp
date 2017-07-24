@@ -51,7 +51,7 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 							<c:forEach var="doc" items="${displaydocument}" varStatus="itemsRow">
 								<div class="form-group">
 									<label for="${doc.key}">${doc.key}</label>
-								    <input class="form-control" type="text" value="${doc.value}" id="${doc.key}">
+									<input class="form-control" type="text" value="${doc.value}" id="${doc.key}">
 								</div>
 							</c:forEach>
 							<button type="button" class="btn btn-primary">Submit</button>
