@@ -4,12 +4,12 @@ import java.util.Calendar;
 
 public class PanCard {
 	
-	private String name;
-	private String fatherName;
+	private String name = "";
+	private String fatherName = "";
 	private Calendar dob;
-	private String dobDisplay;
-	private String panNumber;
-	private PanCardCoord coordinates;
+	private String dobDisplay = "";
+	private String panNumber = "";
+	private PanCardCoord coordinates = new PanCardCoord();
 	
 	public PanCardCoord getCoordinates() {
 		return coordinates;

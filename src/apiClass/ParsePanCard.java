@@ -79,8 +79,6 @@ public class ParsePanCard {
 			if(description.contains("/"))
 				continue;
 			
-			System.out.println(description);
-
 			// setting the coordinates for name
 			if (Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl < obj.getName().length()) {
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);

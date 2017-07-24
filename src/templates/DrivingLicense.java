@@ -5,13 +5,13 @@ import java.util.Calendar;
 public class DrivingLicense {
 	
 	private Calendar DOB;
-	private String dobDisplay;
-	private String name;
-	private String middleName;
-	private String address;
-	private String pin;
-	private String bloodGroup;
-	private DrivingLicenseCoord coordinates;
+	private String dobDisplay = "";
+	private String name = "";
+	private String middleName = "";
+	private String address = "";
+	private String pin = "";
+	private String bloodGroup = "";
+	private DrivingLicenseCoord coordinates = new DrivingLicenseCoord();
 	
 	public DrivingLicenseCoord getCoordinates() {
 		return coordinates;

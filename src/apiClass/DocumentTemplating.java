@@ -14,8 +14,6 @@ public class DocumentTemplating {
 		LinkedHashMap<String,Object> document=new LinkedHashMap<String,Object>();
 		LinkedHashMap<String,String> displayDocument = new LinkedHashMap<String,String>();
 		LinkedHashMap<String,int[][]> coordinates = new LinkedHashMap<String,int[][]>();
-		String content = "";
-
 		if(fileType.equals(Constants.PanCard.panCard))
 		{
 			PanCard pc = new ParsePanCard().parsePanCard(textAnnotationArray,filePath);

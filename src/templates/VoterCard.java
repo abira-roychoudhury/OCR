@@ -3,12 +3,12 @@ package templates;
 public class VoterCard {
 	
 	
-	private String dobDisplay;
-	private String name;
-	private String fatherName;
-	private String sex;
-	private String voterId;
-	private VoterCardCoord coordinates;
+	private String dobDisplay = "";
+	private String name = "";
+	private String fatherName = "";
+	private String sex = "";
+	private String voterId = "";
+	private VoterCardCoord coordinates = new VoterCardCoord();
 	
 	
 	public String getVoterId() {

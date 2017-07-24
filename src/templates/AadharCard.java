@@ -4,14 +4,14 @@ import java.util.Calendar;
 
 public class AadharCard {
 	
-	private String name;
-	private int yearOfBirth;
+	private String name = "";
+	private int yearOfBirth = 0;
 	private Calendar dob;
-	private String dobDisplay;
-	private String gender;
-	private String aadharNumber;
-	private AadharCardAddress address;
-	private AadharCardCoord coordinates;
+	private String dobDisplay = "";
+	private String gender = "";
+	private String aadharNumber = "";
+	private AadharCardAddress address = new AadharCardAddress();
+	private AadharCardCoord coordinates = new AadharCardCoord();
 
 	public AadharCardCoord getCoordinates() {
 		return coordinates;
