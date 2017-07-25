@@ -14,6 +14,7 @@ public class DocumentTemplating {
 		LinkedHashMap<String,Object> document=new LinkedHashMap<String,Object>();
 		LinkedHashMap<String,String> displayDocument = new LinkedHashMap<String,String>();
 		LinkedHashMap<String,int[][]> coordinates = new LinkedHashMap<String,int[][]>();
+		
 		if(fileType.equals(Constants.PanCard.panCard))
 		{
 			PanCard pc = new ParsePanCard().parsePanCard(textAnnotationArray,filePath);
@@ -64,13 +65,24 @@ public class DocumentTemplating {
 				coordinates.put(Constants.AadharCardPage1.name, new int[2][4] );
 			}
 			
-			displayDocument.put(Constants.AadharCardPage1.year, Integer.toString(ac.getYearOfBirth()));
-			try {
-				coordinates.put(Constants.AadharCardPage1.year, acc.getYearOfBirth());
-			} catch (Exception e) {
-				coordinates.put(Constants.AadharCardPage1.year, new int[2][4] );
+			if(ac.getYearOfBirth() != 0)
+			{
+				displayDocument.put(Constants.AadharCardPage1.year, Integer.toString(ac.getYearOfBirth()));
+				try {
+					coordinates.put(Constants.AadharCardPage1.year, acc.getYearOfBirth());
+				} catch (Exception e) {
+					coordinates.put(Constants.AadharCardPage1.year, new int[2][4] );
+				}
 			}
-			
+			if(!ac.getDobDisplay().isEmpty())
+			{
+				displayDocument.put(Constants.AadharCardPage1.dob, (ac.getDobDisplay()));
+				try {
+					coordinates.put(Constants.AadharCardPage1.dob, acc.getDobDisplay());
+				} catch (Exception e) {
+					coordinates.put(Constants.AadharCardPage1.dob, new int[2][4] );
+				}
+			}			
 			displayDocument.put(Constants.AadharCardPage1.gender, ac.getGender());
 			try {
 				coordinates.put(Constants.AadharCardPage1.gender, acc.getGender());
@@ -84,8 +96,8 @@ public class DocumentTemplating {
 			} catch (Exception e) {
 				coordinates.put(Constants.AadharCardPage1.aadharNumber, new int[2][4] );
 			}
-			
-			displayDocument.put(Constants.AadharCardPage1.address, ac.getAddress());
+			if(!ac.getAddress().isEmpty())
+				displayDocument.put(Constants.AadharCardPage1.address, ac.getAddress());
 
 		}
 		else if(fileType.equals(Constants.DrivingLicense.drivingLicense))

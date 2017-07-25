@@ -13,11 +13,12 @@ import org.opencv.core.Mat;
 
 public class VisionAPICall {
 
-	public JSONObject performOCR(String base64String){
+	public JSONObject performOCR(String base64String, String fileType){
 		
 		String apiUrl = Constants.visionApiUrl;
 		String apiKey = Constants.visionApiKey;
 		JSONObject result = new JSONObject();
+		String strBody = "";
 		
 		try{	
 			URL url = new URL(apiUrl+apiKey);
@@ -29,8 +30,12 @@ public class VisionAPICall {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-	
-			String strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"DOCUMENT_TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
+			
+			
+			if(fileType.equals(Constants.AadharCardPage1.aadharCard))
+				 strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"DOCUMENT_TEXT_DETECTION\", \"maxResults\":1000 } ], \"imageContext\" : { \"languageHints\" : [\"en\",\"hi\"]  } } ] }";
+			else
+				strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"DOCUMENT_TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
 			
 			OutputStream os = conn.getOutputStream();
 			os.write(strBody.getBytes());

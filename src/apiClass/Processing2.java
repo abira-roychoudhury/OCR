@@ -165,7 +165,7 @@ public class Processing2 extends HttpServlet {
 		//Calling Vision API
 		start = new Date();
 		VisionAPICall vac = new VisionAPICall();
-		JSONObject result = vac.performOCR(processedImgBase64);
+		JSONObject result = vac.performOCR(processedImgBase64,fileType);
 		end = new Date();
 		diff = tl.fileLog(Constants.visionAPICall, start, end);
 		request.setAttribute(Constants.visionAPICall, diff);
@@ -180,7 +180,11 @@ public class Processing2 extends HttpServlet {
 			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray(Constants.VisionResponse.textAnnotations);
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			descriptionStr=firstObj.getString(Constants.VisionResponse.description);
+			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
+			System.out.println(descriptionStr);
 			request.setAttribute(Constants.description, descriptionStr);
+			
+		
 		}catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -189,7 +193,7 @@ public class Processing2 extends HttpServlet {
 		if(descriptionStr.toLowerCase().contains(Constants.ITdepartment.toLowerCase()) && fileType.equals(Constants.PanCard.panCard) ||
 				descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()) && fileType.equals(Constants.VoterCard.voterCard) ||	
 				descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()) && fileType.equals(Constants.DrivingLicense.drivingLicense) ||
-				descriptionStr.toLowerCase().contains(Constants.AadharCardPage1.government.toLowerCase()) && fileType.equals(Constants.AadharCardPage1.aadharCard))
+				/*hasAadharNumber(descriptionStr) && */ fileType.equals(Constants.AadharCardPage1.aadharCard))
 		{	
 
 
@@ -255,5 +259,39 @@ public class Processing2 extends HttpServlet {
 
 
 	}
+	//Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
+		public static boolean hasAadharNumber(final String str) 
+		{                
+			int i=0;
+			if(str == null || str.isEmpty()) return false;
+			StringBuilder sb = new StringBuilder();
+			boolean found = false;
+			for(char c : str.toCharArray())
+			{
+				if(Character.isDigit(c) && sb.length()<12)
+				{
+					sb.append(c);
+					found = true;
+				} 
+				else if(c!='\n' && c!=' ' && found)
+				{
+					// If we already found a digit before and this char is not a digit, stop looping
+					break;                
+				}
+				i++;
+			}
+			System.out.println(sb.toString());
+			if(sb.length()>10)
+				return true;
+			else
+			{
+				if(sb.length()>=1)
+					return hasAadharNumber(str.substring(i));
+				
+				else
+					return false;
+			}
+				
+		}
 
 }

@@ -13,7 +13,14 @@ public class AadharCardAddress {
 	private String subdist = "";
 	private String state = "";
 	private String pc = "";
+	private String addr = "";
 	
+	public AadharCardAddress(){
+		
+	}
+	public AadharCardAddress(String addr){
+		this.addr = addr;
+	}
 	
 	public String getHouse() {
 		return house;
@@ -106,8 +113,9 @@ public class AadharCardAddress {
 	}
 	
 	public String toString(){
-		String addr = co + "\n"+house + "\n"+street + "\n"+lm + "\n"+loc + "\n"+vtc + "\n"+po + "\n"+dist + "\n"+subdist + "\n"+state + "\n"+pc;
-		return addr;
+		if(this.addr.isEmpty())
+			return co + "\n"+house + "\n"+street + "\n"+lm + "\n"+loc + "\n"+vtc + "\n"+po + "\n"+dist + "\n"+subdist + "\n"+state + "\n"+pc;
+		return this.addr;
 	}
 
 }

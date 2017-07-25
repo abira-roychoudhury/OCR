@@ -29,7 +29,7 @@ import com.google.zxing.common.HybridBinarizer;
 
 public class QRScan {
 	
-	public static String scanQR(String filePath)
+	public static String scanQR(String filePath) throws FileNotFoundException, NotFoundException, IOException
 	{
 		String charset = "UTF-8"; // or "ISO-8859-1"
 		String resultQR = "";
@@ -38,11 +38,7 @@ public class QRScan {
 		hintMap.put(DecodeHintType.POSSIBLE_FORMATS, EnumSet.allOf(BarcodeFormat.class));
 		Map<DecodeHintType,Object> hintPure = new EnumMap<>(hintMap);
 		hintPure.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
-		try{
-			resultQR = readQRCode(filePath, charset, hintMap, hintPure);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		resultQR = readQRCode(filePath, charset, hintMap, hintPure);
 		System.out.println("Data read from QR Code: "+ resultQR);
 		return resultQR;
 	}

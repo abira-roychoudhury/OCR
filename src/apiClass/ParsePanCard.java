@@ -1,21 +1,12 @@
 package apiClass;
 
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
 
 import modal.Constants;
 
@@ -23,20 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ChecksumException;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.FormatException;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
+
 import com.google.zxing.NotFoundException;
-import com.google.zxing.Reader;
-import com.google.zxing.ReaderException;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.WriterException;
 
 import templates.PanCard;
 import templates.PanCardCoord;
@@ -202,7 +182,7 @@ public class ParsePanCard {
 		return obj;
 	}
 
-	public PanCard parseContent(String content, String filePath, PanCard obj) 
+	public PanCard parseContent(String content, String filePath, PanCard obj)throws WriterException, IOException
 	{
 		int i;
 		String name = "", fname = "", dob = "", pan = "";
@@ -336,75 +316,82 @@ public class ParsePanCard {
 		{
 			// Old type of PAN card
 			System.out.println("inside old");
-			/*String splitDesc[] = content.split("\\n");
-			for (i = 0; i < splitDesc.length; i++) 
-			{
-				System.out.println(splitDesc[i]);
-				if (splitDesc[i].toUpperCase().contains(Constants.PanCard.pan.toUpperCase())) 
+			try{
+				System.out.println("detected QR Code");
+				String resultQR = QRScan.scanQR(filePath);
+				if(resultQR.isEmpty())
+					throw new BarCodeException();
+				String tokens[] = resultQR.split("\n");
+				for(String token :tokens)
 				{
-					pan = splitDesc[i + 1];
-				}
-				else if (splitDesc[i].toUpperCase().contains(Constants.PanCard.name.toUpperCase())) 
-				{
-					//System.out.println("inside name");
-					if (splitDesc[i].toUpperCase().contains(Constants.PanCard.father.toUpperCase())) 
+					if(token.contains(Constants.PanCard.name) && !token.contains(Constants.PanCard.father))
+						name = token.substring(token.lastIndexOf(":")+1).trim();
+					else if(token.contains(Constants.PanCard.father))
+						fname = token.substring(token.lastIndexOf(":")+1).trim();
+					else if(token.contains(Constants.PanCard.dob))
 					{
-						fname = splitDesc[i + 1];
-						if (splitDesc[i + 2].toUpperCase().contains(Constants.date.toUpperCase()))
-							dob = splitDesc[i + 3];
+						dob = token.substring(token.lastIndexOf(":")+1).trim();
+						SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
+						try {
+							cal.setTime(sdf.parse(dob));
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+					}
+					else if(token.contains(Constants.PanCard.panAbb))
+						pan = token.substring(token.lastIndexOf(":")+1).trim();
+				}
+			}catch(NotFoundException | BarCodeException ex){
+				System.out.println("could not detect bar code");
+				String splitDesc[] = content.split("\\n");
+				for (i = 0; i < splitDesc.length; i++) 
+				{
+					System.out.println(splitDesc[i]);
+					if (splitDesc[i].toUpperCase().contains(Constants.PanCard.pan.toUpperCase())) 
+					{
+						pan = splitDesc[i + 1];
+					}
+					else if (splitDesc[i].toUpperCase().contains(Constants.PanCard.name.toUpperCase())) 
+					{
+						//System.out.println("inside name");
+						if (splitDesc[i].toUpperCase().contains(Constants.PanCard.father.toUpperCase())) 
+						{
+							fname = splitDesc[i + 1];
+							if (splitDesc[i + 2].toUpperCase().contains(Constants.date.toUpperCase()))
+								dob = splitDesc[i + 3];
+							else 
+							{
+								fname = fname + " " + splitDesc[i + 2];
+								dob = splitDesc[i + 4];
+							}
+							break;
+						} 
 						else 
 						{
-							fname = fname + " " + splitDesc[i + 2];
-							dob = splitDesc[i + 4];
+							name = splitDesc[i + 1];
+							if (!splitDesc[i + 2].toUpperCase().contains(Constants.PanCard.father.toUpperCase()))
+								name = name + " " + splitDesc[i + 2];
 						}
-						break;
-					} 
-					else 
+					}
+					else if (splitDesc[i].toUpperCase().contains(Constants.date.toUpperCase()))
 					{
-						name = splitDesc[i + 1];
-						if (!splitDesc[i + 2].toUpperCase().contains(Constants.PanCard.father.toUpperCase()))
-							name = name + " " + splitDesc[i + 2];
+						dob = splitDesc[i + 1];
 					}
 				}
-				else if (splitDesc[i].toUpperCase().contains(Constants.date.toUpperCase()))
+				dob = dob.split(" ")[0];
+				System.out.println("dob : "+dob);
+				
+				Pattern pattern = Pattern.compile("[A-Z0-9]{10}");
+				Matcher matcher = pattern.matcher(pan);
+				if (matcher.find())
 				{
-					dob = splitDesc[i + 1];
+					try{
+						pan = matcher.group(0);
+					}catch(Exception e){}
+				    
 				}
 			}
-			dob = dob.split(" ")[0];
-			System.out.println("dob : "+dob);
 			
-			Pattern pattern = Pattern.compile("[A-Z0-9]{10}");
-			Matcher matcher = pattern.matcher(pan);
-			if (matcher.find())
-			{
-				try{
-					pan = matcher.group(0);
-				}catch(Exception e){}
-			    
-			}*/
-			
-			String resultQR = QRScan.scanQR(filePath);
-			String tokens[] = resultQR.split("\n");
-			for(String token :tokens)
-			{
-				if(token.contains(Constants.PanCard.name) && !token.contains(Constants.PanCard.father))
-					name = token.substring(token.lastIndexOf(":")+1).trim();
-				else if(token.contains(Constants.PanCard.father))
-					fname = token.substring(token.lastIndexOf(":")+1).trim();
-				else if(token.contains(Constants.PanCard.dob))
-				{
-					dob = token.substring(token.lastIndexOf(":")+1).trim();
-					SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
-					try {
-						cal.setTime(sdf.parse(dob));
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-				}
-				else if(token.contains(Constants.PanCard.panAbb))
-					pan = token.substring(token.lastIndexOf(":")+1).trim();
-			}
 		}
 		// setting the PanCard object
 		obj.setName(name);
@@ -416,59 +403,13 @@ public class ParsePanCard {
 		return obj;
 	}
 	
-	public String readQRCode(String filePath, String charset, Map<DecodeHintType,Object> hintMap, Map<DecodeHintType,Object> hintPure)
-			throws FileNotFoundException, IOException, NotFoundException {
-		BufferedImage image = ImageIO.read(new FileInputStream(filePath));
-		LuminanceSource source = new BufferedImageLuminanceSource(image);
-		BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
-		Reader reader = new MultiFormatReader();
-		ReaderException savedException = null;
-		try {
-			// Look for pure barcode
-			Result theResult = reader.decode(bitmap, hintPure);
-			if (theResult != null) {
-				return theResult.getText();
-			}
-		} catch (ReaderException re) {
-			savedException = re;
-		}
-		try {
-			// Look for normal barcode in photo
-			Result theResult = reader.decode(bitmap, hintMap);
-			if (theResult != null) {
-				return theResult.getText();
-			}
-		} catch (ReaderException re) {
-			savedException = re;
-		}
-		try {
-			// Try again with other binarizer
-			BinaryBitmap hybridBitmap = new BinaryBitmap(new HybridBinarizer(source));
-			Result theResult = reader.decode(hybridBitmap, hintMap);
-			if (theResult != null) {
-				return theResult.getText();
-			}
-		} catch (ReaderException re) {
-			savedException = re;
-		}
-		try {
-			throw savedException == null ? NotFoundException.getNotFoundInstance() : savedException;
-		} catch (FormatException | ChecksumException e) {
-			System.out.println(e.toString());
-		} catch (ReaderException e) { // Including NotFoundException
-			System.out.println(e.toString());
-		}
-
-		return "";
-	}
-
 	private String filterContent(String content) 
 	{
 
 		String lines[] = content.split("\n");
 		String filteredContent = "";
 
-		System.out.println("UnFiltered:" + content);
+		//System.out.println("UnFiltered:" + content);
 		
 		for (String line : lines) 
 		{
@@ -482,7 +423,7 @@ public class ParsePanCard {
 			String tokens[] = line.split(" ");
 			
 			for (String token : tokens)
-				if (token.matches("^[A-Z0-9/]+$"))
+				if (token.matches("^[A-Z0-9/']+$"))
 					filteredToken = filteredToken + " " + token;
 			
 			if (!filteredToken.isEmpty())
