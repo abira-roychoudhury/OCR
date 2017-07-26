@@ -85,6 +85,7 @@ public class Constants {
 		public static final String pan = "PERMANENT ACCOUNT NUMBER";
 		public static final String father = "Father";
 		public static final String panAbb = "PAN";
+		public static final String tax = "Tax";
 	}
 	//Aadhar Card Constants
 	public static class AadharCardPage1{

@@ -56,7 +56,7 @@ public class ParsePanCard {
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString(Constants.VisionResponse.description);
 			
-			if(description.contains("/"))
+			if(description.equals("/"))
 				continue;
 			
 			// setting the coordinates for name
@@ -119,14 +119,11 @@ public class ParsePanCard {
 			}
 
 			// setting the coordinates for date
-			else if (obj.getDobDisplay().contains(description)
-					&& dl < obj.getDobDisplay().length()) {
-				JSONObject boundingPoly = jobj
-						.getJSONObject(Constants.VisionResponse.boundingPoly);
+			else if (obj.getDobDisplay().contains(description) && dl < obj.getDobDisplay().length()) {
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if (d == 0) {
 					for (int j = 0; j < 4; j++) { // iterate columns
-						JSONArray vertices = (JSONArray) boundingPoly
-								.getJSONArray(Constants.VisionResponse.vertices);
+						JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
@@ -212,7 +209,11 @@ public class ParsePanCard {
 						splitDesc[i].indexOf(Constants.india6) > -1 ||
 						splitDesc[i].indexOf(Constants.india7) > -1 ||
 						splitDesc[i].indexOf(Constants.india8) > -1) 
-				{			
+				{		
+					/*if(splitDesc[i+1].indexOf(Constants.india1) > -1)
+						i++;
+					if(splitDesc[i+1].indexOf(Constants.PanCard.tax) > -1)
+						i++;*/
 					try 
 					{
 						//Incase of First name is clubbed with INCOME TAX block
@@ -279,7 +280,7 @@ public class ParsePanCard {
 						//Iterate one back to push all string one above
 						System.err.println(e);
 						
-						if(e.getMessage().toString().contains("Unparseable date") && !dob.contains("/") && !dob.matches(".*\\d+.*"))
+						while(e.getMessage().toString().contains("Unparseable date") && !dob.contains("/") && !dob.matches(".*\\d+.*"))
 						{
 							System.out.println("trying something else");
 							try
@@ -290,7 +291,7 @@ public class ParsePanCard {
 							}
 							catch(Exception ez)
 							{
-								ez.printStackTrace();
+								e = ez;
 							}
 						}
 					}
@@ -300,7 +301,7 @@ public class ParsePanCard {
 						// extracting Pan
 						pan = splitDesc[i + 1];
 						//Allow and error for +-1 for Number
-						if (!pan.matches("^[A-Z0-9]{9,11}$"))
+						if (!pan.matches("^[A-Z0-9 ]{9,11}$"))
 							pan = "";
 					}
 					catch (Exception e) 

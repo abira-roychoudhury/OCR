@@ -27,7 +27,7 @@ public class ImageEnhancement {
 
 		//File nativeFile = new File(Core.NATIVE_LIBRARY_NAME + ".dll");
 		//System.load(nativeFile.getAbsolutePath());
-		
+		System.out.println(System.getProperty("java.library.path"));
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		//LOAD IMAGE IN GRAYSCALE
@@ -62,9 +62,9 @@ public class ImageEnhancement {
 	
 	public String imagePreprocessing(String filepath, String documentType){
 		Mat imgMat = loadOpenCvImage(filepath);
-		Mat imgMat2 = preprocess(imgMat, documentType);
+		//Mat imgMat2 = preprocess(imgMat, documentType);
 		//Mat imgMat3 = imageCompress(imgMat2);
-		File img = saveImage(imgMat2);
+		File img = saveImage(imgMat);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
 		
 		img.delete();

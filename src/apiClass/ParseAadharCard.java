@@ -262,12 +262,12 @@ public class ParseAadharCard {
 
 		String resultQR;
 		try {
-			
+
 			resultQR = QRScan.scanQR(filePath);
 			System.out.println(resultQR);
-			if(resultQR.isEmpty() || resultQR.matches("^[0-9]{12}$"))
+			if(resultQR.isEmpty() || resultQR.matches("^[0-9]{1,12}$"))
 				throw new BarCodeException();
-				
+
 			if(resultQR.contains("dob")){
 				dobstr=resultQR.substring(resultQR.lastIndexOf("dob=\"")+5,resultQR.lastIndexOf("\""));
 				SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
@@ -319,8 +319,8 @@ public class ParseAadharCard {
 						addr.setPc(token.substring(token.lastIndexOf("=")+2));
 				}
 			}
-		  aadharNumber = uid.substring(0,4)+" "+uid.substring(4,8)+" "+uid.substring(8);
-		  obj.setAddress(addr);
+			aadharNumber = uid.substring(0,4)+" "+uid.substring(4,8)+" "+uid.substring(8);
+			obj.setAddress(addr);
 		} catch (NotFoundException | BarCodeException e1) {
 			System.out.println("couldn't detect QR code");
 			content = content.concat("\\n EOF");
@@ -353,20 +353,25 @@ public class ParseAadharCard {
 							sdf = new SimpleDateFormat(Constants.dateFormatSlash);
 							dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.AadharCardPage1.dob)+3,
 									splitDesc[i].lastIndexOf("/")+5);
+							dobstr = dobstr.replace(Constants.colon, "").trim();
+							cal.setTime(sdf.parse(dobstr));
 						}						   
-						else{
+						else if(splitDesc[i].contains("-")){
 							sdf = new SimpleDateFormat(Constants.dateFormatDashed);
 							dobstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.AadharCardPage1.dob)+3,
 									splitDesc[i].lastIndexOf("-")+5);
-						}	
-						dobstr = dobstr.replace(Constants.colon, "").trim();
-						cal.setTime(sdf.parse(dobstr));
+							dobstr = dobstr.replace(Constants.colon, "").trim();
+							cal.setTime(sdf.parse(dobstr));
+						}
 					}
 					catch(Exception e)
 					{
 						System.err.println(e);
+						String dateArr[] = splitDesc[i].split(":");
+						dobstr = dateArr[dateArr.length-1];
+						System.out.println(dobstr);
 					}
-
+					
 					name = splitDesc[i-1];					
 				}
 				else if(splitDesc[i].contains(Constants.birth) || splitDesc[i].contains(Constants.year))
@@ -406,7 +411,7 @@ public class ParseAadharCard {
 						e.printStackTrace();
 					}
 				}
-				
+
 				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.address.toLowerCase()))
 				{
 					address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
@@ -433,7 +438,7 @@ public class ParseAadharCard {
 			}
 		}
 
-		
+
 		obj.setName(name);
 		obj.setGender(gender);
 		obj.setAadharNumber(aadharNumber);

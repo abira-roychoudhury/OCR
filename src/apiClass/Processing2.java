@@ -110,7 +110,7 @@ public class Processing2 extends HttpServlet {
 		boolean comp = false;
 		double filesize = imgFile.length()/1000;
 		File compressedImageFile = null;
-		if(filesize > 1000)
+		if(filesize > 10000)
 		{
 			comp = true;
 			//-----------------------------------------------------------
@@ -138,7 +138,7 @@ public class Processing2 extends HttpServlet {
 			//--------------------------------------------------------------
 
 			System.out.println("COMPRESSED SIZE: " + compressedImageFile.length()/1000 + " KB");
-		}
+		} 
 
 		tl.fileDesc(fileName, fileType);
 		int diff = tl.fileLog(Constants.uploadImage, start, end);
@@ -147,13 +147,16 @@ public class Processing2 extends HttpServlet {
 		//Calling ImageEnhancement and getting back a preprocessed base64 image string
 		start = new Date();		          
 		ImageEnhancement ie = new ImageEnhancement();
-		//String processedImgBase64 = ie.imagePreprocessing(filePath, fileType);		          
-
 		String processedImgBase64 = "";
 		if(comp)
+			processedImgBase64= ie.imagePreprocessing(compressedImageFile.getAbsolutePath(), fileType);	
+		else
+			processedImgBase64= ie.imagePreprocessing(filePath, fileType);	
+
+		/*if(comp)
 			processedImgBase64 = ie.convertToBase64(compressedImageFile.getAbsolutePath());
 		else
-			processedImgBase64 = ie.convertToBase64(filePath);		          
+		processedImgBase64 = ie.convertToBase64(filePath);		 */         
 		end = new Date();
 		//diff = tl.fileLog(Constants.imagePreprocessing, start, end);
 		//request.setAttribute(Constants.imagePreprocessing, diff);
@@ -180,8 +183,9 @@ public class Processing2 extends HttpServlet {
 			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray(Constants.VisionResponse.textAnnotations);
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			descriptionStr=firstObj.getString(Constants.VisionResponse.description);
+			//System.out.println(descriptionStr);
 			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
-			System.out.println(descriptionStr);
+			//System.out.println("removing garbage ======= "+descriptionStr);
 			request.setAttribute(Constants.description, descriptionStr);
 			
 		
@@ -190,10 +194,10 @@ public class Processing2 extends HttpServlet {
 		}
 
 		//checking for correct File type
-		if(descriptionStr.toLowerCase().contains(Constants.ITdepartment.toLowerCase()) && fileType.equals(Constants.PanCard.panCard) ||
+		if(descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase()) && fileType.equals(Constants.PanCard.panCard) ||
 				descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()) && fileType.equals(Constants.VoterCard.voterCard) ||	
 				descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()) && fileType.equals(Constants.DrivingLicense.drivingLicense) ||
-				/*hasAadharNumber(descriptionStr) && */ fileType.equals(Constants.AadharCardPage1.aadharCard))
+				hasAadharNumber(descriptionStr) &&  fileType.equals(Constants.AadharCardPage1.aadharCard))
 		{	
 
 
@@ -255,6 +259,9 @@ public class Processing2 extends HttpServlet {
 			response.setContentType("text/plain");
 			PrintWriter out = response.getWriter();
 			out.println("The Image file uploaded and the File Type selected does not match");
+			if(fileType.equals(Constants.AadharCardPage1.aadharCard))
+				out.println("OR The aadhar number could not be detected properly from the image uploaded");
+				
 		}
 
 

@@ -74,7 +74,7 @@ public class DocumentTemplating {
 					coordinates.put(Constants.AadharCardPage1.year, new int[2][4] );
 				}
 			}
-			if(!ac.getDobDisplay().isEmpty())
+			else
 			{
 				displayDocument.put(Constants.AadharCardPage1.dob, (ac.getDobDisplay()));
 				try {
@@ -83,6 +83,8 @@ public class DocumentTemplating {
 					coordinates.put(Constants.AadharCardPage1.dob, new int[2][4] );
 				}
 			}			
+			
+				
 			displayDocument.put(Constants.AadharCardPage1.gender, ac.getGender());
 			try {
 				coordinates.put(Constants.AadharCardPage1.gender, acc.getGender());

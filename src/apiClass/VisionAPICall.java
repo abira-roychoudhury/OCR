@@ -8,6 +8,7 @@ import java.net.URL;
 
 import modal.Constants;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.Mat;
 
@@ -32,10 +33,10 @@ public class VisionAPICall {
 			conn.setRequestProperty("Content-Type", "application/json");
 			
 			
-			if(fileType.equals(Constants.AadharCardPage1.aadharCard))
-				 strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"DOCUMENT_TEXT_DETECTION\", \"maxResults\":1000 } ], \"imageContext\" : { \"languageHints\" : [\"en\",\"hi\"]  } } ] }";
-			else
-				strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"DOCUMENT_TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
+			//strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
+			strBody = getBody(base64String).toString();
+			System.out.println(strBody);
+			
 			
 			OutputStream os = conn.getOutputStream();
 			os.write(strBody.getBytes());
@@ -65,4 +66,27 @@ public class VisionAPICall {
 
 		return result;
 	}
+	
+	public JSONObject getBody(String base64String){
+        JSONObject Body = new JSONObject();
+        JSONArray requests = new JSONArray();
+        
+        JSONObject requestBody = new JSONObject();
+        
+        JSONObject content = new JSONObject();
+        content.put("content", base64String);
+        requestBody.put("image", content);
+        
+        
+        JSONArray features = new JSONArray();
+        features.put(new JSONObject().put("type", "TEXT_DETECTION").put("maxResults", 1000));
+        requestBody.put("features",features);
+ 
+        requests.put(requestBody);
+        
+        Body.put("requests", requests);
+ 
+        return Body;
+ }
+
 }
