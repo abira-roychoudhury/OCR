@@ -113,8 +113,8 @@ public class AadharCardAddress {
 	}
 	
 	public String toString(){
-		if(this.addr.isEmpty())
-			return co + "\n"+house + "\n"+street + "\n"+lm + "\n"+loc + "\n"+vtc + "\n"+po + "\n"+dist + "\n"+subdist + "\n"+state + "\n"+pc;
+		if(this.addr.isEmpty() && !this.co.isEmpty())
+			return co.trim() + "\n"+house + ", "+street + "\n"+lm + "\n"+loc + "\n"+vtc + "\n"+po + "\n"+dist + ","+subdist + "\n"+state + "-"+pc;
 		return this.addr;
 	}
 

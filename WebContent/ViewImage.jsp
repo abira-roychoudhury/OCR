@@ -50,8 +50,16 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 					<form>
 							<c:forEach var="doc" items="${displaydocument}" varStatus="itemsRow">
 								<div class="form-group">
+									<c:set var = "addrKey" scope = "session" value = "Address"/>
 									<label for="${doc.key}">${doc.key}</label>
-									<input class="form-control" type="text" value="${doc.value}" id="${doc.key}">
+									<c:choose>
+         						         <c:when test = "${doc.key == addrKey}">
+								            <textarea class="form-control" id="${doc.key}" rows="4" cols="50">${doc.value}</textarea>
+								         </c:when>								         		         
+								         <c:otherwise>
+								            <input class="form-control" type="text" value="${doc.value}" id="${doc.key}">
+								         </c:otherwise>
+								      </c:choose>									
 								</div>
 							</c:forEach>
 							<button type="button" class="btn btn-primary">Submit</button>
