@@ -97,6 +97,10 @@ public class Constants {
 		public static final String aadharNumber = "Aadhar Number";
 		public static final String government = "Government";
 		public static final String address = "Address";
+		public static final String father = "Father";
+		public static final String unique = "Unique";
+		public static final String authority = "Authority";
+		public static final String identification = "Identification";
 	}
 	//Driving License Constants
 	public static class DrivingLicense{

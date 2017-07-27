@@ -287,7 +287,7 @@ public class Processing2 extends HttpServlet {
 				}
 				i++;
 			}
-			System.out.println(sb.toString());
+			//System.out.println(sb.toString());
 			if(sb.length()>10)
 				return true;
 			else

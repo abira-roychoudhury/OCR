@@ -110,6 +110,6 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
     </div>
   </div>
 	
-  <script src= "js/script.js" type="text/javascript"></script>
+  <script src= "js/script.js?x=4" type="text/javascript"></script>
 </body>
 </html>

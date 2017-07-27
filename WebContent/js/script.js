@@ -3,9 +3,13 @@ for (var i = 0; i < inputTags.length; i++) {
 	if(inputTags[i].type == "text")
 		inputTags[i].addEventListener('click',highlight);
 }
+var textareaTag = document.getElementsByTagName('textarea');
+for (var i = 0; i < textareaTag.length; i++) {
+	textareaTag[i].addEventListener('click',highlight);
+}
 	
 	function highlight(){
-		if(this.type == "text"){
+		if(this.type == "text" || this.id == "Address"){
 			var id = this.id;
 			var ox = data[id][0].x; 
 			var oy = data[id][0].y;

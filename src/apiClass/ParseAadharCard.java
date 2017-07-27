@@ -78,8 +78,8 @@ public class ParseAadharCard {
 	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj)
 	{
 		AadharCardCoord coord = new AadharCardCoord();
-		int n=0,yr=0,d=0,g=0,a=0,ad=0,i=1;
-		int nl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
+		int n=0,f=0,yr=0,d=0,g=0,a=0,ad=0,i=1;
+		int nl=0,fl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
 		String year =  Integer.toString(obj.getYearOfBirth());
 
 		for(;i<textAnnotationArray.length();i++)
@@ -117,6 +117,38 @@ public class ParseAadharCard {
 					}
 				}
 				nl = nl+description.length()+1;
+			}
+			
+			//setting the coordinates for father's name
+			else if(Arrays.asList(obj.getFatherName().split("\\s+")).contains(description) && fl< obj.getFatherName().length())
+			{
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
+				if(f==0)
+				{
+					for(int j=0;j<4;j++)
+					{ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
+						coord.setFatherName(x, 0, j);
+						coord.setFatherName(y, 1, j);
+					}
+					f++;
+				}
+				else
+				{
+					for(int j=1;j<3;j++)
+					{ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
+						coord.setFatherName(x, 0, j);
+						coord.setFatherName(y, 1, j);
+					}
+				}
+				fl = fl+description.length()+1;
 			}
 
 			//setting the coordinates for year of birth
@@ -245,6 +277,39 @@ public class ParseAadharCard {
 				}
 				al = al+description.length()+1;	
 			}
+			
+			//setting the coordinates for address
+			else if(Arrays.asList(obj.getAddress().split("\\s+")).contains(description) && adl< obj.getAddress().length())
+			{
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
+				if(ad==0)
+				{
+					for(int j=0;j<4;j++)
+					{ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
+						coord.setAddress(x, 0, j);
+						coord.setAddress(y, 1, j);
+					}
+					ad++;
+				}
+				else
+				{
+					for(int j=1;j<3;j++)
+					{ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
+						coord.setAddress(x, 0, j);
+						coord.setAddress(y, 1, j);
+					}
+				}
+				adl = adl+description.length()+1;
+			}
+			
 		}
 		obj.setCoordinates(coord);
 		return obj;
@@ -256,7 +321,7 @@ public class ParseAadharCard {
 		/* */
 
 		int year = 0,d=0;
-		String uid="",name="",gender="",aadharNumber="",dobstr="",address="";
+		String uid="",name="",fname = "",gender="",aadharNumber="",dobstr="",address="";
 		Calendar cal = Calendar.getInstance();
 		AadharCardAddress addr = new AadharCardAddress();
 
@@ -286,6 +351,8 @@ public class ParseAadharCard {
 					uid=token.substring(token.lastIndexOf("=")+2);
 				else if(token.contains("name"))
 					name=token.substring(token.lastIndexOf("=")+2);
+				else if(token.contains("father"))
+					fname=token.substring(token.lastIndexOf("=")+2);
 				else if(token.contains("gender"))
 					gender=(token.substring(token.lastIndexOf("=")+2).equals("M")?"Male":"Female");
 				else if(token.contains("yob"))
@@ -372,7 +439,12 @@ public class ParseAadharCard {
 						System.out.println(dobstr);
 					}
 					
-					name = splitDesc[i-1];					
+					name = splitDesc[i-1];	
+					if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
+					{
+						fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
+						name = splitDesc[i-2];
+					}
 				}
 				else if(splitDesc[i].contains(Constants.birth) || splitDesc[i].contains(Constants.year))
 				{
@@ -385,9 +457,21 @@ public class ParseAadharCard {
 						year = Integer.parseInt(yearstr);
 
 						name = splitDesc[i-1];
+						if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
+						{
+							fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
+							name = splitDesc[i-2];
+						}
 						int j = i;
-						while(name.length() < 5)
+						while(name.length() < 5){
 							name = splitDesc[--j];
+							if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
+							{
+								fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
+								name = splitDesc[j-1];
+							}
+						}
+							
 					}
 					catch(Exception e)
 					{
@@ -402,24 +486,52 @@ public class ParseAadharCard {
 						year = Integer.parseInt(yearstr);
 
 						name = splitDesc[i-1];
+						if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
+						{
+							fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
+							name = splitDesc[i-2];
+						}
 						int j = i;
-						while(name.length() < 5)
+						while(name.length() < 5){
 							name = splitDesc[--j];
+							if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
+							{
+								fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
+								name = splitDesc[j-1];
+							}
+						}
 					}
 					catch(Exception e)
 					{
 						e.printStackTrace();
 					}
 				}
-
+				
 				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.address.toLowerCase()))
 				{
 					address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
-					//while(!splitDesc[i].contains("Maharashtra") && i<splitDesc.length-1){
 					while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
 						i++;						
 						address = address + "\n" + splitDesc[i];		
-					}
+					}		
+					AadharCardAddress completeAddr = new AadharCardAddress(address);
+					obj.setAddress(completeAddr);
+				}
+
+				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.unique.toLowerCase()) ||
+						splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.identification.toLowerCase()) ||
+						splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.authority.toLowerCase()))
+				{
+						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1) i++;
+						
+						i++;
+						address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
+						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
+							i++;						
+							address = address + "\n" + splitDesc[i];		
+						}
+					
+					
 					AadharCardAddress completeAddr = new AadharCardAddress(address);
 					obj.setAddress(completeAddr);
 				}
@@ -437,9 +549,8 @@ public class ParseAadharCard {
 				e.printStackTrace();
 			}
 		}
-
-
 		obj.setName(name);
+		obj.setFatherName(fname);
 		obj.setGender(gender);
 		obj.setAadharNumber(aadharNumber);
 		obj.setYearOfBirth(year);

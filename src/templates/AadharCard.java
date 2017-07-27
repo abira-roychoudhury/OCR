@@ -5,6 +5,7 @@ import java.util.Calendar;
 public class AadharCard {
 	
 	private String name = "";
+	private String fatherName = "";
 	private int yearOfBirth = 0;
 	private Calendar dob;
 	private String dobDisplay = "";
@@ -74,4 +75,14 @@ public class AadharCard {
 	public void setDobDisplay(String dobDisplay) {
 		this.dobDisplay = dobDisplay;
 	}
+	
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+
+	
 }

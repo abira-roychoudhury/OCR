@@ -3,6 +3,7 @@ package templates;
 public class AadharCardCoord {
 		
 	private int name[][] = new int[2][4];
+	private int fatherName[][] = new int[2][4];
 	private int yearOfBirth[][] = new int[2][4];
 	private int dobDisplay[][] = new int[2][4];
 	private int gender[][] = new int[2][4];
@@ -15,6 +16,12 @@ public class AadharCardCoord {
 	}
 	public void setName(int value, int r, int c) {
 		this.name[r][c] = value;
+	}
+	public int[][] getFatherName() {
+		return fatherName;
+	}
+	public void setFatherName(int value, int r, int c) {
+		this.fatherName[r][c] = value;
 	}
 	public int[][] getYearOfBirth() {
 		return yearOfBirth;

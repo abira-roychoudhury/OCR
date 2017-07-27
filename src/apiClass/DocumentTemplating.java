@@ -65,6 +65,13 @@ public class DocumentTemplating {
 				coordinates.put(Constants.AadharCardPage1.name, new int[2][4] );
 			}
 			
+			displayDocument.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, ac.getFatherName());
+			try {
+				coordinates.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, acc.getFatherName());
+			} catch (Exception e) {
+				coordinates.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, new int[2][4] );
+			}
+			
 			if(ac.getYearOfBirth() != 0)
 			{
 				displayDocument.put(Constants.AadharCardPage1.year, Integer.toString(ac.getYearOfBirth()));
@@ -98,8 +105,16 @@ public class DocumentTemplating {
 			} catch (Exception e) {
 				coordinates.put(Constants.AadharCardPage1.aadharNumber, new int[2][4] );
 			}
-			if(!ac.getAddress().isEmpty())
+			
+			if(!ac.getAddress().isEmpty()){
 				displayDocument.put(Constants.AadharCardPage1.address, ac.getAddress());
+				try {
+					coordinates.put(Constants.AadharCardPage1.address, acc.getAddress());
+				} catch (Exception e) {
+					coordinates.put(Constants.AadharCardPage1.address, new int[2][4] );
+				}
+			}
+				
 
 		}
 		else if(fileType.equals(Constants.DrivingLicense.drivingLicense))
