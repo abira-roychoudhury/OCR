@@ -221,9 +221,13 @@ public class ParseVoterCard {
 			}
 			else if(token.toLowerCase().contains(Constants.birth.toLowerCase())){
 				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.birth.toLowerCase())+5);
-				obj.setDobDisplay(dob.toUpperCase().replace(Constants.colon, "").trim());
-			
+				obj.setDobDisplay(dob.toUpperCase().replace(Constants.colon, "").trim());			
 			}
+			else if(token.toLowerCase().contains(Constants.VoterCard.age.toLowerCase())){
+				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.VoterCard.age.toLowerCase())+3);
+				obj.setDobDisplay(dob.toUpperCase().replace(Constants.colon, "").trim());			
+			}
+			
 		}
 		return obj;
 	}

@@ -4,6 +4,7 @@ public class VoterCard {
 	
 	
 	private String dobDisplay = "";
+	private String age = "";
 	private String name = "";
 	private String fatherName = "";
 	private String sex = "";
@@ -46,6 +47,12 @@ public class VoterCard {
 	}
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
 	}
 	
 

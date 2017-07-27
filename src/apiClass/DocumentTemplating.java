@@ -175,7 +175,14 @@ public class DocumentTemplating {
 			displayDocument.put(Constants.VoterCard.electorName, vl.getName());
 			displayDocument.put(Constants.VoterCard.fatherName, vl.getFatherName());
 			displayDocument.put(Constants.VoterCard.sex, vl.getSex());
-			displayDocument.put(Constants.VoterCard.dob, vl.getDobDisplay());	
+			
+			if(!vl.getAge().isEmpty()){
+				
+			}
+			else{			
+				displayDocument.put(Constants.VoterCard.dob, vl.getDobDisplay());
+			}
+				
 
 			try {
 				coordinates.put(Constants.VoterCard.voterId, vlc.getVoterId());

@@ -127,6 +127,7 @@ public class Constants {
 		public static final String elector = "Elector";
 		public static final String name = "Name";
 		public static final String father = "Father";
+		public static final String age = "Age";
 	}
 	
 	//TRY all combinations of INDIA

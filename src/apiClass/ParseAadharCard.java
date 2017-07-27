@@ -303,7 +303,8 @@ public class ParseAadharCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setAddress(x, 0, j);
+						if(coord.getAddress()[0][j]<x)
+							coord.setAddress(x, 0, j);
 						coord.setAddress(y, 1, j);
 					}
 				}
@@ -311,6 +312,8 @@ public class ParseAadharCard {
 			}
 			
 		}
+		
+		
 		obj.setCoordinates(coord);
 		return obj;
 	}
