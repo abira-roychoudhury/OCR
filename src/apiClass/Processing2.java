@@ -117,7 +117,7 @@ public class Processing2 extends HttpServlet {
 			File input = new File(filePath);
 			BufferedImage image = ImageIO.read(input);
 
-			compressedImageFile = new File("compress.png");  
+			compressedImageFile = new File("compress.jpg");  
 			OutputStream os = new FileOutputStream(compressedImageFile);
 
 			Iterator<ImageWriter>writers = ImageIO.getImageWritersByFormatName("jpg");

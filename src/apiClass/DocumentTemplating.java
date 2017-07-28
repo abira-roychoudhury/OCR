@@ -177,10 +177,22 @@ public class DocumentTemplating {
 			displayDocument.put(Constants.VoterCard.sex, vl.getSex());
 			
 			if(!vl.getAge().isEmpty()){
-				
+				displayDocument.put(Constants.VoterCard.age, vl.getAge());
+				try {
+					coordinates.put(Constants.VoterCard.age, vlc.getAge());
+				} catch (Exception e) {
+					coordinates.put(Constants.VoterCard.age, new int[2][4] );
+				}
+
 			}
 			else{			
 				displayDocument.put(Constants.VoterCard.dob, vl.getDobDisplay());
+				try {
+					coordinates.put(Constants.VoterCard.dob, vlc.getDobDisplay());
+				} catch (Exception e) {
+					coordinates.put(Constants.VoterCard.dob, new int[2][4] );
+				}
+
 			}
 				
 
@@ -208,12 +220,7 @@ public class DocumentTemplating {
 				coordinates.put(Constants.VoterCard.sex, new int[2][4] );
 			}
 
-			try {
-				coordinates.put(Constants.VoterCard.dob, vlc.getDobDisplay());
-			} catch (Exception e) {
-				coordinates.put(Constants.VoterCard.dob, new int[2][4] );
-			}
-
+			
 		}	
 
 		document.put(Constants.displaydocument, displayDocument);

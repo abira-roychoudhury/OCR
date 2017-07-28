@@ -27,7 +27,7 @@ public class ImageEnhancement {
 
 		//File nativeFile = new File(Core.NATIVE_LIBRARY_NAME + ".dll");
 		//System.load(nativeFile.getAbsolutePath());
-		System.out.println(System.getProperty("java.library.path"));
+		//System.out.println(System.getProperty("java.library.path"));
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		//LOAD IMAGE IN GRAYSCALE
@@ -56,7 +56,7 @@ public class ImageEnhancement {
 		Date d = new Date();
 		File processedFile = new File("Img"+d.getTime()+".jpg");
         Imgcodecs.imwrite(processedFile.getAbsolutePath(), img);
-		System.out.println("New image saved at location : "+processedFile.getAbsolutePath());
+		//System.out.println("New image saved at location : "+processedFile.getAbsolutePath());
 		return processedFile;
 	}
 	

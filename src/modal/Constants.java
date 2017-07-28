@@ -123,10 +123,13 @@ public class Constants {
 		public static final String dob = "DOB";
 		public static final String sex = "Sex";
 		public static final String voterId = "Voter ID";
+		public static final String commission = "Commission";
 		public static final String card = "Card";
 		public static final String elector = "Elector";
 		public static final String name = "Name";
 		public static final String father = "Father";
+		public static final String husband = "Husband";
+		public static final String mother = "Mother";
 		public static final String age = "Age";
 	}
 	
