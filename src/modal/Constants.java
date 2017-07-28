@@ -131,6 +131,7 @@ public class Constants {
 		public static final String husband = "Husband";
 		public static final String mother = "Mother";
 		public static final String age = "Age";
+		public static final String address = "Address";
 	}
 	
 	//TRY all combinations of INDIA

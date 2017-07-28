@@ -8,6 +8,7 @@ public class VoterCardCoord {
 	private int dobDisplay[][] = new int[2][4];
 	private int age[][] = new int [2][4];
 	private int voterId[][] = new int[2][4];
+	private int address[][] = new int[2][4];
 	
 	public int[][] getVoterId() {
 		return voterId;
@@ -45,5 +46,12 @@ public class VoterCardCoord {
 	public void setSex(int value, int r, int c) {
 		this.sex[r][c] = value;
 	}
+	public int[][] getAddress() {
+		return address;
+	}
+	public void setAddress(int value, int r, int c) {
+		this.address[r][c] = value;
+	}
+	
 	
 }

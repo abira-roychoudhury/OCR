@@ -194,6 +194,7 @@ public class DocumentTemplating {
 				}
 
 			}
+			displayDocument.put(Constants.VoterCard.address, vl.getAddress());
 				
 
 			try {
@@ -218,6 +219,11 @@ public class DocumentTemplating {
 				coordinates.put(Constants.VoterCard.sex, vlc.getSex());
 			} catch (Exception e) {
 				coordinates.put(Constants.VoterCard.sex, new int[2][4] );
+			}
+			try {
+				coordinates.put(Constants.VoterCard.address, vlc.getAddress());
+			} catch (Exception e) {
+				coordinates.put(Constants.VoterCard.address, new int[2][4] );
 			}
 
 			

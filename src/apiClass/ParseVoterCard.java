@@ -223,7 +223,7 @@ public class ParseVoterCard {
 				if(tokens[i+1].toLowerCase().contains(Constants.VoterCard.card.toLowerCase()))
 				{
 					if(tokens[i+2].toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()))
-						voterId = tokens[i+1].substring(tokens[i+1].toLowerCase().lastIndexOf(Constants.VoterCard.card.toLowerCase())+5);
+						voterId = tokens[i+1].substring(tokens[i+1].toLowerCase().lastIndexOf(Constants.VoterCard.card.toLowerCase())+4);
 					else
 						voterId = tokens[i+2];
 				}
@@ -232,7 +232,7 @@ public class ParseVoterCard {
 				obj.setVoterId(voterId);
 			}
 			//checking for elector's name
-			else if(token.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase())){
+			else if(obj.getName().isEmpty() && token.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase())){
 				String name = token.substring(token.toLowerCase().indexOf(Constants.VoterCard.name.toLowerCase())+4);
 				if(!(tokens[i+1].toLowerCase().contains(Constants.VoterCard.father.toLowerCase()) ||
 						tokens[i+1].toLowerCase().contains(Constants.VoterCard.mother.toLowerCase()) ||
@@ -252,12 +252,28 @@ public class ParseVoterCard {
 			//checking for date of birth
 			else if(token.toLowerCase().contains(Constants.birth.toLowerCase())){
 				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.birth.toLowerCase())+5);
-				obj.setDobDisplay(dob.replace(Constants.colon, "").trim());			
+				obj.setDobDisplay(dob.replace(Constants.colon, "").trim());	
+				//int j = i;
+				while(obj.getDobDisplay().isEmpty() && i<tokens.length)
+				{
+					dob = tokens[++i];
+					obj.setDobDisplay(dob.replace(Constants.colon, "").trim());
+				}
+					
 			}
 			//checking for age
 			else if(token.toLowerCase().contains(Constants.VoterCard.age.toLowerCase())){
 				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.VoterCard.age.toLowerCase())+3);
-				obj.setDobDisplay(dob.trim());			
+				obj.setAge(dob.trim());			
+			}
+			//checking for address
+			else if(obj.getAddress().isEmpty() && token.toLowerCase().contains(Constants.VoterCard.address.toLowerCase())){
+				String addr = token.substring(token.toLowerCase().indexOf("s")+2);
+				while(i<tokens.length-1 && !tokens[i].matches("^.+?\\d{6}$")){
+					i++;						
+					addr = addr + "\n" + tokens[i];		
+				}
+				obj.setAddress(addr.trim());			
 			}
 			
 		}
@@ -268,6 +284,12 @@ public class ParseVoterCard {
 		obj.setSex(sex);
 		
 		return obj;
+	}
+	
+	public boolean hasTwoDigit(String str){
+			
+		return str.matches("");
+		
 	}
 
 }
