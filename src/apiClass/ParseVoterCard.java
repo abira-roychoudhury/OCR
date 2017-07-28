@@ -269,10 +269,15 @@ public class ParseVoterCard {
 			//checking for address
 			else if(obj.getAddress().isEmpty() && token.toLowerCase().contains(Constants.VoterCard.address.toLowerCase())){
 				String addr = token.substring(token.toLowerCase().indexOf("s")+2);
-				while(i<tokens.length-1 && !tokens[i].matches("^.+?\\d{6}$")){
-					i++;						
-					addr = addr + "\n" + tokens[i];		
+				if(hasPin(content.substring(token.toLowerCase().indexOf("s")+2))){
+					while(i<tokens.length-1 && !tokens[i].matches("^.+?\\d{6}$")){
+						i++;						
+						addr = addr + "\n" + tokens[i];		
+					}
 				}
+				else
+					addr = addr+"\n"+tokens[i+1]+"\n"+tokens[i+2]+"\n"+tokens[i+3];
+				
 				obj.setAddress(addr.trim());			
 			}
 			
@@ -290,6 +295,9 @@ public class ParseVoterCard {
 			
 		return str.matches("");
 		
+	}
+	public boolean hasPin(String str){		
+		return str.matches("^.+?\\d{6}$");		
 	}
 
 }
