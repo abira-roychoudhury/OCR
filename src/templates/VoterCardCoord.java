@@ -26,7 +26,7 @@ public class VoterCardCoord {
 		return age;
 	}
 	public void setAge(int value, int r, int c) {
-		this.dobDisplay[r][c] = value;
+		this.age[r][c] = value;
 	}
 	public int[][] getName() {
 		return name;

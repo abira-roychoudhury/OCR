@@ -1,6 +1,8 @@
 package apiClass;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import apiClass.EntityType;
 import modal.Constants;
@@ -31,23 +33,19 @@ public class ParseVoterCard {
 	
 	public VoterCard parseCoord(JSONArray textAnnotationArray, VoterCard obj){
 		VoterCardCoord coord = new VoterCardCoord();
-		int n=0,f=0,d=0,a=0,s=0,v=0,i=1;
-		int nl=0,fl=0,dl=0,al=0,sl=0,vl=0;
+		int n=0,f=0,d=0,a=0,s=0,v=0,ad=0,i=1;
+		int nl=0,fl=0,dl=0,al=0,sl=0,vl=0,adl=0;
+				
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString(Constants.VisionResponse.description);
-			if(description.toUpperCase().contains(Constants.VoterCard.card.toUpperCase()))
-				break;
-		}
-		
-		for(;i<textAnnotationArray.length();i++){
-			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj.getString(Constants.VisionResponse.description);
-			if(description.equals("/"))
+			System.out.println(description);
+			if(description.equals("/") || description.equals(":"))
 				continue;
 			
+			
 			//Setting coordinates VoterId
-			if(Arrays.asList(obj.getVoterId().split("\\s+")).contains(description) && vl< obj.getVoterId().length()){
+			if(obj.getVoterId().contains(description) && vl< obj.getVoterId().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(v==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -70,7 +68,7 @@ public class ParseVoterCard {
 						coord.setVoterId(y, 1, j);
 					}
 				}
-				vl = vl+description.length()+1;
+				vl = vl+description.length();
 			}
 			//setting the coordinates for name
 			else if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length()){
@@ -92,7 +90,8 @@ public class ParseVoterCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setName(x, 0, j);
+						if(coord.getName()[0][j]<x)
+							coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
 				}
@@ -119,7 +118,8 @@ public class ParseVoterCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setFatherName(x, 0, j);
+						if(coord.getFatherName()[0][j]<x)
+							coord.setFatherName(x, 0, j);
 						coord.setFatherName(y, 1, j);
 					}
 				}
@@ -181,7 +181,7 @@ public class ParseVoterCard {
 			}
 			
 			//setting the coordinates for age 
-			else if(obj.getAge().contains(description) && al< obj.getAge().length()){
+			else if(Arrays.asList(obj.getAge().split("\\s+")).contains(description) && al< obj.getAge().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(a==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -204,7 +204,34 @@ public class ParseVoterCard {
 						coord.setAge(y, 1, j);
 					}
 				}
-				al = al+description.length();
+				al = al+description.length()+1;
+			}
+			//setting the coordinates for address
+			else if(Arrays.asList(obj.getAddress().split("\\s+")).contains(description) && adl< obj.getAddress().length()){
+				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
+				if(ad==0){
+					for(int j=0;j<4;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
+						coord.setAddress(x, 0, j);
+						coord.setAddress(y, 1, j);
+					}
+					ad++;
+				}
+				else{
+					for(int j=1;j<3;j++){ //iterate columns
+						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
+						JSONObject xy = (JSONObject) vertices.get(j);
+						int x = xy.getInt(Constants.VisionResponse.x);
+						int y = xy.getInt(Constants.VisionResponse.y);
+						if(coord.getAddress()[0][j]<x)
+							coord.setAddress(x, 0, j);
+						coord.setAddress(y, 1, j);
+					}
+				}
+				adl = adl+description.length()+1;
 			}
 		}		
 		obj.setCoordinates(coord);
@@ -236,15 +263,20 @@ public class ParseVoterCard {
 				String name = token.substring(token.toLowerCase().indexOf(Constants.VoterCard.name.toLowerCase())+4);
 				if(!(tokens[i+1].toLowerCase().contains(Constants.VoterCard.father.toLowerCase()) ||
 						tokens[i+1].toLowerCase().contains(Constants.VoterCard.mother.toLowerCase()) ||
-						  tokens[i+1].toLowerCase().contains(Constants.VoterCard.husband.toLowerCase())))
+						  tokens[i+1].toLowerCase().contains(Constants.VoterCard.husband.toLowerCase()) || 
+						   tokens[i+1].toLowerCase().contains(Constants.VoterCard.name.toLowerCase())))
 					name = name.concat(" "+tokens[i+1]);				
 				obj.setName(name.replace(Constants.colon, "").trim());
 			}
 			//checking for father's name
 			else if(token.toLowerCase().contains(Constants.VoterCard.father.toLowerCase()) ||
-					  token.toLowerCase().contains(Constants.VoterCard.husband.toLowerCase())){
+					  token.toLowerCase().contains(Constants.VoterCard.husband.toLowerCase()) || 
+					  	token.toLowerCase().contains(Constants.VoterCard.name.toLowerCase())){
 				String name = token.substring(token.toLowerCase().lastIndexOf(Constants.VoterCard.name.toLowerCase())+4);
-				if(!tokens[i+1].toLowerCase().contains(Constants.VoterCard.sex.toLowerCase()))
+				if(!(tokens[i+1].toLowerCase().contains(Constants.VoterCard.sex.toLowerCase()) || 
+						hasTwoDigit(tokens[i+1]) ||
+						tokens[i+1].toLowerCase().contains(Constants.birth.toLowerCase()) || 
+						tokens[i+1].toLowerCase().contains(Constants.VoterCard.age.toLowerCase())))
 					name = name.concat(" "+tokens[i+1]);				
 				obj.setFatherName(name.replace(Constants.colon, "").trim());
 			}
@@ -264,10 +296,27 @@ public class ParseVoterCard {
 			//checking for age
 			else if(token.toLowerCase().contains(Constants.VoterCard.age.toLowerCase())){
 				String dob = token.substring(token.toLowerCase().lastIndexOf(Constants.VoterCard.age.toLowerCase())+3);
-				obj.setAge(dob.trim());			
+				if(hasTwoDigit(dob) || dob.toLowerCase().contains(Constants.VoterCard.years))
+					obj.setAge(dob.trim());
+				else{
+					Pattern pattern = Pattern.compile("\\s[0-9]{2}\\s");
+					Matcher matcher = pattern.matcher(content);
+					if (matcher.find())
+					{
+					    //System.out.println(matcher.group(0));
+					    obj.setAge(dob +" : "+ matcher.group(0).trim());
+					}
+					else
+						obj.setAge(dob);
+					
+				}
 			}
 			//checking for address
-			else if(obj.getAddress().isEmpty() && token.toLowerCase().contains(Constants.VoterCard.address.toLowerCase())){
+			else if(obj.getAddress().isEmpty() && (token.toLowerCase().contains(Constants.VoterCard.address.toLowerCase()) ||
+													token.toLowerCase().contains(Constants.VoterCard.address1.toLowerCase()) ||
+													token.toLowerCase().contains(Constants.VoterCard.address2.toLowerCase()) ||
+													token.toLowerCase().contains(Constants.VoterCard.address3.toLowerCase()) ||
+													token.toLowerCase().contains(Constants.VoterCard.address4.toLowerCase()))){
 				String addr = token.substring(token.toLowerCase().indexOf("s")+2);
 				if(hasPin(content.substring(token.toLowerCase().indexOf("s")+2))){
 					while(i<tokens.length-1 && !tokens[i].matches("^.+?\\d{6}$")){
@@ -291,9 +340,12 @@ public class ParseVoterCard {
 		return obj;
 	}
 	
-	public boolean hasTwoDigit(String str){
-			
-		return str.matches("");
+	public boolean hasTwoDigit(String str){			
+		System.out.println("str :"+str);
+		if(str.matches("^.+? [0-9]{2} .+?$") || str.matches("^.+? [0-9]{2}$"))
+			return true;
+		else 
+			return false;
 		
 	}
 	public boolean hasPin(String str){		

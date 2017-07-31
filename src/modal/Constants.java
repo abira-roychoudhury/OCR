@@ -86,6 +86,7 @@ public class Constants {
 		public static final String father = "Father";
 		public static final String panAbb = "PAN";
 		public static final String tax = "Tax";
+		public static final String income = "Income";
 	}
 	//Aadhar Card Constants
 	public static class AadharCardPage1{
@@ -131,7 +132,12 @@ public class Constants {
 		public static final String husband = "Husband";
 		public static final String mother = "Mother";
 		public static final String age = "Age";
+		public static final String years = "Years";
 		public static final String address = "Address";
+		public static final String address1 = "Addess";
+		public static final String address2 = "Adress";
+		public static final String address3 = "Addres";
+		public static final String address4 = "Adcress";
 	}
 	
 	//TRY all combinations of INDIA

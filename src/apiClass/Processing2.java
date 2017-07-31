@@ -110,6 +110,7 @@ public class Processing2 extends HttpServlet {
 		boolean comp = false;
 		double filesize = imgFile.length()/1000;
 		File compressedImageFile = null;
+		System.out.println("filesize :"+filesize);
 		if(filesize > 10000)
 		{
 			comp = true;
@@ -117,7 +118,7 @@ public class Processing2 extends HttpServlet {
 			File input = new File(filePath);
 			BufferedImage image = ImageIO.read(input);
 
-			compressedImageFile = new File("compress.jpg");  
+			compressedImageFile = new File("compress"+start.getTime()+".jpg");  
 			OutputStream os = new FileOutputStream(compressedImageFile);
 
 			Iterator<ImageWriter>writers = ImageIO.getImageWritersByFormatName("jpg");
@@ -194,7 +195,7 @@ public class Processing2 extends HttpServlet {
 		}
 
 		//checking for correct File type
-		if(descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase()) && fileType.equals(Constants.PanCard.panCard) ||
+		if(( descriptionStr.toLowerCase().contains(Constants.PanCard.income.toLowerCase()) || descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase())) && fileType.equals(Constants.PanCard.panCard) ||
 				descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()) && fileType.equals(Constants.VoterCard.voterCard) ||	
 				descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()) && fileType.equals(Constants.DrivingLicense.drivingLicense) ||
 				hasAadharNumber(descriptionStr) &&  fileType.equals(Constants.AadharCardPage1.aadharCard))
@@ -227,7 +228,9 @@ public class Processing2 extends HttpServlet {
 			//Closing ImageFile
 			fileInputStreamReader.close();
 			//deleting image file
-			imgFile.delete();
+			System.out.println("Delete imgFile :"+imgFile.delete());
+			if(comp)
+				System.out.println("Delete compressed file :"+compressedImageFile.delete());
 
 
 			LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);

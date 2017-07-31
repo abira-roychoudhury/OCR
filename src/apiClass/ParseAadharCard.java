@@ -448,46 +448,35 @@ public class ParseAadharCard {
 						fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
 						name = splitDesc[i-2];
 					}
+					int j = i;
+					while(name.length() < 5){
+						name = splitDesc[--j];
+						if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
+						{
+							fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
+							name = splitDesc[j-1];
+						}
+					}
 				}
 				else if(splitDesc[i].contains(Constants.birth) || splitDesc[i].contains(Constants.year))
 				{
 					try
 					{
 						String yearstr = extractDateNumber(splitDesc[i]);
-						System.out.println(yearstr);
+						//System.out.println("year"+yearstr);
+						if(yearstr.isEmpty())
+						{
+							yearstr = extractDateNumber(splitDesc[i+1]);
+						}
 						yearstr = yearstr.substring(yearstr.length()-4,yearstr.length());
-
 						year = Integer.parseInt(yearstr);
 
-						name = splitDesc[i-1];
-						if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
-						{
-							fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
-							name = splitDesc[i-2];
-						}
-						int j = i;
-						while(name.length() < 5){
-							name = splitDesc[--j];
-							if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
-							{
-								fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
-								name = splitDesc[j-1];
-							}
-						}
-							
 					}
 					catch(Exception e)
 					{
-						e.printStackTrace();
+						e.printStackTrace();						
 					}
-				}
-				else if(splitDesc[i].contains(Constants.dob))
-				{
-					try
-					{
-						String yearstr = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.birth)+5).replace(Constants.colon, "").trim();
-						year = Integer.parseInt(yearstr);
-
+					finally{
 						name = splitDesc[i-1];
 						if(name.toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()))
 						{
@@ -504,12 +493,7 @@ public class ParseAadharCard {
 							}
 						}
 					}
-					catch(Exception e)
-					{
-						e.printStackTrace();
-					}
 				}
-				
 				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.address.toLowerCase()))
 				{
 					address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
@@ -564,7 +548,7 @@ public class ParseAadharCard {
 
 	//Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
 	public static String extractNumber(final String str) 
-	{                
+	{           
 		int i=0;
 		if(str == null || str.isEmpty()) return "";
 		StringBuilder sb = new StringBuilder();
