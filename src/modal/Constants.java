@@ -138,6 +138,7 @@ public class Constants {
 		public static final String address2 = "Adress";
 		public static final String address3 = "Addres";
 		public static final String address4 = "Adcress";
+		public static final String address5 = "ddress";
 	}
 	
 	//TRY all combinations of INDIA

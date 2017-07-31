@@ -39,7 +39,7 @@ public class ParseVoterCard {
 		for(;i<textAnnotationArray.length();i++){
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
 			String description = jobj.getString(Constants.VisionResponse.description);
-			System.out.println(description);
+			//System.out.println(description);
 			if(description.equals("/") || description.equals(":"))
 				continue;
 			
@@ -269,15 +269,18 @@ public class ParseVoterCard {
 				obj.setName(name.replace(Constants.colon, "").trim());
 			}
 			//checking for father's name
-			else if(token.toLowerCase().contains(Constants.VoterCard.father.toLowerCase()) ||
+			else if(obj.getFatherName().isEmpty() && (token.toLowerCase().contains(Constants.VoterCard.father.toLowerCase()) ||
 					  token.toLowerCase().contains(Constants.VoterCard.husband.toLowerCase()) || 
-					  	token.toLowerCase().contains(Constants.VoterCard.name.toLowerCase())){
+					  	token.toLowerCase().contains(Constants.VoterCard.name.toLowerCase()))){
 				String name = token.substring(token.toLowerCase().lastIndexOf(Constants.VoterCard.name.toLowerCase())+4);
 				if(!(tokens[i+1].toLowerCase().contains(Constants.VoterCard.sex.toLowerCase()) || 
+						tokens[i+1].toLowerCase().contains(Constants.female.toLowerCase()) ||
+						tokens[i+1].toLowerCase().contains(Constants.male.toLowerCase()) ||
 						hasTwoDigit(tokens[i+1]) ||
 						tokens[i+1].toLowerCase().contains(Constants.birth.toLowerCase()) || 
 						tokens[i+1].toLowerCase().contains(Constants.VoterCard.age.toLowerCase())))
-					name = name.concat(" "+tokens[i+1]);				
+					name = name.concat(" "+tokens[i+1]);		
+				System.out.println("inside father "+name);
 				obj.setFatherName(name.replace(Constants.colon, "").trim());
 			}
 			
@@ -316,7 +319,8 @@ public class ParseVoterCard {
 													token.toLowerCase().contains(Constants.VoterCard.address1.toLowerCase()) ||
 													token.toLowerCase().contains(Constants.VoterCard.address2.toLowerCase()) ||
 													token.toLowerCase().contains(Constants.VoterCard.address3.toLowerCase()) ||
-													token.toLowerCase().contains(Constants.VoterCard.address4.toLowerCase()))){
+													token.toLowerCase().contains(Constants.VoterCard.address4.toLowerCase()) ||
+													token.toLowerCase().contains(Constants.VoterCard.address5.toLowerCase()))){
 				String addr = token.substring(token.toLowerCase().indexOf("s")+2);
 				if(hasPin(content.substring(token.toLowerCase().indexOf("s")+2))){
 					while(i<tokens.length-1 && !tokens[i].matches("^.+?\\d{6}$")){
