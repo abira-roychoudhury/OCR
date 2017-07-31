@@ -111,7 +111,7 @@ public class Processing2 extends HttpServlet {
 		double filesize = imgFile.length()/1000;
 		File compressedImageFile = null;
 		System.out.println("filesize :"+filesize);
-		if(filesize > 10000)
+		if(filesize > 1000 && !fileType.equals(Constants.VoterCard.voterCard))
 		{
 			comp = true;
 			//-----------------------------------------------------------
