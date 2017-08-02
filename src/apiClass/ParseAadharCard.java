@@ -2,53 +2,15 @@ package apiClass;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.EnumMap;
-import java.util.EnumSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-
-
-
-
-
-
-
-
-
-
-
-import javax.imageio.ImageIO;
-
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ChecksumException;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.FormatException;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.NotFoundException;
-import com.google.zxing.Reader;
-import com.google.zxing.ReaderException;
-import com.google.zxing.Result;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import modal.Constants;
+import customExceptions.BarCodeException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +21,11 @@ import templates.AadharCardAddress;
 import templates.AadharCardCoord;
 
 public class ParseAadharCard {
-
+	
+	/* DESCRIPTION : Takes the response from Vision API Call and parses it to create an AadharCard object
+	 * INPUT : JSONArray response from Vision API Call and String filePath of the image file uploaded
+	 * OUTPUT : AadharCard object
+	 * */
 	public AadharCard parseAadharCard(JSONArray textAnnotationArray,String filePath){
 		AadharCard obj = new AadharCard();
 		try{
@@ -75,6 +41,10 @@ public class ParseAadharCard {
 	}
 
 
+	/* DESCRIPTION : Finds the co-ordinate for boundary blocking from Vision API Call response by matching with the values from AadharCard object
+	 * INPUT :  JSONArray response from Vision API Call and AadharCard object
+	 * OUTPUT : AadharCard object
+	 * */
 	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj)
 	{
 		AadharCardCoord coord = new AadharCardCoord();
@@ -153,9 +123,8 @@ public class ParseAadharCard {
 
 			//setting the coordinates for year of birth
 			else if(obj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length())
-			{
+			{	
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-
 				if(yr==0)
 				{
 					for(int j=0;j<4;j++)
@@ -310,19 +279,19 @@ public class ParseAadharCard {
 				}
 				adl = adl+description.length()+1;
 			}
-			
 		}
-		
-		
+			
 		obj.setCoordinates(coord);
 		return obj;
 	}
 
 
+	/* DESCRIPTION : Parses the content from TEXT_DETECTION of Vision API Call to find the values for AadharCard object
+	 * INPUT : String content containing the entire text as detected by Vision API and AadharCard object
+	 * OUTPUT : AadharCard object
+	 * */
 	public AadharCard parseContent(String content,String filePath,AadharCard obj)throws WriterException, IOException
 	{
-		/* */
-
 		int year = 0,d=0;
 		String uid="",name="",fname = "",gender="",aadharNumber="",dobstr="",address="";
 		Calendar cal = Calendar.getInstance();

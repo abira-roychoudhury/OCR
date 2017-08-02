@@ -10,19 +10,25 @@ import java.util.regex.Pattern;
 
 import modal.Constants;
 
+import templates.PanCard;
+import templates.PanCardCoord;
+
+import customExceptions.BarCodeException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 
-import templates.PanCard;
-import templates.PanCardCoord;
 
 public class ParsePanCard {
-
+	
+	/* DESCRIPTION : Takes the response from Vision API Call and parses it to create an PanCard object
+	 * INPUT : JSONArray response from Vision API Call and String filePath of the image file uploaded
+	 * OUTPUT : PanCard object
+	 * */
 	public PanCard parsePanCard(JSONArray textAnnotationArray,String filePath) {
 		PanCard obj = new PanCard();
 		try {
@@ -38,7 +44,12 @@ public class ParsePanCard {
 		}
 		return obj;
 	}
-
+	
+	
+	/* DESCRIPTION : Finds the co-ordinate for boundary blocking from Vision API Call response by matching with the values from PanCard object
+	 * INPUT :  JSONArray response from Vision API Call and PanCard object
+	 * OUTPUT : PanCard object
+	 * */
 	public PanCard parseCoord(JSONArray textAnnotationArray, PanCard obj) {
 		int n = 0, f = 0, d = 0, p = 0, i = 1;
 		int nl = 0, fl = 0, dl = 0, pl = 0;
@@ -178,7 +189,11 @@ public class ParsePanCard {
 		obj.setCoordinates(coord);
 		return obj;
 	}
-
+	
+	/* DESCRIPTION : Parses the content from TEXT_DETECTION of Vision API Call to find the values for PanCard object
+	 * INPUT : String content containing the entire text as detected by Vision API and PanCard object
+	 * OUTPUT : PanCard object
+	 * */
 	public PanCard parseContent(String content, String filePath, PanCard obj)throws WriterException, IOException
 	{
 		int i;
@@ -404,13 +419,15 @@ public class ParsePanCard {
 		return obj;
 	}
 	
+	/* DESCRIPTION : Filters string removes all characters that are not Capital Letter or digit
+	 * INPUT : String content containing the entire text as detected by Vision API
+	 * OUTPUT : String filteredContent
+	 * */
 	private String filterContent(String content) 
 	{
 
 		String lines[] = content.split("\n");
 		String filteredContent = "";
-
-		//System.out.println("UnFiltered:" + content);
 		
 		for (String line : lines) 
 		{

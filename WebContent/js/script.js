@@ -47,12 +47,19 @@ for (var i = 0; i < textareaTag.length; i++) {
 		owidth = (owidth - ox);
 		oheight = (oheight - oy);
 
-	    cpointx = ((canvas.width / img.width) * ox)-5
-	    cpointy = ((canvas.height / img.height) * oy)-5
+	    cpointx = ((canvas.width / img.width) * ox)
+	    cpointy = ((canvas.height / img.height) * oy)
 
-	    cwidth = ((canvas.width / img.width) * owidth)+10
-	    cheight = ((canvas.height / img.height) * oheight)+10
+	    cwidth = ((canvas.width / img.width) * owidth)
+	    cheight = ((canvas.height / img.height) * oheight)
 
+	    cpointx = ((img.width/compressedDim.width) * cpointx ) - 5
+	    cpointy = ((img.height/compressedDim.height) * cpointy ) - 5 
+	    
+	    cwidth =  ((img.width/compressedDim.width) * cwidth ) + 10
+	    cheight =  ((img.height/compressedDim.height) * cheight ) + 10
+	    
+	    
 		if (canvas.getContext) {
 			var ctx = canvas.getContext('2d');
 

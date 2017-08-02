@@ -22,13 +22,16 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
-import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
 public class QRScan {
 	
+	/* DESCRIPTION : Initializes Map objects to scan QR Code or Bar Code and returns the scanned String
+	 * INPUT : String filePath of the image uploaded
+	 * OUTPUT : String obtained from scanning the QR Code or Bar Code 
+	 * */
 	public static String scanQR(String filePath) throws FileNotFoundException, NotFoundException, IOException
 	{
 		String charset = "UTF-8"; // or "ISO-8859-1"
@@ -39,10 +42,13 @@ public class QRScan {
 		Map<DecodeHintType,Object> hintPure = new EnumMap<>(hintMap);
 		hintPure.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
 		resultQR = readQRCode(filePath, charset, hintMap, hintPure);
-		System.out.println("Data read from QR Code: "+ resultQR);
 		return resultQR;
 	}
 	
+	/* DESCRIPTION : Reads the QR Code or Bar Code from the image Uploaded
+	 * INPUT : String filePath of the image uploaded, String charset, Map object to scan QR Code and Map object to scan Bar Code
+	 * OUTPUT : String obtained from scanning the QR Code or Bar Code
+	 * */
 	public static String readQRCode(String filePath, String charset, Map<DecodeHintType,Object> hintMap, Map<DecodeHintType,Object> hintPure)
 			throws FileNotFoundException, IOException, NotFoundException {
 		BufferedImage image = ImageIO.read(new FileInputStream(filePath));

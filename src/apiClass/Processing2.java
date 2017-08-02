@@ -1,28 +1,21 @@
 package apiClass;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.ImageIcon;
 
 import modal.Constants;
 
@@ -41,59 +34,49 @@ public class Processing2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void init( ){
-		//System.out.println("inside init : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
+		
 	}
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
+	
 	public Processing2() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Check that we have a file upload request
-		//System.out.println("inside post : "+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()));
-		//try{
+		
+		//Initialization
 		Date start = new Date(),end = new Date();
-		TimestampLogging  tl = new TimestampLogging();
+		TimestampLogging  tl = new TimestampLogging();		
 		String fileName = "",fileType="",descriptionStr="",filePath="";
 		JSONArray textAnnotationArray = new JSONArray();
-		String imgName = Constants.imgFile+start.getTime()+".jpg";
+		String imgName = Constants.imgFile+start.getTime()+Constants.dot+Constants.jpg;
 		File imgFile = new File(imgName);
+		
+		//uploading the image file
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// Create a new file upload handler
-		ServletFileUpload upload = new ServletFileUpload(factory);
+		ServletFileUpload upload = new ServletFileUpload(factory);  // Create a new file upload handler
 		try{ 
-			// Parse the request to get file items.
-			List fileItems = upload.parseRequest(request);
-			// Process the uploaded file items
-			Iterator i = fileItems.iterator();
+			List fileItems = upload.parseRequest(request);  // Parse the request to get file items.
+			Iterator i = fileItems.iterator();  // Process the uploaded file items
 			while ( i.hasNext () ) 
 			{
 				FileItem fi = (FileItem)i.next();
 				if ( !fi.isFormField () )	
 				{
-					fileName = fi.getName();
-					//writing a temporary file 
+					fileName = fi.getName();					 
 					start = new Date();
-					fi.write(imgFile); 
+					fi.write(imgFile);      //writing a temporary file
 					fi.delete();
 					filePath = imgFile.getAbsolutePath();
 					end = new Date();			          
 				}
 				else{
-					String fieldname = fi.getFieldName();
 					fileType = fi.getString();
 					request.setAttribute(Constants.fileType, fileType);
 				}
@@ -105,42 +88,7 @@ public class Processing2 extends HttpServlet {
 			ex.printStackTrace();
 		} 
 
-
-		System.out.println("ORIGINAL SIZE: " + imgFile.length()/1000 + " KB");
-		boolean comp = false;
-		double filesize = imgFile.length()/1000;
-		File compressedImageFile = null;
-		System.out.println("filesize :"+filesize);
-		if(filesize > 1000 && !fileType.equals(Constants.VoterCard.voterCard))
-		{
-			comp = true;
-			//-----------------------------------------------------------
-			File input = new File(filePath);
-			BufferedImage image = ImageIO.read(input);
-
-			compressedImageFile = new File("compress"+start.getTime()+".jpg");  
-			OutputStream os = new FileOutputStream(compressedImageFile);
-
-			Iterator<ImageWriter>writers = ImageIO.getImageWritersByFormatName("jpg");
-			ImageWriter writer = (ImageWriter) writers.next();
-
-			ImageOutputStream ios = ImageIO.createImageOutputStream(os);
-			writer.setOutput(ios);
-
-			ImageWriteParam param = writer.getDefaultWriteParam();
-			// Check if canWriteCompressed is true
-			if(param.canWriteCompressed()) 
-			{
-				param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-				param.setCompressionQuality(0.01f);
-			}
-			// End of check
-			writer.write(null, new IIOImage(image, null, null), param);
-			//--------------------------------------------------------------
-
-			System.out.println("COMPRESSED SIZE: " + compressedImageFile.length()/1000 + " KB");
-		} 
-
+		//uploading image completed logging upload image
 		tl.fileDesc(fileName, fileType);
 		int diff = tl.fileLog(Constants.uploadImage, start, end);
 		request.setAttribute(Constants.uploadImage, diff);
@@ -148,28 +96,21 @@ public class Processing2 extends HttpServlet {
 		//Calling ImageEnhancement and getting back a preprocessed base64 image string
 		start = new Date();		          
 		ImageEnhancement ie = new ImageEnhancement();
-		String processedImgBase64 = "";
-		if(comp)
-			processedImgBase64= ie.imagePreprocessing(compressedImageFile.getAbsolutePath(), fileType);	
-		else
-			processedImgBase64= ie.imagePreprocessing(filePath, fileType);	
-
-		/*if(comp)
-			processedImgBase64 = ie.convertToBase64(compressedImageFile.getAbsolutePath());
-		else
-		processedImgBase64 = ie.convertToBase64(filePath);		 */         
+		String processedImgBase64= ie.imagePreprocessing(filePath, fileType);	
 		end = new Date();
-		//diff = tl.fileLog(Constants.imagePreprocessing, start, end);
-		//request.setAttribute(Constants.imagePreprocessing, diff);
-
 		diff = tl.fileLog(Constants.base64conversion, start, end);
 		request.setAttribute(Constants.base64conversion, diff);
-
-
+		
+		//compressed image property 
+		byte[] decoded = Base64.decodeBase64(processedImgBase64.getBytes());
+        ImageIcon img = new ImageIcon(decoded);
+        request.setAttribute(Constants.compressWidth, img.getIconWidth());
+        request.setAttribute(Constants.compressHeight, img.getIconHeight());
+        
 		//Calling Vision API
 		start = new Date();
 		VisionAPICall vac = new VisionAPICall();
-		JSONObject result = vac.performOCR(processedImgBase64,fileType);
+		JSONObject result = vac.performOCR(processedImgBase64);
 		end = new Date();
 		diff = tl.fileLog(Constants.visionAPICall, start, end);
 		request.setAttribute(Constants.visionAPICall, diff);
@@ -184,12 +125,8 @@ public class Processing2 extends HttpServlet {
 			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray(Constants.VisionResponse.textAnnotations);
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			descriptionStr=firstObj.getString(Constants.VisionResponse.description);
-			//System.out.println(descriptionStr);
 			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
-			//System.out.println("removing garbage ======= "+descriptionStr);
-			request.setAttribute(Constants.description, descriptionStr);
-			
-		
+			request.setAttribute(Constants.description, descriptionStr);		
 		}catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -200,11 +137,7 @@ public class Processing2 extends HttpServlet {
 				descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()) && fileType.equals(Constants.DrivingLicense.drivingLicense) ||
 				hasAadharNumber(descriptionStr) &&  fileType.equals(Constants.AadharCardPage1.aadharCard))
 		{	
-
-
-
-
-
+			
 			//Creating Base64 of original Image
 			FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
 			byte[] bytes = new byte[(int)imgFile.length()];
@@ -212,9 +145,6 @@ public class Processing2 extends HttpServlet {
 			String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
 			String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
 			request.setAttribute(Constants.imgBase64, imgBase64Jsp);
-
-			
-			
 
 			//Parsing the description as per the template
 			start = new Date();
@@ -227,12 +157,8 @@ public class Processing2 extends HttpServlet {
 			
 			//Closing ImageFile
 			fileInputStreamReader.close();
-			//deleting image file
-			System.out.println("Delete imgFile :"+imgFile.delete());
-			if(comp)
-				System.out.println("Delete compressed file :"+compressedImageFile.delete());
-
-
+			
+			//retrieving the templates
 			LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);
 			LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get(Constants.coordinates);
 
@@ -253,55 +179,60 @@ public class Processing2 extends HttpServlet {
 			request.setAttribute(Constants.coordinates, coordinates);
 			request.setAttribute(Constants.jsonCoord, jsonCoord);
 
-
+			//dispatching request to jsp page
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			dispatcher.forward(request, response);
 		}
 		else
 		{
-			response.setContentType("text/plain");
+			//type mismatch error report
+			response.setContentType(Constants.contentType);
 			PrintWriter out = response.getWriter();
-			out.println("The Image file uploaded and the File Type selected does not match");
+			out.println(Constants.fileTypeMismatch1);
 			if(fileType.equals(Constants.AadharCardPage1.aadharCard))
-				out.println("OR The aadhar number could not be detected properly from the image uploaded");
-				
+				out.println(Constants.fileTypeMismatchAadharCard);				
 		}
-
-
+		//deleting image file
+		System.out.println("Delete imgFile :"+imgFile.delete());
 	}
-	//Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
-		public static boolean hasAadharNumber(final String str) 
-		{                
-			int i=0;
-			if(str == null || str.isEmpty()) return false;
-			StringBuilder sb = new StringBuilder();
-			boolean found = false;
-			for(char c : str.toCharArray())
+	
+	
+	/* DESCRIPTION : checks if a String consist of Aadhar Number
+	 * INPUT : String to be checked
+	 * OUTPUT : Boolean
+	 * */
+	public static boolean hasAadharNumber(final String str) 
+	{                
+		int i=0;
+		if(str == null || str.isEmpty()) return false;
+		StringBuilder sb = new StringBuilder();
+		boolean found = false;
+		for(char c : str.toCharArray())
+		{
+			if(Character.isDigit(c) && sb.length()<12)
 			{
-				if(Character.isDigit(c) && sb.length()<12)
-				{
-					sb.append(c);
-					found = true;
-				} 
-				else if(c!='\n' && c!=' ' && found)
-				{
-					// If we already found a digit before and this char is not a digit, stop looping
-					break;                
-				}
-				i++;
-			}
-			//System.out.println(sb.toString());
-			if(sb.length()>10)
-				return true;
-			else
+				sb.append(c);
+				found = true;
+			} 
+			else if(c!='\n' && c!=' ' && found)
 			{
-				if(sb.length()>=1)
-					return hasAadharNumber(str.substring(i));
-				
-				else
-					return false;
+				// If we already found a digit before and this char is not a digit or \n or space, stop looping
+				break;                
 			}
-				
+			i++;
 		}
+		if(sb.length()>10)
+			return true;    //return true if the string found is of minimum length greater than 10
+		else
+		{
+			if(sb.length()>=1)
+				return hasAadharNumber(str.substring(i));  //if the minimum length is 1 then recrusive call for the remaining length of the string
+			
+			else
+				return false;  //when the entire string does not consist of the aadhar number
+		}
+			
+	}
 
 }
+

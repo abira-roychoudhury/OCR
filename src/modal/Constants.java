@@ -6,6 +6,11 @@ public class Constants {
 	
 	//Inside servlet Processing2
 	public static final String imgFile = "image";
+	public static final String jpg = "jpg";
+	public static final String compress = "compress";
+	public static final String dot = ".";
+	
+	
 	
 	//request attributes parameter
 	public static final String fileType = "fileType";
@@ -20,6 +25,15 @@ public class Constants {
 	public static final String coordinates = "coordinates";
 	public static final String jsonCoord = "jsonCoord";
 	public static final String description = "Description";
+	public static final String contentType = "text/plain";
+	
+	//error message
+	public static final String fileTypeMismatch1 = "The Image file uploaded and the File Type selected does not match";
+	public static final String fileTypeMismatchAadharCard ="OR The aadhar number could not be detected properly from the image uploaded";
+	
+	//compress image dimensions
+	public static final String compressWidth = "compressWidth";
+	public static final String compressHeight = "compressHeight";
 	
 	
 	//Vision API response JSON Keys

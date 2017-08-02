@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import apiClass.EntityType;
 import modal.Constants;
 
 import org.json.JSONArray;
@@ -16,6 +15,10 @@ import templates.VoterCardCoord;
 
 public class ParseVoterCard {
 	
+	/* DESCRIPTION : Takes the response from Vision API Call and parses it to create an VoterCard object
+	 * INPUT : JSONArray response from Vision API Call and String filePath of the image file uploaded
+	 * OUTPUT : VoterCard object
+	 * */
 	public VoterCard parseVoterCard(JSONArray textAnnotationArray){
 		VoterCard obj = new VoterCard();
 		try{
@@ -31,6 +34,10 @@ public class ParseVoterCard {
 		return obj;
 	}
 	
+	/* DESCRIPTION : Finds the co-ordinate for boundary blocking from Vision API Call response by matching with the values from VoterCard object
+	 * INPUT :  JSONArray response from Vision API Call and VoterCard object
+	 * OUTPUT : VoterCard object
+	 * */
 	public VoterCard parseCoord(JSONArray textAnnotationArray, VoterCard obj){
 		VoterCardCoord coord = new VoterCardCoord();
 		int n=0,f=0,d=0,a=0,s=0,v=0,ad=0,i=1;
@@ -238,6 +245,10 @@ public class ParseVoterCard {
 		return obj;
 	}
 	
+	/* DESCRIPTION : Parses the content from TEXT_DETECTION of Vision API Call to find the values for VoterCard object
+	 * INPUT : String content containing the entire text as detected by Vision API and VoterCard object
+	 * OUTPUT : VoterCard object
+	 * */
 	public VoterCard parseContent(String content, VoterCard obj){
 		String tokens[] = content.split("\n");
 
@@ -280,7 +291,6 @@ public class ParseVoterCard {
 						tokens[i+1].toLowerCase().contains(Constants.birth.toLowerCase()) || 
 						tokens[i+1].toLowerCase().contains(Constants.VoterCard.age.toLowerCase())))
 					name = name.concat(" "+tokens[i+1]);		
-				System.out.println("inside father "+name);
 				obj.setFatherName(name.replace(Constants.colon, "").trim());
 			}
 			
@@ -344,14 +354,21 @@ public class ParseVoterCard {
 		return obj;
 	}
 	
+	/* DESCRIPTION : Parses a string to check whether it contains the age(two digit)
+	 * INPUT : String content 
+	 * OUTPUT : Boolean
+	 * */
 	public boolean hasTwoDigit(String str){			
-		System.out.println("str :"+str);
 		if(str.matches("^.+? [0-9]{2} .+?$") || str.matches("^.+? [0-9]{2}$"))
 			return true;
 		else 
-			return false;
-		
+			return false;		
 	}
+	
+	/* DESCRIPTION : Parses a string to check whether it ends with the 	PIN(six digit)
+	 * INPUT : String content 
+	 * OUTPUT : Boolean
+	 * */
 	public boolean hasPin(String str){		
 		return str.matches("^.+?\\d{6}$");		
 	}

@@ -12,10 +12,13 @@ import org.json.JSONObject;
 
 import templates.DrivingLicense;
 import templates.DrivingLicenseCoord;
-import templates.PanCardCoord;
 
 public class ParseDrivingLicense {
 	
+	/* DESCRIPTION : Takes the response from Vision API Call and parses it to create an DrivingLicense object
+	 * INPUT : JSONArray response from Vision API Call and String filePath of the image file uploaded
+	 * OUTPUT : DrivingLicense object
+	 * */
 	public DrivingLicense parseDrivingLicense(JSONArray textAnnotationArray){
 		DrivingLicense obj = new DrivingLicense();
 		try{
@@ -32,6 +35,10 @@ public class ParseDrivingLicense {
 
 	}
 	
+	/* DESCRIPTION : Finds the co-ordinate for boundary blocking from Vision API Call response by matching with the values from DrivingLicense object
+	 * INPUT :  JSONArray response from Vision API Call and DrivingLicense object
+	 * OUTPUT : DrivingLicense object
+	 * */
 	public DrivingLicense parseCoord(JSONArray textAnnotationArray, DrivingLicense obj){
 		DrivingLicenseCoord coord = new DrivingLicenseCoord();
 		int d=0,n=0,m=0,a=0,p=1,b=0,i=1;
@@ -219,6 +226,10 @@ public class ParseDrivingLicense {
 		return obj;
 	}
 	
+	/* DESCRIPTION : Parses the content from TEXT_DETECTION of Vision API Call to find the values for DrivingLicense object
+	 * INPUT : String content containing the entire text as detected by Vision API and DrivingLicense object
+	 * OUTPUT : DrivingLicense object
+	 * */
 	public DrivingLicense parseContent(String content, DrivingLicense obj){
 		String tokens[] = content.split("\n");
 		

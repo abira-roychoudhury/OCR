@@ -13,6 +13,8 @@
 <script type="text/javascript">
 var data = <%=request.getAttribute("jsonCoord")%> 
 var img = '<%=request.getAttribute("imgBase64").toString()%>'
+var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
+					 "width" : <%=request.getAttribute("compressWidth")%>} 
 </script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -78,7 +80,7 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 				<div class="panel-body">
 					Upload Image : <%=request.getAttribute("Upload Image") %><br>
 					<%-- Image Preprocessing : <%=request.getAttribute("Upload Image") %><br> --%>
-					Base 64 conversion : <%=request.getAttribute("Upload Image") %><br>
+					Base 64 conversion : <%=request.getAttribute("Base 64 conversion") %><br>
 					Vision API Call : <%=request.getAttribute("Vision API Call") %><br>
 					Templating : <%=request.getAttribute("Templating") %><br>
 					
@@ -110,6 +112,6 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
     </div>
   </div>
 	
-  <script src= "js/script.js?x=4" type="text/javascript"></script>
+  <script src= "js/script.js?x=6" type="text/javascript"></script>
 </body>
 </html>

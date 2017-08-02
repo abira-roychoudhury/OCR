@@ -1,27 +1,24 @@
 package apiClass;
 
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.apache.commons.codec.binary.Base64;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
-import javax.imageio.ImageIO;
-
-
 public class ImageEnhancement {
-			
+	
+	/* DESCRIPTION : 
+	 * INPUT : 
+	 * OUTPUT : 
+	 * */		
 	public Mat loadOpenCvImage(final String filePath) {
 		//LOAD THE LIBRARY
 
@@ -35,6 +32,10 @@ public class ImageEnhancement {
 	    return imgMat;
 	}
 	
+	/* DESCRIPTION : 
+	 * INPUT : 
+	 * OUTPUT : 
+	 * */
 	public Mat preprocess(Mat imgMat, String documentType){
 		//THRESHOLDING PARAMETERS
 	    final double min = 0, max = 255.0, threshold = 127.0;
@@ -51,7 +52,11 @@ public class ImageEnhancement {
 	    //Imgproc.adaptiveThreshold(imgMat, imgNew, max, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 8);
 	    return imgNew;
 	}
-
+	
+	/* DESCRIPTION : 
+	 * INPUT : 
+	 * OUTPUT : 
+	 * */
 	public File saveImage(Mat img){
 		Date d = new Date();
 		File processedFile = new File("Img"+d.getTime()+".jpg");
@@ -60,17 +65,25 @@ public class ImageEnhancement {
 		return processedFile;
 	}
 	
+	/* DESCRIPTION : 
+	 * INPUT : 
+	 * OUTPUT : 
+	 * */
 	public String imagePreprocessing(String filepath, String documentType){
 		Mat imgMat = loadOpenCvImage(filepath);
 		//Mat imgMat2 = preprocess(imgMat, documentType);
-		//Mat imgMat3 = imageCompress(imgMat2);
+		imgMat = imageCompress(imgMat);
 		File img = saveImage(imgMat);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
 		
 		img.delete();
 		return imgBase64;		
 	}
-
+	
+	/* DESCRIPTION : 
+	 * INPUT : 
+	 * OUTPUT : 
+	 * */
 	public String convertToBase64(String filePath){
 		String imageData = "";
 		try{			
@@ -84,16 +97,18 @@ public class ImageEnhancement {
 		return imageData;
 	}
 	
+	/* DESCRIPTION : 
+	 * INPUT : 
+	 * OUTPUT : 
+	 * */
 	public Mat imageCompress(Mat img){
 				long size = img.step1(0) * img.rows();
 				//long size = img.total() * img.elemSize();
-				System.out.println(size);
-				while(size > 800000)
+				while(size > 4000000)
 				{
 					Imgproc.resize(img, img, new Size(img.width()/2, img.height()/2));
 					size = img.step1(0) * img.rows();
-				}
-				
+				}				
 				return img;
 			} 
 
