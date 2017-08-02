@@ -87,6 +87,7 @@ public class Processing2 extends HttpServlet {
 			System.out.println(ex);
 			ex.printStackTrace();
 		} 
+		System.out.println("imgFile "+imgFile);
 
 		//uploading image completed logging upload image
 		tl.fileDesc(fileName, fileType);

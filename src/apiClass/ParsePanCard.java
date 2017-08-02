@@ -57,8 +57,7 @@ public class ParsePanCard {
 
 		for (; i < textAnnotationArray.length(); i++) {
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj
-					.getString(Constants.VisionResponse.description);
+			String description = jobj.getString(Constants.VisionResponse.description);
 			if (description.toUpperCase().contains("INDIA"))
 				break;
 		}
@@ -199,7 +198,7 @@ public class ParsePanCard {
 		int i;
 		String name = "", fname = "", dob = "", pan = "";
 		Calendar cal = Calendar.getInstance();
-		System.out.println("Inside parsecontent pan card " + content);
+		//System.out.println("Inside parsecontent pan card " + content);
 		
 		if (!content.contains(Constants.PanCard.name)) 
 		{ 
@@ -362,7 +361,7 @@ public class ParsePanCard {
 				String splitDesc[] = content.split("\\n");
 				for (i = 0; i < splitDesc.length; i++) 
 				{
-					System.out.println(splitDesc[i]);
+					//System.out.println(splitDesc[i]);
 					if (splitDesc[i].toUpperCase().contains(Constants.PanCard.pan.toUpperCase())) 
 					{
 						pan = splitDesc[i + 1];
