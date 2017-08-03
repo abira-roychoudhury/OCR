@@ -76,7 +76,7 @@ public class ImageEnhancement {
 		File img = saveImage(imgMat);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
 		
-		img.delete();
+		//img.delete();
 		return imgBase64;		
 	}
 	
