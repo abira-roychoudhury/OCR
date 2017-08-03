@@ -185,7 +185,7 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for gender
-			else if(obj.getGender().toLowerCase().contains(description.toLowerCase()) && gl< obj.getGender().length())
+			else if(description.toLowerCase().contains(obj.getGender().toLowerCase()) && gl< obj.getGender().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(g==0)
