@@ -35,6 +35,8 @@ public class Constants {
 	public static final String compressWidth = "compressWidth";
 	public static final String compressHeight = "compressHeight";
 	
+	//minimum image size
+	public static final int minimumImageSize = 4000000;
 	
 	//Vision API response JSON Keys
 	public static class VisionResponse{

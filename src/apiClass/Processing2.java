@@ -52,7 +52,7 @@ public class Processing2 extends HttpServlet {
 		
 		//Initialization
 		Date start = new Date(),end = new Date();
-		TimestampLogging  tl = new TimestampLogging();		
+		TimestampLogging  timelogging = new TimestampLogging();		
 		String fileName = "",fileType="",descriptionStr="",filePath="";
 		JSONArray textAnnotationArray = new JSONArray();
 		String imgName = Constants.imgFile+start.getTime()+Constants.dot+Constants.jpg;
@@ -63,21 +63,21 @@ public class Processing2 extends HttpServlet {
 		ServletFileUpload upload = new ServletFileUpload(factory);  // Create a new file upload handler
 		try{ 
 			List fileItems = upload.parseRequest(request);  // Parse the request to get file items.
-			Iterator i = fileItems.iterator();  // Process the uploaded file items
-			while ( i.hasNext () ) 
+			Iterator fileItemsIterator = fileItems.iterator();  // Process the uploaded file items
+			while ( fileItemsIterator.hasNext () ) 
 			{
-				FileItem fi = (FileItem)i.next();
-				if ( !fi.isFormField () )	
+				FileItem fileItem = (FileItem)fileItemsIterator.next();
+				if ( !fileItem.isFormField () )	
 				{
-					fileName = fi.getName();					 
+					fileName = fileItem.getName();					 
 					start = new Date();
-					fi.write(imgFile);      //writing a temporary file
-					fi.delete();
+					fileItem.write(imgFile);      //writing a temporary file
+					fileItem.delete();
 					filePath = imgFile.getAbsolutePath();
 					end = new Date();			          
 				}
 				else{
-					fileType = fi.getString();
+					fileType = fileItem.getString();
 					request.setAttribute(Constants.fileType, fileType);
 				}
 			}
@@ -90,17 +90,17 @@ public class Processing2 extends HttpServlet {
 		System.out.println("imgFile "+imgFile);
 
 		//uploading image completed logging upload image
-		tl.fileDesc(fileName, fileType);
-		int diff = tl.fileLog(Constants.uploadImage, start, end);
-		request.setAttribute(Constants.uploadImage, diff);
+		timelogging.fileDesc(fileName, fileType);
+		int timeDifference = timelogging.fileLog(Constants.uploadImage, start, end);
+		request.setAttribute(Constants.uploadImage, timeDifference);
 
 		//Calling ImageEnhancement and getting back a preprocessed base64 image string
 		start = new Date();		          
 		ImageEnhancement ie = new ImageEnhancement();
 		String processedImgBase64= ie.imagePreprocessing(filePath, fileType);	
 		end = new Date();
-		diff = tl.fileLog(Constants.base64conversion, start, end);
-		request.setAttribute(Constants.base64conversion, diff);
+		timeDifference = timelogging.fileLog(Constants.base64conversion, start, end);
+		request.setAttribute(Constants.base64conversion, timeDifference);
 		
 		//compressed image property 
 		byte[] decoded = Base64.decodeBase64(processedImgBase64.getBytes());
@@ -113,30 +113,22 @@ public class Processing2 extends HttpServlet {
 		VisionAPICall vac = new VisionAPICall();
 		JSONObject result = vac.performOCR(processedImgBase64);
 		end = new Date();
-		diff = tl.fileLog(Constants.visionAPICall, start, end);
-		request.setAttribute(Constants.visionAPICall, diff);
+		timeDifference = timelogging.fileLog(Constants.visionAPICall, start, end);
+		request.setAttribute(Constants.visionAPICall, timeDifference);
 
 
-		try {			  			
-			JSONObject body = new JSONObject(result.get(Constants.VisionResponse.body));
-			String bodystring=result.getString(Constants.VisionResponse.body);
-			JSONObject bodyObject=new JSONObject(bodystring);
-			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray(Constants.VisionResponse.responses);
-			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
-			textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray(Constants.VisionResponse.textAnnotations);
-			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
-			descriptionStr=firstObj.getString(Constants.VisionResponse.description);
-			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
-			request.setAttribute(Constants.description, descriptionStr);		
-		}catch (JSONException e) {
-			e.printStackTrace();
-		}
+		//GET textAnnotation as JSON Array
+		textAnnotationArray = getTextAnnotationArray(result);
+		
+		//GET description String from textAnnotation JSOANArray
+		descriptionStr = getDescription(textAnnotationArray);
+		
+
+		//set description
+		request.setAttribute(Constants.description, descriptionStr);	
 
 		//checking for correct File type
-		if(( descriptionStr.toLowerCase().contains(Constants.PanCard.income.toLowerCase()) || descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase())) && fileType.equals(Constants.PanCard.panCard) ||
-				descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()) && fileType.equals(Constants.VoterCard.voterCard) ||	
-				descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()) && fileType.equals(Constants.DrivingLicense.drivingLicense) ||
-				hasAadharNumber(descriptionStr) &&  fileType.equals(Constants.AadharCardPage1.aadharCard))
+		if(checkFileType(descriptionStr, fileType))
 		{	
 			
 			//Creating Base64 of original Image
@@ -152,9 +144,9 @@ public class Processing2 extends HttpServlet {
 			LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType,filePath);
 			request.setAttribute(Constants.document, document);
 			end = new Date();
-			diff = tl.fileLog(Constants.templating, start, end);
-			request.setAttribute(Constants.templating, diff);
-			tl.fileWrite();
+			timeDifference = timelogging.fileLog(Constants.templating, start, end);
+			request.setAttribute(Constants.templating, timeDifference);
+			timelogging.fileWrite();
 			
 			//Closing ImageFile
 			fileInputStreamReader.close();
@@ -166,10 +158,10 @@ public class Processing2 extends HttpServlet {
 			String jsonCoord = "{";
 			for(String key : coordinates.keySet())
 			{
-				int coord[][] = coordinates.get(key);
+				int coordinate[][] = coordinates.get(key);
 				jsonCoord = jsonCoord+"\""+key+"\":[";
 				for(int i=0;i<4;i++)
-					jsonCoord = jsonCoord+"{\"x\":"+coord[0][i]+",\"y\":"+coord[1][i]+"},";
+					jsonCoord = jsonCoord+"{\"x\":"+coordinate[0][i]+",\"y\":"+coordinate[1][i]+"},";
 				jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
 				jsonCoord = jsonCoord+"],";
 			}
@@ -202,37 +194,100 @@ public class Processing2 extends HttpServlet {
 	 * INPUT : String to be checked
 	 * OUTPUT : Boolean
 	 * */
-	public static boolean hasAadharNumber(final String str) 
+	public static boolean hasAadharNumber(final String raw_string) 
 	{                
-		int i=0;
-		if(str == null || str.isEmpty()) return false;
-		StringBuilder sb = new StringBuilder();
+		int index=0;
+		if(raw_string == null || raw_string.isEmpty()) return false;
+		StringBuilder stringBuilderObj = new StringBuilder();
 		boolean found = false;
-		for(char c : str.toCharArray())
+		for(char singleChar : raw_string.toCharArray())
 		{
-			if(Character.isDigit(c) && sb.length()<12)
+			if(Character.isDigit(singleChar) && stringBuilderObj.length()<12)
 			{
-				sb.append(c);
+				stringBuilderObj.append(singleChar);
 				found = true;
 			} 
-			else if(c!='\n' && c!=' ' && found)
+			else if(singleChar!='\n' && singleChar!=' ' && found)
 			{
 				// If we already found a digit before and this char is not a digit or \n or space, stop looping
 				break;                
 			}
-			i++;
+			index++;
 		}
-		if(sb.length()>10)
+		if(stringBuilderObj.length()>10)
 			return true;    //return true if the string found is of minimum length greater than 10
 		else
 		{
-			if(sb.length()>=1)
-				return hasAadharNumber(str.substring(i));  //if the minimum length is 1 then recrusive call for the remaining length of the string
+			if(stringBuilderObj.length()>=1)
+				return hasAadharNumber(raw_string.substring(index));  //if the minimum length is 1 then recrusive call for the remaining length of the string
 			
 			else
 				return false;  //when the entire string does not consist of the aadhar number
 		}
 			
+	}
+	
+
+
+	/* DESCRIPTION : Get description string from textAnnotation JSONArray
+	 * INPUT : textAnnotationArray
+	 * OUTPUT : String
+	 * */
+	public static String getDescription(JSONArray textAnnotationArray){
+		try {			  			
+			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
+			String descriptionStr=firstObj.getString(Constants.VisionResponse.description);
+			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
+			
+			return descriptionStr;
+		}catch (JSONException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	
+	/* DESCRIPTION : Get textAnnotation from result body
+	 * INPUT : result as JSONObject
+	 * OUTPUT : textAnnotationArray
+	 * */
+	public static JSONArray getTextAnnotationArray(JSONObject result){
+		try {
+			JSONObject body = new JSONObject(result.get(Constants.VisionResponse.body));
+			String bodystring=result.getString(Constants.VisionResponse.body);
+			JSONObject bodyObject=new JSONObject(bodystring);
+			JSONArray responsesArray=(JSONArray) bodyObject.getJSONArray(Constants.VisionResponse.responses);
+			JSONObject textAnnotaionsDict=responsesArray.getJSONObject(0);
+			JSONArray textAnnotationArray=(JSONArray)textAnnotaionsDict.getJSONArray(Constants.VisionResponse.textAnnotations);
+			
+			return textAnnotationArray;
+		} catch (Exception e) {
+		
+			e.printStackTrace();
+			
+			return new JSONArray();
+		}
+	}
+	
+
+	/* DESCRIPTION : Check is the document is per the fileType selected
+	 * INPUT : String description and String fileType
+	 * OUTPUT : boolean 
+	 * */
+	public static boolean checkFileType(String descriptionStr,String fileType){
+		
+		boolean validFileType = false;
+		
+		if(fileType.equals(Constants.PanCard.panCard) && ( descriptionStr.toLowerCase().contains(Constants.PanCard.income.toLowerCase()) || descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase())))
+			validFileType = true;
+		else if(fileType.equals(Constants.VoterCard.voterCard) && descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()))
+			validFileType = true;
+		else if(fileType.equals(Constants.DrivingLicense.drivingLicense) && descriptionStr.toLowerCase().contains(Constants.DrivingLicense.driving.toLowerCase()))
+			validFileType = true;
+		else if(fileType.equals(Constants.AadharCardPage1.aadharCard) && hasAadharNumber(descriptionStr)) 
+			validFileType = true;
+	
+		return validFileType;
 	}
 
 }

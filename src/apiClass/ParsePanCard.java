@@ -30,19 +30,27 @@ public class ParsePanCard {
 	 * OUTPUT : PanCard object
 	 * */
 	public PanCard parsePanCard(JSONArray textAnnotationArray,String filePath) {
-		PanCard obj = new PanCard();
-		try {
+		
+		//Initialize PanCard Object
+		PanCard panCardObject = new PanCard();
+		
+		try 
+		{
 			JSONObject firstObj = (JSONObject) textAnnotationArray.get(0);
-			String descriptionStr = firstObj
-					.getString(Constants.VisionResponse.description);
-			obj = parseContent(descriptionStr,filePath,obj);
-			obj = parseCoord(textAnnotationArray, obj);
-		} catch (JSONException je) {
+			String descriptionStr = firstObj.getString(Constants.VisionResponse.description);
+			
+			panCardObject = parseContent(descriptionStr,filePath,panCardObject);
+			panCardObject = parseCoord(textAnnotationArray, panCardObject);
+		} 
+		catch (JSONException je) 
+		{
 			je.printStackTrace();
-		} catch (Exception e) {
+		}
+		catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
-		return obj;
+		return panCardObject;
 	}
 	
 	
@@ -50,28 +58,25 @@ public class ParsePanCard {
 	 * INPUT :  JSONArray response from Vision API Call and PanCard object
 	 * OUTPUT : PanCard object
 	 * */
-	public PanCard parseCoord(JSONArray textAnnotationArray, PanCard obj) {
-		int n = 0, f = 0, d = 0, p = 0, i = 1;
+	public PanCard parseCoord(JSONArray textAnnotationArray, PanCard panCardObject) {
+		int n = 0, f = 0, d = 0, p = 0, startIndex = 1;
 		int nl = 0, fl = 0, dl = 0, pl = 0;
-		PanCardCoord coord = new PanCardCoord();
+		PanCardCoord panCardCoordinates = new PanCardCoord();
 
-		for (; i < textAnnotationArray.length(); i++) {
-			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj.getString(Constants.VisionResponse.description);
-			if (description.toUpperCase().contains("INDIA"))
-				break;
-		}
-
-		for (; i < textAnnotationArray.length(); i++) {
-			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
-			String description = jobj.getString(Constants.VisionResponse.description);
+		startIndex = getStartIndex(textAnnotationArray);
+		
+		for (; startIndex < textAnnotationArray.length(); startIndex++) {
+			JSONObject jsonObject = (JSONObject) textAnnotationArray.get(startIndex);
+			String description = jsonObject.getString(Constants.VisionResponse.description);
 			
 			if(description.equals("/"))
 				continue;
 			
 			// setting the coordinates for name
-			if (Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl < obj.getName().length()) {
-				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
+			if (Arrays.asList(panCardObject.getName().split("\\s+")).contains(description) && nl < panCardObject.getName().length()) {
+				
+				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
+				
 				if (n == 0) {
 					for (int j = 0; j < 4; j++) { // iterate columns
 						JSONArray vertices = (JSONArray) boundingPoly
@@ -79,8 +84,8 @@ public class ParsePanCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setName(x, 0, j);
-						coord.setName(y, 1, j);
+						panCardCoordinates.setName(x, 0, j);
+						panCardCoordinates.setName(y, 1, j);
 					}
 					n++;
 				} else {
@@ -90,103 +95,114 @@ public class ParsePanCard {
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setName(x, 0, j);
-						coord.setName(y, 1, j);
+						panCardCoordinates.setName(x, 0, j);
+						panCardCoordinates.setName(y, 1, j);
 					}
 				}
 				nl = nl + description.length() + 1;
 			}
 
 			// setting the coordinates for father's name
-			else if (Arrays.asList(obj.getFatherName().split("\\s+")).contains(
-					description)
-					&& fl < obj.getFatherName().length()) {
-				JSONObject boundingPoly = jobj
-						.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if (f == 0) {
+			else if (Arrays.asList(panCardObject.getFatherName().split("\\s+")).contains(description) && fl < panCardObject.getFatherName().length()) {
+				
+				//Initialize boundingPloy Object
+				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
+				
+				if (f == 0) 
+				{
 					for (int j = 0; j < 4; j++) { // iterate columns
 						JSONArray vertices = (JSONArray) boundingPoly
 								.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setFatherName(x, 0, j);
-						coord.setFatherName(y, 1, j);
+						panCardCoordinates.setFatherName(x, 0, j);
+						panCardCoordinates.setFatherName(y, 1, j);
 					}
 					f++;
-				} else {
+				} 
+				else 
+				{
 					for (int j = 1; j < 3; j++) { // iterate columns
 						JSONArray vertices = (JSONArray) boundingPoly
 								.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setFatherName(x, 0, j);
-						coord.setFatherName(y, 1, j);
+						panCardCoordinates.setFatherName(x, 0, j);
+						panCardCoordinates.setFatherName(y, 1, j);
 					}
 				}
 				fl = fl + description.length() + 1;
 			}
 
 			// setting the coordinates for date
-			else if (obj.getDobDisplay().contains(description) && dl < obj.getDobDisplay().length()) {
-				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if (d == 0) {
+			else if (panCardObject.getDobDisplay().contains(description) && dl < panCardObject.getDobDisplay().length()) {
+
+				//Initialize boundingPloy Object
+				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
+				
+				if (d == 0) 
+				{
 					for (int j = 0; j < 4; j++) { // iterate columns
 						JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setDobDisplay(x, 0, j);
-						coord.setDobDisplay(y, 1, j);
+						panCardCoordinates.setDobDisplay(x, 0, j);
+						panCardCoordinates.setDobDisplay(y, 1, j);
 					}
 					d++;
-				} else {
+				} 
+				else 
+				{
 					for (int j = 1; j < 3; j++) { // iterate columns
 						JSONArray vertices = (JSONArray) boundingPoly
 								.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setDobDisplay(x, 0, j);
-						coord.setDobDisplay(y, 1, j);
+						panCardCoordinates.setDobDisplay(x, 0, j);
+						panCardCoordinates.setDobDisplay(y, 1, j);
 					}
 				}
+				
 				dl = dl + description.length();
 			}
 
 			// setting the coordinates for PanCard number
-			else if (obj.getPanNumber().equals(description)&& pl < obj.getPanNumber().length()) {
-				JSONObject boundingPoly = jobj
-						.getJSONObject(Constants.VisionResponse.boundingPoly);
+			else if (panCardObject.getPanNumber().equals(description)&& pl < panCardObject.getPanNumber().length()) 
+			{
+				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
+				
 				if (p == 0) {
 					for (int j = 0; j < 4; j++) { // iterate columns
-						JSONArray vertices = (JSONArray) boundingPoly
-								.getJSONArray(Constants.VisionResponse.vertices);
+						JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setPanNumber(x, 0, j);
-						coord.setPanNumber(y, 1, j);
+						panCardCoordinates.setPanNumber(x, 0, j);
+						panCardCoordinates.setPanNumber(y, 1, j);
 					}
 					p++;
-				} else {
+				} 
+				else
+				{
 					for (int j = 1; j < 3; j++) { // iterate columns
-						JSONArray vertices = (JSONArray) boundingPoly
-								.getJSONArray(Constants.VisionResponse.vertices);
+						JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
 						JSONObject xy = (JSONObject) vertices.get(j);
 						int x = xy.getInt(Constants.VisionResponse.x);
 						int y = xy.getInt(Constants.VisionResponse.y);
-						coord.setPanNumber(x, 0, j);
-						coord.setPanNumber(y, 1, j);
+						panCardCoordinates.setPanNumber(x, 0, j);
+						panCardCoordinates.setPanNumber(y, 1, j);
 					}
 				}
 				pl = pl + description.length();
 			}
 		}
 
-		obj.setCoordinates(coord);
-		return obj;
+		panCardObject.setCoordinates(panCardCoordinates);
+		return panCardObject;
 	}
 	
 	/* DESCRIPTION : Parses the content from TEXT_DETECTION of Vision API Call to find the values for PanCard object
@@ -197,7 +213,7 @@ public class ParsePanCard {
 	{
 		int i;
 		String name = "", fname = "", dob = "", pan = "";
-		Calendar cal = Calendar.getInstance();
+		Calendar calendarObject = Calendar.getInstance();
 		//System.out.println("Inside parsecontent pan card " + content);
 		
 		if (!content.contains(Constants.PanCard.name)) 
@@ -280,10 +296,10 @@ public class ParsePanCard {
 					SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
 					try 
 					{
-						cal.setTime(sdf.parse(dob));
-						System.out.println("CALENDER" + cal);
+						calendarObject.setTime(sdf.parse(dob));
+						System.out.println("CALENDER" + calendarObject);
 						
-						if(!cal.toString().matches("^[A-Z]$"))
+						if(!calendarObject.toString().matches("^[A-Z]$"))
 						{
 							System.out.println("MACTHES");
 						}
@@ -348,7 +364,7 @@ public class ParsePanCard {
 						dob = token.substring(token.lastIndexOf(":")+1).trim();
 						SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
 						try {
-							cal.setTime(sdf.parse(dob));
+							calendarObject.setTime(sdf.parse(dob));
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}
@@ -361,7 +377,7 @@ public class ParsePanCard {
 				String splitDesc[] = content.split("\\n");
 				for (i = 0; i < splitDesc.length; i++) 
 				{
-					//System.out.println(splitDesc[i]);
+					System.out.println(splitDesc[i]);
 					if (splitDesc[i].toUpperCase().contains(Constants.PanCard.pan.toUpperCase())) 
 					{
 						pan = splitDesc[i + 1];
@@ -411,7 +427,7 @@ public class ParsePanCard {
 		// setting the PanCard object
 		obj.setName(name);
 		obj.setFatherName(fname);
-		obj.setDob(cal);
+		obj.setDob(calendarObject);
 		obj.setPanNumber(pan);
 		obj.setDobDisplay(dob);
 
@@ -447,5 +463,18 @@ public class ParsePanCard {
 				filteredContent = filteredContent + "\n" + filteredToken.trim();
 		}
 		return filteredContent;
+	}
+	
+	private int getStartIndex(JSONArray textAnnotationArray){
+		int startIndex = 1;
+		
+		for (; startIndex < textAnnotationArray.length(); startIndex++) {
+			JSONObject jobj = (JSONObject) textAnnotationArray.get(startIndex);
+			String description = jobj.getString(Constants.VisionResponse.description);
+			if (description.toUpperCase().contains(Constants.india))
+				break;
+		}
+		
+		return startIndex;
 	}
 }

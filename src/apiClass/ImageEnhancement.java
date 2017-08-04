@@ -1,5 +1,7 @@
 package apiClass;
 
+import modal.Constants;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -15,16 +17,12 @@ import java.util.Date;
 
 public class ImageEnhancement {
 	
-	/* DESCRIPTION : 
-	 * INPUT : 
-	 * OUTPUT : 
+	/* DESCRIPTION : Load the image file in Mat object
+	 * INPUT : Image file path in String 
+	 * OUTPUT : Mat Object
 	 * */		
 	public Mat loadOpenCvImage(final String filePath) {
 		//LOAD THE LIBRARY
-
-		//File nativeFile = new File(Core.NATIVE_LIBRARY_NAME + ".dll");
-		//System.load(nativeFile.getAbsolutePath());
-		//System.out.println(System.getProperty("java.library.path"));
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		//LOAD IMAGE IN GRAYSCALE
@@ -32,16 +30,17 @@ public class ImageEnhancement {
 	    return imgMat;
 	}
 	
-	/* DESCRIPTION : 
-	 * INPUT : 
-	 * OUTPUT : 
+	
+	/* DESCRIPTION : Performs image preprocessing by applying thresholding based on Document type
+	 * INPUT : Mat imgMat, String documentType
+	 * OUTPUT : Mat Object
 	 * */
 	public Mat preprocess(Mat imgMat, String documentType){
 		//THRESHOLDING PARAMETERS
 	    final double min = 0, max = 255.0, threshold = 127.0;
 	    //CREATE AN EMPTY IMAGE
 	    Mat imgNew = imgMat;
-	    if(documentType.equalsIgnoreCase("AadharCardPage1") || documentType.equalsIgnoreCase("AadharCardPage2")){
+	    if(documentType.equalsIgnoreCase(Constants.AadharCardPage1.aadharCard)){
 	    	//PERFORM GLOBAL THRESHOLDING
 		    Imgproc.threshold(imgMat, imgMat, threshold, max, Imgproc.THRESH_BINARY);
 		    //PERFORM ADAPTIVE THRESHOLDING USING MEAN FILTER
@@ -53,9 +52,10 @@ public class ImageEnhancement {
 	    return imgNew;
 	}
 	
-	/* DESCRIPTION : 
-	 * INPUT : 
-	 * OUTPUT : 
+	
+	/* DESCRIPTION : Saves image in mat form to File object
+	 * INPUT : Mat 
+	 * OUTPUT : File object
 	 * */
 	public File saveImage(Mat img){
 		Date d = new Date();
@@ -65,14 +65,17 @@ public class ImageEnhancement {
 		return processedFile;
 	}
 	
-	/* DESCRIPTION : 
-	 * INPUT : 
-	 * OUTPUT : 
+	/* DESCRIPTION : Wrapper function which loads image, perform compression, saves to file and converts to Base64 String
+	 * INPUT : String filePathm String documentType
+	 * OUTPUT : String ImageInBase64 
 	 * */
 	public String imagePreprocessing(String filepath, String documentType){
 		Mat imgMat = loadOpenCvImage(filepath);
 		//Mat imgMat2 = preprocess(imgMat, documentType);
-		imgMat = imageCompress(imgMat);
+		
+		if(!documentType.equalsIgnoreCase(Constants.VoterCard.voterCard))
+			imgMat = imageCompress(imgMat);
+		
 		File img = saveImage(imgMat);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
 		
@@ -80,9 +83,9 @@ public class ImageEnhancement {
 		return imgBase64;		
 	}
 	
-	/* DESCRIPTION : 
-	 * INPUT : 
-	 * OUTPUT : 
+	/* DESCRIPTION : Converts image from file to base64 String
+	 * INPUT : String filepath
+	 * OUTPUT : String ImageInBase64
 	 * */
 	public String convertToBase64(String filePath){
 		String imageData = "";
@@ -97,21 +100,23 @@ public class ImageEnhancement {
 		return imageData;
 	}
 	
-	/* DESCRIPTION : 
-	 * INPUT : 
-	 * OUTPUT : 
+	/* DESCRIPTION : Performs image compression
+	 * INPUT : Mat originalimage
+	 * OUTPUT : Mat compressedImage
 	 * */
 	public Mat imageCompress(Mat img){
-				long size = img.step1(0) * img.rows();
-				//long size = img.total() * img.elemSize();
-				while(size > 4000000)
-				{
-					Imgproc.resize(img, img, new Size(img.width()/2, img.height()/2));
-					size = img.step1(0) * img.rows();
-				}				
-				return img;
-			} 
+		long size = img.step1(0) * img.rows();
+		//long size = img.total() * img.elemSize();
+		
+		while(size > Constants.minimumImageSize)
+		{
+			Imgproc.resize(img, img, new Size(img.width()/1.2, img.height()/1.2));
+			size = img.step1(0) * img.rows();
+			
+			System.out.println("size : "+size);
+		}				
+		return img;
+	} 
 
-	
 }
 

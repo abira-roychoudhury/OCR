@@ -15,6 +15,8 @@ public class DocumentTemplating {
 	 * OUTPUT : LinkedHashMap document containing the parsed details and co-ordinates for boundary blocking
 	 * */
 	public LinkedHashMap<String,Object> parseContent(JSONArray textAnnotationArray,String fileType,String filePath){
+		
+		//Initializations
 		LinkedHashMap<String,Object> document=new LinkedHashMap<String,Object>();
 		LinkedHashMap<String,String> displayDocument = new LinkedHashMap<String,String>();
 		LinkedHashMap<String,int[][]> coordinates = new LinkedHashMap<String,int[][]>();
@@ -29,31 +31,12 @@ public class DocumentTemplating {
 			displayDocument.put(Constants.PanCard.dob, panCard.getDobDisplay());
 			displayDocument.put(Constants.PanCard.panNumber, panCard.getPanNumber());
 
-			try{
-				coordinates.put(Constants.PanCard.name, panCardCoord.getName());
-			}catch(Exception e){
-				coordinates.put(Constants.PanCard.name, new int[2][4]);
-			}
-
-			try{
-				coordinates.put(Constants.PanCard.fatherName, panCardCoord.getFatherName()); 
-			}catch(Exception e){
-				coordinates.put(Constants.PanCard.fatherName, new int[2][4]); 
-			}
-
-			try{
-				coordinates.put(Constants.PanCard.dob, panCardCoord.getDobDisplay());
-			}catch(Exception e){
-				coordinates.put(Constants.PanCard.dob, new int[2][4]);
-			}
-
-			try{
-				coordinates.put(Constants.PanCard.panNumber, panCardCoord.getPanNumber());
-			}catch(Exception e){
-				coordinates.put(Constants.PanCard.panNumber, new int[2][4]);
-			}
+			coordinates.put(Constants.PanCard.name, panCardCoord.getName());
+			coordinates.put(Constants.PanCard.fatherName, panCardCoord.getFatherName()); 
+			coordinates.put(Constants.PanCard.dob, panCardCoord.getDobDisplay());
+			coordinates.put(Constants.PanCard.panNumber, panCardCoord.getPanNumber());
+			
 		}
-		
 		
 		else if(fileType.equals(Constants.AadharCardPage1.aadharCard))
 		{
@@ -61,60 +44,33 @@ public class DocumentTemplating {
 			AadharCardCoord aadharCardCoord = aadharCard.getCoordinates();
 
 			displayDocument.put(Constants.AadharCardPage1.name, aadharCard.getName());
-			try {
-				coordinates.put(Constants.AadharCardPage1.name, aadharCardCoord.getName());
-			} catch (Exception e) {
-				coordinates.put(Constants.AadharCardPage1.name, new int[2][4] );
-			}
+			coordinates.put(Constants.AadharCardPage1.name, aadharCardCoord.getName());
 			
 			displayDocument.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, aadharCard.getFatherName());
-			try {
-				coordinates.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, aadharCardCoord.getFatherName());
-			} catch (Exception e) {
-				coordinates.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, new int[2][4] );
-			}
+			coordinates.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, aadharCardCoord.getFatherName());
 			
 			if(aadharCard.getYearOfBirth() != 0)
 			{
 				displayDocument.put(Constants.AadharCardPage1.year, Integer.toString(aadharCard.getYearOfBirth()));
-				try {
-					coordinates.put(Constants.AadharCardPage1.year, aadharCardCoord.getYearOfBirth());
-				} catch (Exception e) {
-					coordinates.put(Constants.AadharCardPage1.year, new int[2][4] );
-				}
+				coordinates.put(Constants.AadharCardPage1.year, aadharCardCoord.getYearOfBirth());
 			}
 			else
 			{
 				displayDocument.put(Constants.AadharCardPage1.dob, (aadharCard.getDobDisplay()));
-				try {
-					coordinates.put(Constants.AadharCardPage1.dob, aadharCardCoord.getDobDisplay());
-				} catch (Exception e) {
-					coordinates.put(Constants.AadharCardPage1.dob, new int[2][4] );
-				}
+				coordinates.put(Constants.AadharCardPage1.dob, aadharCardCoord.getDobDisplay());
 			}			
 			
 				
 			displayDocument.put(Constants.AadharCardPage1.gender, aadharCard.getGender());
-			try {
-				coordinates.put(Constants.AadharCardPage1.gender, aadharCardCoord.getGender());
-			} catch (Exception e) {
-				coordinates.put(Constants.AadharCardPage1.gender, new int[2][4] );
-			}
+			coordinates.put(Constants.AadharCardPage1.gender, aadharCardCoord.getGender());
+			
 
 			displayDocument.put(Constants.AadharCardPage1.aadharNumber, aadharCard.getAadharNumber());
-			try {
-				coordinates.put(Constants.AadharCardPage1.aadharNumber, aadharCardCoord.getAadharNumber());
-			} catch (Exception e) {
-				coordinates.put(Constants.AadharCardPage1.aadharNumber, new int[2][4] );
-			}
+			coordinates.put(Constants.AadharCardPage1.aadharNumber, aadharCardCoord.getAadharNumber());
 			
 			if(!aadharCard.getAddress().isEmpty()){
 				displayDocument.put(Constants.AadharCardPage1.address, aadharCard.getAddress());
-				try {
-					coordinates.put(Constants.AadharCardPage1.address, aadharCardCoord.getAddress());
-				} catch (Exception e) {
-					coordinates.put(Constants.AadharCardPage1.address, new int[2][4] );
-				}
+				coordinates.put(Constants.AadharCardPage1.address, aadharCardCoord.getAddress());
 			}
 		}
 		
@@ -130,41 +86,13 @@ public class DocumentTemplating {
 			displayDocument.put(Constants.DrivingLicense.bloodGroup, drivingLicense.getBloodGroup());
 			displayDocument.put(Constants.DrivingLicense.dob, drivingLicense.getDobDisplay());	
 
-			try {
-				coordinates.put(Constants.DrivingLicense.name, drivingLicenseCoord.getName());
-			} catch (Exception e) {
-				coordinates.put(Constants.DrivingLicense.name, new int[2][4] );
-			}
-
-			try {
-				coordinates.put(Constants.DrivingLicense.middleName, drivingLicenseCoord.getMiddleName());
-			} catch (Exception e) {
-				coordinates.put(Constants.DrivingLicense.middleName, new int[2][4] );
-			}
-
-			try {
-				coordinates.put(Constants.DrivingLicense.address, drivingLicenseCoord.getAddress());
-			} catch (Exception e) {
-				coordinates.put(Constants.DrivingLicense.address, new int[2][4] );
-			}
-
-			try {
-				coordinates.put(Constants.DrivingLicense.pin, drivingLicenseCoord.getPin());
-			} catch (Exception e) {
-				coordinates.put(Constants.DrivingLicense.pin, new int[2][4] );
-			}
-
-			try {
-				coordinates.put(Constants.DrivingLicense.bloodGroup, drivingLicenseCoord.getBloodGroup());
-			} catch (Exception e) {
-				coordinates.put(Constants.DrivingLicense.bloodGroup, new int[2][4] );
-			}
-
-			try {
-				coordinates.put(Constants.DrivingLicense.dob, drivingLicenseCoord.getDobDisplay());
-			} catch (Exception e) {
-				coordinates.put(Constants.DrivingLicense.dob, new int[2][4] );
-			}
+			coordinates.put(Constants.DrivingLicense.name, drivingLicenseCoord.getName());
+			coordinates.put(Constants.DrivingLicense.middleName, drivingLicenseCoord.getMiddleName());
+			coordinates.put(Constants.DrivingLicense.address, drivingLicenseCoord.getAddress());
+			coordinates.put(Constants.DrivingLicense.pin, drivingLicenseCoord.getPin());
+			coordinates.put(Constants.DrivingLicense.bloodGroup, drivingLicenseCoord.getBloodGroup());
+			coordinates.put(Constants.DrivingLicense.dob, drivingLicenseCoord.getDobDisplay());
+			
 		}	
 
 		else if(fileType.equals(Constants.VoterCard.voterCard))
@@ -176,56 +104,24 @@ public class DocumentTemplating {
 			displayDocument.put(Constants.VoterCard.electorName, voterCard.getName());
 			displayDocument.put(Constants.VoterCard.fatherName, voterCard.getFatherName());
 			displayDocument.put(Constants.VoterCard.sex, voterCard.getSex());
+			displayDocument.put(Constants.VoterCard.address, voterCard.getAddress());
 			
 			if(!voterCard.getAge().isEmpty()){
-				displayDocument.put(Constants.VoterCard.age, voterCard.getAge());
-				try {
-					coordinates.put(Constants.VoterCard.age, voterCardCoord.getAge());
-				} catch (Exception e) {
-					coordinates.put(Constants.VoterCard.age, new int[2][4] );
-				}
-
-			}
-			else{			
-				displayDocument.put(Constants.VoterCard.dob, voterCard.getDobDisplay());
-				try {
-					coordinates.put(Constants.VoterCard.dob, voterCardCoord.getDobDisplay());
-				} catch (Exception e) {
-					coordinates.put(Constants.VoterCard.dob, new int[2][4] );
-				}
-
-			}
-			displayDocument.put(Constants.VoterCard.address, voterCard.getAddress());
-			try {
-				coordinates.put(Constants.VoterCard.address, voterCardCoord.getAddress());
-			} catch (Exception e) {
-				coordinates.put(Constants.VoterCard.address, new int[2][4] );
-			}
 				
-
-			try {
-				coordinates.put(Constants.VoterCard.voterId, voterCardCoord.getVoterId());
-			} catch (Exception e) {
-				coordinates.put(Constants.VoterCard.voterId, new int[2][4] );
+				displayDocument.put(Constants.VoterCard.age, voterCard.getAge());
+				coordinates.put(Constants.VoterCard.age, voterCardCoord.getAge());
 			}
-
-			try {
-				coordinates.put(Constants.VoterCard.electorName, voterCardCoord.getName());
-			} catch (Exception e) {
-				coordinates.put(Constants.VoterCard.electorName, new int[2][4] );
+			else{	
+				
+				displayDocument.put(Constants.VoterCard.dob, voterCard.getDobDisplay());
+				coordinates.put(Constants.VoterCard.dob, voterCardCoord.getDobDisplay());
 			}
-
-			try {
-				coordinates.put(Constants.VoterCard.fatherName, voterCardCoord.getFatherName());
-			} catch (Exception e) {
-				coordinates.put(Constants.VoterCard.fatherName, new int[2][4] );
-			}
-
-			try {
-				coordinates.put(Constants.VoterCard.sex, voterCardCoord.getSex());
-			} catch (Exception e) {
-				coordinates.put(Constants.VoterCard.sex, new int[2][4] );
-			}
+			
+			coordinates.put(Constants.VoterCard.voterId, voterCardCoord.getVoterId());
+			coordinates.put(Constants.VoterCard.electorName, voterCardCoord.getName());
+			coordinates.put(Constants.VoterCard.fatherName, voterCardCoord.getFatherName());
+			coordinates.put(Constants.VoterCard.sex, voterCardCoord.getSex());
+			coordinates.put(Constants.VoterCard.address, voterCardCoord.getAddress());
 		}	
 
 		document.put(Constants.displaydocument, displayDocument);
