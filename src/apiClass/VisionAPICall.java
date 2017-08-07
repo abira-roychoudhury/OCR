@@ -97,7 +97,7 @@ public class VisionAPICall {
         
         
         JSONArray features = new JSONArray();
-        features.put(new JSONObject().put("type", "TEXT_DETECTION").put("maxResults", 1000));
+        features.put(new JSONObject().put("type", "DOCUMENT_TEXT_DETECTION").put("maxResults", 1000));
         requestBody.put("features",features);
  
         requests.put(requestBody);
