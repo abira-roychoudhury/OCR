@@ -106,7 +106,7 @@ public class Constants {
 	}
 	//Aadhar Card Constants
 	public static class AadharCardPage1{
-		public static final String aadharCard = "AadharCardPage1";
+		public static final String aadharCard = "AadharCardPage";
 		public static final String name = "Name";
 		public static final String year = "Year of Birth";
 		public static final String dob = "DOB";
@@ -155,6 +155,40 @@ public class Constants {
 		public static final String address3 = "Addres";
 		public static final String address4 = "Adcress";
 		public static final String address5 = "ddress";
+	}
+	//ITR Form Constants
+	public static class ITReturn{
+		public static final String iTReturn = "ITReturn";
+		public static final String name = "Name";
+		public static final String deduction1 = "Deduction";
+		public static final String deduction2 = "Dedaction";
+		public static final String verification = "Verification";
+		public static final String ward[] = {"Designation","Ward","Circle","AO"};
+		public static final String original = "Original";
+		public static final String revised = "Revised";
+		public static final String eFiling[] = {"E-filing","Acknowledgement"};
+		public static final String date[] = {"Date","DD-","-YYYY"};
+		public static final String closingBracket = ")";
+		public static final String status[] = {"Status","States"}; 
+		public static final String grossIncome[] = {"Gross","Total","Income"};
+		public static final String notRequiredRows[] = {"Name","PAN","Flat","Door","Block","Premises",
+														"Building","Village","Road","Street","Post","Office",
+														"Form","No","which","has","been","electronically","transmitted",
+														"Town","City","District","Area","Locality","State","ZipCode","Aadhar","Enrollment"
+														};
+		public static final String statusType[] = {"Individual","HUF","Other than individual/HUF","ERI","External Agency","Tax Professional",
+													"TDS User"};
+		public static final String pan = "PAN";
+		public static final String aadharNumber = "Aadhar Number";
+		public static final String assessmentYear = "Assessment Year";
+		public static final String address = "Address";
+		public static final String designation = "Designation of AO (Ward/Circle)";
+		public static final String orgRev = "Original or Revised";
+		public static final String eFilingAck = "E-filling Acknowledgement No";
+		public static final String eFilingDate = "Date(DD-MM-YYYY)";
+		public static final String grossTotalIncome = "Gross Total Income";
+		
+		
 	}
 	
 	//TRY all combinations of INDIA

@@ -286,6 +286,8 @@ public class Processing2 extends HttpServlet {
 			validFileType = true;
 		else if(fileType.equals(Constants.AadharCardPage1.aadharCard) && hasAadharNumber(descriptionStr)) 
 			validFileType = true;
+		else if(fileType.equals(Constants.ITReturn.iTReturn))
+			validFileType = true;
 	
 		return validFileType;
 	}

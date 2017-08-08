@@ -73,7 +73,8 @@ public class ImageEnhancement {
 		Mat imgMat = loadOpenCvImage(filepath);
 		//Mat imgMat2 = preprocess(imgMat, documentType);
 		
-		if(!documentType.equalsIgnoreCase(Constants.VoterCard.voterCard))
+		if(!(documentType.equalsIgnoreCase(Constants.VoterCard.voterCard) ||
+				documentType.equalsIgnoreCase(Constants.ITReturn.iTReturn)))
 			imgMat = imageCompress(imgMat);
 		
 		File img = saveImage(imgMat);

@@ -123,6 +123,36 @@ public class DocumentTemplating {
 			coordinates.put(Constants.VoterCard.sex, voterCardCoord.getSex());
 			coordinates.put(Constants.VoterCard.address, voterCardCoord.getAddress());
 		}	
+		if(fileType.equals(Constants.ITReturn.iTReturn))
+		{
+			ITReturn iTReturn = new ParseITReturn().parseITReturn(textAnnotationArray,filePath);
+			ITReturnCoord iTReturnCoord = iTReturn.getCoordinates();
+
+			displayDocument.put(Constants.ITReturn.pan, iTReturn.getPanNumber());
+			displayDocument.put(Constants.ITReturn.aadharNumber, iTReturn.getAadharNumber());
+			displayDocument.put(Constants.ITReturn.assessmentYear, iTReturn.getAssessmentYear());
+			displayDocument.put(Constants.ITReturn.name, iTReturn.getName());
+			displayDocument.put(Constants.ITReturn.address, iTReturn.getAddress());
+			displayDocument.put(Constants.ITReturn.status[0], iTReturn.getStatus());
+			displayDocument.put(Constants.ITReturn.designation, iTReturn.getDesignationOfAO());
+			displayDocument.put(Constants.ITReturn.orgRev, iTReturn.getOriginalRevised());
+			displayDocument.put(Constants.ITReturn.eFilingAck, iTReturn.geteFillingAckNumber());
+			displayDocument.put(Constants.ITReturn.eFilingDate, iTReturn.geteFillingDate());
+			displayDocument.put(Constants.ITReturn.grossTotalIncome, iTReturn.getGrossTotalIncome());
+
+			coordinates.put(Constants.ITReturn.pan, iTReturnCoord.getPanNumber());
+			coordinates.put(Constants.ITReturn.aadharNumber, iTReturnCoord.getAadharNumber());
+			coordinates.put(Constants.ITReturn.assessmentYear, iTReturnCoord.getAssessmentYear());
+			coordinates.put(Constants.ITReturn.name, iTReturnCoord.getName());
+			coordinates.put(Constants.ITReturn.address, iTReturnCoord.getAddress());
+			coordinates.put(Constants.ITReturn.status[0], iTReturnCoord.getStatus());
+			coordinates.put(Constants.ITReturn.designation, iTReturnCoord.getDesignationOfAO());
+			coordinates.put(Constants.ITReturn.orgRev, iTReturnCoord.getOriginalRevised());
+			coordinates.put(Constants.ITReturn.eFilingAck, iTReturnCoord.geteFillingAckNumber());
+			coordinates.put(Constants.ITReturn.eFilingDate, iTReturnCoord.geteFillingDate());
+			coordinates.put(Constants.ITReturn.grossTotalIncome, iTReturnCoord.getGrossTotalIncome());
+			
+		}
 
 		document.put(Constants.displaydocument, displayDocument);
 		document.put(Constants.coordinates, coordinates);	

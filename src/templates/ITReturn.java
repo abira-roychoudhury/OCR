@@ -4,6 +4,7 @@ public class ITReturn {
 	
 	private String panNumber = "";
 	private String aadharNumber = "";
+	private String assessmentYear = "";
 	private String name = "";
 	private String address = "";
 	private String state = "";
@@ -15,7 +16,15 @@ public class ITReturn {
 	private String eFillingAckNumber = "";
 	private String eFillingDate = "";
 	private String grossTotalIncome = "";
+	private ITReturnCoord coordinates = new ITReturnCoord();
 	
+	
+	public ITReturnCoord getCoordinates() {
+		return coordinates;
+	}
+	public void setCoordinates(ITReturnCoord coordinated) {
+		this.coordinates = coordinated;
+	}
 	public String getPanNumber() {
 		return panNumber;
 	}
@@ -27,6 +36,12 @@ public class ITReturn {
 	}
 	public void setAadharNumber(String aadharNumber) {
 		this.aadharNumber = aadharNumber;
+	}
+	public String getAssessmentYear() {
+		return assessmentYear;
+	}
+	public void setAssessmentYear(String assessmentYear) {
+		this.assessmentYear = assessmentYear;
 	}
 	public String getName() {
 		return name;
