@@ -33,9 +33,9 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 
 		
 				<div class="panel-body">
-					<canvas id="canvas" class="col-sm-12 col-md-12 col-xs-12" style="margin-bottom:10px">
-			
-					</canvas>
+					
+					<img id="image" alt=""  class="col-sm-12 col-md-12 col-xs-12"  src="" style="margin-bottom:10px">
+					
 					<div class="text-center" >
 						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#rawdata">Raw Data</button>
 					</div>
@@ -116,7 +116,7 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
     </div>
   </div>
 	
-  <script src="https://github.com/danschumann/limby-resize/blob/master/lib/canvas_resize.js" type="text/javascript"></script>
+  <script src='js/jquery.zoom.js'></script>
   <script src= "js/script.js?x=6" type="text/javascript"></script>
 </body>
 </html>
