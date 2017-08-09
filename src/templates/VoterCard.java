@@ -9,10 +9,18 @@ public class VoterCard {
 	private String fatherName = "";
 	private String sex = "";
 	private String voterId = "";
-	private String address = "";
 	private VoterCardCoord coordinates = new VoterCardCoord();
+	private Address address = new Address();
 	
 	
+	
+	
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 	public String getVoterId() {
 		return voterId;
 	}
@@ -54,12 +62,6 @@ public class VoterCard {
 	}
 	public void setAge(String age) {
 		this.age = age;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
 	}
 	
 	

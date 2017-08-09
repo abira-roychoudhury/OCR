@@ -17,8 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import templates.AadharCard;
-import templates.AadharCardAddress;
 import templates.AadharCardCoord;
+import templates.Address;
 
 public class ParseAadharCard {
 	
@@ -248,7 +248,7 @@ public class ParseAadharCard {
 			}
 			
 			//setting the coordinates for address
-			else if(Arrays.asList(obj.getAddress().split("\\s+")).contains(description) && adl< obj.getAddress().length())
+			else if(Arrays.asList(obj.getAddress().toString().split("\\s+")).contains(description) && adl< obj.getAddress().toString().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(ad==0)
@@ -295,7 +295,7 @@ public class ParseAadharCard {
 		int year = 0,d=0;
 		String uid="",name="",fname = "",gender="",aadharNumber="",dobstr="",address="";
 		Calendar cal = Calendar.getInstance();
-		AadharCardAddress addr = new AadharCardAddress();
+		Address addr = new Address();
 
 		String resultQR;
 		try {
@@ -331,35 +331,38 @@ public class ParseAadharCard {
 					year=Integer.parseInt(token.substring(token.lastIndexOf("=")+2));
 
 				else if(token.contains("co"))
-					addr.setCo(token.substring(token.lastIndexOf("=")+2));	
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("house"))
-					addr.setHouse(token.substring(token.lastIndexOf("=")+2));	
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("street"))
-					addr.setStreet(token.substring(token.lastIndexOf("=")+2));	
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("lm"))
-					addr.setLm(token.substring(token.lastIndexOf("=")+2));	
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("loc"))
-					addr.setLoc(token.substring(token.lastIndexOf("=")+2));
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("vtc"))
-					addr.setVtc(token.substring(token.lastIndexOf("=")+2));	
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("po"))
-					addr.setPo(token.substring(token.lastIndexOf("=")+2));
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("dist"))
-					addr.setDist(token.substring(token.lastIndexOf("=")+2));
+					addr.setCity(token.substring(token.lastIndexOf("=")+2));
 				else if(token.contains("subdist"))
-					addr.setSubdist(token.substring(token.lastIndexOf("=")+2));	
+					address = address + token.substring(token.lastIndexOf("=")+2);	
 				else if(token.contains("state"))
 					addr.setState(token.substring(token.lastIndexOf("=")+2));
 				else if(token.contains("pc"))
 				{
 					if(d==0)
-						addr.setPc(token.substring(token.lastIndexOf("=")+2,token.lastIndexOf("\"")));
+						addr.setZipCode(token.substring(token.lastIndexOf("=")+2,token.lastIndexOf("\"")));
 					else
-						addr.setPc(token.substring(token.lastIndexOf("=")+2));
+						addr.setZipCode(token.substring(token.lastIndexOf("=")+2));
 				}
 			}
 			aadharNumber = uid.substring(0,4)+" "+uid.substring(4,8)+" "+uid.substring(8);
+			
+			addr.setAddressLine(address);
 			obj.setAddress(addr);
+			
 		} catch (NotFoundException | BarCodeException e1) {
 			System.out.println("couldn't detect QR code");
 			content = content.concat("\\n EOF");
@@ -470,7 +473,7 @@ public class ParseAadharCard {
 						i++;						
 						address = address + "\n" + splitDesc[i];		
 					}		
-					AadharCardAddress completeAddr = new AadharCardAddress(address);
+					Address completeAddr = new ParseAddress().getAddress(address);
 					obj.setAddress(completeAddr);
 				}
 
@@ -485,11 +488,10 @@ public class ParseAadharCard {
 						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
 							i++;						
 							address = address + "\n" + splitDesc[i];		
-						}
+						}				
 					
-					
-					AadharCardAddress completeAddr = new AadharCardAddress(address);
-					obj.setAddress(completeAddr);
+						Address completeAddr = new ParseAddress().getAddress(address);
+						obj.setAddress(completeAddr);
 				}
 			}
 

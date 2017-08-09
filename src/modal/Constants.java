@@ -50,23 +50,19 @@ public class Constants {
 		public static final String y = "y";
 	}
 	
-	//Entity type constants Google NLP
-	public static class NLPResponse{
-		public static final String non = "Non";
-		public static final String person = "Person";
-		public static final String body = "body";
-		public static final String entities = "entities";
-		public static final String name = "name";
+		
+	//Vision API request constants
+	public static class VisionRequest{
+		public static final String visionApiUrl = "https://vision.googleapis.com/v1/images:annotate?";
+		public static final String visionApiKey = "key=AIzaSyC3IyBtatcC3pWGseGIfS3kfxqSpnaUUNA";
+		public static final String content = "content";
+		public static final String image = "image";
 		public static final String type = "type";
-	}
-	
-	//Vision API constants
-	public static final String visionApiUrl = "https://vision.googleapis.com/v1/images:annotate?";
-	public static final String visionApiKey = "key=AIzaSyC3IyBtatcC3pWGseGIfS3kfxqSpnaUUNA";
-	
-	//NLP API constants
-	public static final String nlpApiUrl = "https://language.googleapis.com/v1beta2/documents:analyzeEntities?";
-	public static final String nlpApiKey = "key=AIzaSyBvIc_jHtviAsiXwQbQbAY3LdMdhY2BBQ8";	
+		public static final String maxResults = "maxResults";
+		public static final String textDetection = "TEXT_DETECTION";
+		public static final String documentTextDetection = "DOCUMENT_TEXT_DETECTION";	
+		
+	} 
 	
 	//Proxy settings
 	public static final String proxyHost = "ptproxy.persistent.co.in";
@@ -160,8 +156,9 @@ public class Constants {
 	public static class ITReturn{
 		public static final String iTReturn = "ITReturn";
 		public static final String name = "Name";
-		public static final String deduction1 = "Deduction";
-		public static final String deduction2 = "Dedaction";
+		public static final String of = "Of";
+		public static final String deduction1 = "Deductions";
+		public static final String deduction2 = "Dedactions";
 		public static final String verification = "Verification";
 		public static final String ward[] = {"Designation","Ward","Circle","AO"};
 		public static final String original = "Original";
@@ -186,9 +183,14 @@ public class Constants {
 		public static final String orgRev = "Original or Revised";
 		public static final String eFilingAck = "E-filling Acknowledgement No";
 		public static final String eFilingDate = "Date(DD-MM-YYYY)";
-		public static final String grossTotalIncome = "Gross Total Income";
-		
-		
+		public static final String grossTotalIncome = "Gross Total Income";		
+	}
+	
+	public static class Address{
+		public static final String address = "Address";
+		public static final String city = "City";
+		public static final String state = "State";
+		public static final String zipCode = "Zip Code";
 	}
 	
 	//TRY all combinations of INDIA

@@ -6,10 +6,6 @@ public class ITReturn {
 	private String aadharNumber = "";
 	private String assessmentYear = "";
 	private String name = "";
-	private String address = "";
-	private String state = "";
-	private String city = "";
-	private String pin = "";
 	private String status = "";
 	private String designationOfAO = "";
 	private String originalRevised = "";
@@ -17,8 +13,16 @@ public class ITReturn {
 	private String eFillingDate = "";
 	private String grossTotalIncome = "";
 	private ITReturnCoord coordinates = new ITReturnCoord();
+	private Address address = new Address();
 	
+		
 	
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 	public ITReturnCoord getCoordinates() {
 		return coordinates;
 	}
@@ -48,30 +52,6 @@ public class ITReturn {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	public String getPin() {
-		return pin;
-	}
-	public void setPin(String pin) {
-		this.pin = pin;
 	}
 	public String getStatus() {
 		return status;

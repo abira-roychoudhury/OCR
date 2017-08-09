@@ -19,10 +19,10 @@ public class VisionAPICall {
 	 * INPUT : String base64String of the image on which OCR is to be performed
 	 * OUTPUT : JSONObject of the response from Vision API
 	 * */
-	public JSONObject performOCR(String base64String){
+	public JSONObject performOCR(String base64String, String type){
 		
-		String apiUrl = Constants.visionApiUrl;
-		String apiKey = Constants.visionApiKey;
+		String apiUrl = Constants.VisionRequest.visionApiUrl;
+		String apiKey = Constants.VisionRequest.visionApiKey;
 		JSONObject result = new JSONObject();
 		String stringBody = "";
 		
@@ -44,7 +44,7 @@ public class VisionAPICall {
 			
 			
 			//strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
-			stringBody = getBody(base64String).toString();
+			stringBody = getBody(base64String,type).toString();
 			System.out.println(stringBody);
 			
 			
@@ -85,19 +85,19 @@ public class VisionAPICall {
 	 * INPUT : String base64String of the image on which OCR is to be performed
 	 * OUTPUT : JSONObject of Request body
 	 * */
-	public JSONObject getBody(String base64String){
+	public JSONObject getBody(String base64String, String type){
         JSONObject Body = new JSONObject();
         JSONArray requests = new JSONArray();
         
         JSONObject requestBody = new JSONObject();
         
         JSONObject content = new JSONObject();
-        content.put("content", base64String);
-        requestBody.put("image", content);
+        content.put(Constants.VisionRequest.content, base64String);
+        requestBody.put(Constants.VisionRequest.image, content);
         
         
         JSONArray features = new JSONArray();
-        features.put(new JSONObject().put("type", "DOCUMENT_TEXT_DETECTION").put("maxResults", 1000));
+        features.put(new JSONObject().put(Constants.VisionRequest.type, type).put(Constants.VisionRequest.maxResults, 1000));
         requestBody.put("features",features);
  
         requests.put(requestBody);

@@ -11,9 +11,19 @@ public class AadharCard {
 	private String dobDisplay = "";
 	private String gender = "";
 	private String aadharNumber = "";
-	private AadharCardAddress address = new AadharCardAddress();
+	private Address address = new Address();
 	private AadharCardCoord coordinates = new AadharCardCoord();
+		
+	
 
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+	
 	public AadharCardCoord getCoordinates() {
 		return coordinates;
 	}
@@ -53,13 +63,6 @@ public class AadharCard {
 		this.aadharNumber = aadharNumber;
 	}
 
-	public String getAddress(){
-		return this.address.toString();
-	}
-	
-	public void setAddress(AadharCardAddress address){
-		this.address = address;
-	}
 	public Calendar getDob() {
 		return dob;
 	}

@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import templates.Address;
 import templates.VoterCard;
 import templates.VoterCardCoord;
 
@@ -134,7 +135,7 @@ public class ParseVoterCard {
 			}
 			
 			//setting the coordinates for sex 
-			else if(obj.getSex().toLowerCase().contains(description.toLowerCase()) && sl<obj.getSex().length()){
+			else if(description.toLowerCase().contains(obj.getSex().toLowerCase()) && sl<obj.getSex().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(s==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -214,7 +215,8 @@ public class ParseVoterCard {
 				al = al+description.length()+1;
 			}
 			//setting the coordinates for address
-			else if(Arrays.asList(obj.getAddress().split("\\s+")).contains(description) && adl< obj.getAddress().length()){
+			else if(Arrays.asList(obj.getAddress().toString().split("\\s+")).contains(description) && adl< obj.getAddress().toString().length()){
+				System.out.println(description);
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(ad==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -266,7 +268,7 @@ public class ParseVoterCard {
 						voterId = tokens[i+2];
 				}
 				else
-					voterId = tokens[i+1];
+					voterId = tokens[i+1];				
 				obj.setVoterId(voterId);
 			}
 			//checking for elector's name
@@ -276,7 +278,9 @@ public class ParseVoterCard {
 						tokens[i+1].toLowerCase().contains(Constants.VoterCard.mother.toLowerCase()) ||
 						  tokens[i+1].toLowerCase().contains(Constants.VoterCard.husband.toLowerCase()) || 
 						   tokens[i+1].toLowerCase().contains(Constants.VoterCard.name.toLowerCase())))
-					name = name.concat(" "+tokens[i+1]);				
+					name = name.concat(" "+tokens[i+1]);
+				if(name.isEmpty())
+					name = tokens[i-1];
 				obj.setName(name.replace(Constants.colon, "").trim());
 			}
 			//checking for father's name
@@ -325,7 +329,7 @@ public class ParseVoterCard {
 				}
 			}
 			//checking for address
-			else if(obj.getAddress().isEmpty() && (token.toLowerCase().contains(Constants.VoterCard.address.toLowerCase()) ||
+			else if(obj.getAddress().toString().isEmpty() && (token.toLowerCase().contains(Constants.VoterCard.address.toLowerCase()) ||
 													token.toLowerCase().contains(Constants.VoterCard.address1.toLowerCase()) ||
 													token.toLowerCase().contains(Constants.VoterCard.address2.toLowerCase()) ||
 													token.toLowerCase().contains(Constants.VoterCard.address3.toLowerCase()) ||
@@ -341,7 +345,8 @@ public class ParseVoterCard {
 				else
 					addr = addr+"\n"+tokens[i+1]+"\n"+tokens[i+2]+"\n"+tokens[i+3];
 				
-				obj.setAddress(addr.trim());			
+				Address address = new ParseAddress().getAddress(addr.trim());
+				obj.setAddress(address);
 			}
 			
 		}

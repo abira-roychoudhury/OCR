@@ -16,7 +16,8 @@ var img = '<%=request.getAttribute("imgBase64").toString()%>'
 var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 					 "width" : <%=request.getAttribute("compressWidth")%>} 
 </script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <body>
@@ -50,6 +51,7 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 				</div>
 				<div class="panel-body">
 					<form>
+						<div class="view-panel" style="">
 							<c:forEach var="doc" items="${displaydocument}" varStatus="itemsRow">
 								<div class="form-group">
 									<c:set var = "addrKey" scope = "session" value = "Address"/>
@@ -64,6 +66,8 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 								      </c:choose>									
 								</div>
 							</c:forEach>
+						</div>
+						
 							<button type="button" class="btn btn-primary">Submit</button>
 					</form>
 				</div>
@@ -112,6 +116,7 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
     </div>
   </div>
 	
+  <script src="https://github.com/danschumann/limby-resize/blob/master/lib/canvas_resize.js" type="text/javascript"></script>
   <script src= "js/script.js?x=6" type="text/javascript"></script>
 </body>
 </html>

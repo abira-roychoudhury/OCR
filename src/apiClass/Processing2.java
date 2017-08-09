@@ -54,6 +54,7 @@ public class Processing2 extends HttpServlet {
 		Date start = new Date(),end = new Date();
 		TimestampLogging  timelogging = new TimestampLogging();		
 		String fileName = "",fileType="",descriptionStr="",filePath="";
+		String visionTextDetectionType = Constants.VisionRequest.textDetection;
 		JSONArray textAnnotationArray = new JSONArray();
 		String imgName = Constants.imgFile+start.getTime()+Constants.dot+Constants.jpg;
 		File imgFile = new File(imgName);
@@ -111,7 +112,9 @@ public class Processing2 extends HttpServlet {
 		//Calling Vision API
 		start = new Date();
 		VisionAPICall vac = new VisionAPICall();
-		JSONObject result = vac.performOCR(processedImgBase64);
+		if(fileType.equals(Constants.ITReturn.iTReturn))
+			visionTextDetectionType = Constants.VisionRequest.documentTextDetection;
+		JSONObject result = vac.performOCR(processedImgBase64,visionTextDetectionType);
 		end = new Date();
 		timeDifference = timelogging.fileLog(Constants.visionAPICall, start, end);
 		request.setAttribute(Constants.visionAPICall, timeDifference);
