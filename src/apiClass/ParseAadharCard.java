@@ -27,17 +27,17 @@ public class ParseAadharCard {
 	 * OUTPUT : AadharCard object
 	 * */
 	public AadharCard parseAadharCard(JSONArray textAnnotationArray,String filePath){
-		AadharCard obj = new AadharCard();
+		AadharCard aadharCardObj = new AadharCard();
 		try{
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			String descriptionStr=firstObj.getString(Constants.VisionResponse.description);
 			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
-			obj = parseContent(descriptionStr,filePath,obj);		
-			obj = parseCoord(textAnnotationArray,obj);	
+			aadharCardObj = parseContent(descriptionStr,filePath,aadharCardObj);		
+			aadharCardObj = parseCoord(textAnnotationArray,aadharCardObj);	
 		}catch(JSONException je){ je.printStackTrace();
 		}catch(Exception e){ e.printStackTrace();
 		}
-		return obj;
+		return aadharCardObj;
 	}
 
 
@@ -45,12 +45,12 @@ public class ParseAadharCard {
 	 * INPUT :  JSONArray response from Vision API Call and AadharCard object
 	 * OUTPUT : AadharCard object
 	 * */
-	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard obj)
+	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard aadharCardObj)
 	{
 		AadharCardCoord coord = new AadharCardCoord();
 		int n=0,f=0,yr=0,d=0,g=0,a=0,ad=0,i=1;
 		int nl=0,fl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
-		String year =  Integer.toString(obj.getYearOfBirth());
+		String year =  Integer.toString(aadharCardObj.getYearOfBirth());
 
 		for(;i<textAnnotationArray.length();i++)
 		{
@@ -58,7 +58,7 @@ public class ParseAadharCard {
 			String description = jobj.getString(Constants.VisionResponse.description);
 
 			//setting the coordinates for name
-			if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nl< obj.getName().length())
+			if(Arrays.asList(aadharCardObj.getName().split("\\s+")).contains(description) && nl< aadharCardObj.getName().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(n==0)
@@ -90,7 +90,7 @@ public class ParseAadharCard {
 			}
 			
 			//setting the coordinates for father's name
-			else if(Arrays.asList(obj.getFatherName().split("\\s+")).contains(description) && fl< obj.getFatherName().length())
+			else if(Arrays.asList(aadharCardObj.getFatherName().split("\\s+")).contains(description) && fl< aadharCardObj.getFatherName().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(f==0)
@@ -122,7 +122,7 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for year of birth
-			else if(obj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length())
+			else if(aadharCardObj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length())
 			{	
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(yr==0)
@@ -154,7 +154,7 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for date of birth
-			else if(obj.getDobDisplay().contains(description) && dl< obj.getDobDisplay().length())
+			else if(aadharCardObj.getDobDisplay().contains(description) && dl< aadharCardObj.getDobDisplay().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(d==0)
@@ -185,7 +185,7 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for gender
-			else if(description.toLowerCase().contains(obj.getGender().toLowerCase()) && gl< obj.getGender().length())
+			else if(description.toLowerCase().contains(aadharCardObj.getGender().toLowerCase()) && gl< aadharCardObj.getGender().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(g==0)
@@ -217,7 +217,7 @@ public class ParseAadharCard {
 			}
 
 			//setting the coordinates for aadhar card number
-			else if(Arrays.asList(obj.getAadharNumber().split("\\s+")).contains(description) && al< obj.getAadharNumber().length()){
+			else if(Arrays.asList(aadharCardObj.getAadharNumber().split("\\s+")).contains(description) && al< aadharCardObj.getAadharNumber().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(a==0)
 				{
@@ -248,7 +248,7 @@ public class ParseAadharCard {
 			}
 			
 			//setting the coordinates for address
-			else if(Arrays.asList(obj.getAddress().toString().split("\\s+")).contains(description) && adl< obj.getAddress().toString().length())
+			else if(Arrays.asList(aadharCardObj.getAddress().toString().split("\\s+")).contains(description) && adl< aadharCardObj.getAddress().toString().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(ad==0)
@@ -281,8 +281,8 @@ public class ParseAadharCard {
 			}
 		}
 			
-		obj.setCoordinates(coord);
-		return obj;
+		aadharCardObj.setCoordinates(coord);
+		return aadharCardObj;
 	}
 
 
@@ -290,9 +290,9 @@ public class ParseAadharCard {
 	 * INPUT : String content containing the entire text as detected by Vision API and AadharCard object
 	 * OUTPUT : AadharCard object
 	 * */
-	public AadharCard parseContent(String content,String filePath,AadharCard obj)throws WriterException, IOException
+	public AadharCard parseContent(String content,String filePath,AadharCard aadharCardObj)throws WriterException, IOException
 	{
-		int year = 0,d=0;
+		int year = 0,dob=0;
 		String uid="",name="",fname = "",gender="",aadharNumber="",dobstr="",address="";
 		Calendar cal = Calendar.getInstance();
 		Address addr = new Address();
@@ -305,63 +305,63 @@ public class ParseAadharCard {
 			if(resultQR.isEmpty() || resultQR.matches("^[0-9]{1,12}$"))
 				throw new BarCodeException();
 
-			if(resultQR.contains("dob")){
-				dobstr=resultQR.substring(resultQR.lastIndexOf("dob=\"")+5,resultQR.lastIndexOf("\""));
+			if(resultQR.contains(Constants.AadharCardPage1.qrDob)){
+				dobstr=resultQR.substring(resultQR.lastIndexOf(Constants.AadharCardPage1.qrDob+Constants.equal+Constants.doubleQuote)+5,resultQR.lastIndexOf(Constants.doubleQuote));
 				SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormatSlash);
 				try {
 					cal.setTime(sdf.parse(dobstr));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				d=1;
+				dob=1;
 			}
 
-			String tokens[] = resultQR.split("\" ");
+			String tokens[] = resultQR.split(Constants.doubleQuote+Constants.space);
 			for(String token : tokens){
 				token=token.trim();
-				if(token.contains("uid"))
-					uid=token.substring(token.lastIndexOf("=")+2);
-				else if(token.contains("name"))
-					name=token.substring(token.lastIndexOf("=")+2);
-				else if(token.contains("father"))
-					fname=token.substring(token.lastIndexOf("=")+2);
-				else if(token.contains("gender"))
-					gender=(token.substring(token.lastIndexOf("=")+2).equals("M")?"Male":"Female");
-				else if(token.contains("yob"))
-					year=Integer.parseInt(token.substring(token.lastIndexOf("=")+2));
+				if(token.contains(Constants.AadharCardPage1.qrUid))
+					uid=token.substring(token.lastIndexOf(Constants.equal)+2);
+				else if(token.contains(Constants.AadharCardPage1.qrName))
+					name=token.substring(token.lastIndexOf(Constants.equal)+2);
+				else if(token.contains(Constants.AadharCardPage1.qrFather))
+					fname=token.substring(token.lastIndexOf(Constants.equal)+2);
+				else if(token.contains(Constants.AadharCardPage1.qrGender))
+					gender=(token.substring(token.lastIndexOf(Constants.equal)+2).equals("M")?Constants.male:Constants.female);
+				else if(token.contains(Constants.AadharCardPage1.qrYob))
+					year=Integer.parseInt(token.substring(token.lastIndexOf(Constants.equal)+2));
 
-				else if(token.contains("co"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("house"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("street"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("lm"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("loc"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("vtc"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("po"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("dist"))
-					addr.setCity(token.substring(token.lastIndexOf("=")+2));
-				else if(token.contains("subdist"))
-					address = address + token.substring(token.lastIndexOf("=")+2);	
-				else if(token.contains("state"))
-					addr.setState(token.substring(token.lastIndexOf("=")+2));
-				else if(token.contains("pc"))
+				else if(token.contains(Constants.AadharCardPage1.qrCo))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrHouse))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrStreet))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrLm))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrLoc))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrVtc))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrPo))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrDist))
+					addr.setCity(token.substring(token.lastIndexOf(Constants.equal)+2));
+				else if(token.contains(Constants.AadharCardPage1.qrSubdist))
+					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+				else if(token.contains(Constants.AadharCardPage1.qrState))
+					addr.setState(token.substring(token.lastIndexOf(Constants.equal)+2));
+				else if(token.contains(Constants.AadharCardPage1.qrPc))
 				{
-					if(d==0)
-						addr.setZipCode(token.substring(token.lastIndexOf("=")+2,token.lastIndexOf("\"")));
+					if(dob==0)
+						addr.setZipCode(token.substring(token.lastIndexOf(Constants.equal)+2,token.lastIndexOf(Constants.doubleQuote)));
 					else
-						addr.setZipCode(token.substring(token.lastIndexOf("=")+2));
+						addr.setZipCode(token.substring(token.lastIndexOf(Constants.equal)+2));
 				}
 			}
 			aadharNumber = uid.substring(0,4)+" "+uid.substring(4,8)+" "+uid.substring(8);
 			
 			addr.setAddressLine(address);
-			obj.setAddress(addr);
+			aadharCardObj.setAddress(addr);
 			
 		} catch (NotFoundException | BarCodeException e1) {
 			System.out.println("couldn't detect QR code");
@@ -372,7 +372,7 @@ public class ParseAadharCard {
 			{
 				//System.out.println(splitDesc[i]);
 
-				String number = extractNumber(splitDesc[i].replace(" ", "").trim());
+				String number = extractNumber(splitDesc[i].replace(Constants.space, "").trim());
 				//System.out.println(number);
 				if(number.length() == 14)
 				{
@@ -474,7 +474,7 @@ public class ParseAadharCard {
 						address = address + "\n" + splitDesc[i];		
 					}		
 					Address completeAddr = new ParseAddress().getAddress(address);
-					obj.setAddress(completeAddr);
+					aadharCardObj.setAddress(completeAddr);
 				}
 
 				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.unique.toLowerCase()) ||
@@ -491,7 +491,7 @@ public class ParseAadharCard {
 						}				
 					
 						Address completeAddr = new ParseAddress().getAddress(address);
-						obj.setAddress(completeAddr);
+						aadharCardObj.setAddress(completeAddr);
 				}
 			}
 
@@ -507,17 +507,20 @@ public class ParseAadharCard {
 				e.printStackTrace();
 			}
 		}
-		obj.setName(name);
-		obj.setFatherName(fname);
-		obj.setGender(gender);
-		obj.setAadharNumber(aadharNumber);
-		obj.setYearOfBirth(year);
-		obj.setDob(cal);
-		obj.setDobDisplay(dobstr);
-		return obj;
+		aadharCardObj.setName(name);
+		aadharCardObj.setFatherName(fname);
+		aadharCardObj.setGender(gender);
+		aadharCardObj.setAadharNumber(aadharNumber);
+		aadharCardObj.setYearOfBirth(year);
+		aadharCardObj.setDob(cal);
+		aadharCardObj.setDobDisplay(dobstr);
+		return aadharCardObj;
 	}
 
-	//Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
+	/* DESCRIPTION : Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
+	 * INPUT : String that may contain aadhar number
+	 * OUTPUT : String of aadhar number
+	 * */
 	public static String extractNumber(final String str) 
 	{           
 		int i=0;
@@ -542,7 +545,12 @@ public class ParseAadharCard {
 		}
 		return sb.toString();
 	}
-
+	
+	
+	/* DESCRIPTION : Extract date from a String
+	 * INPUT : String that contains date
+	 * OUTPUT : Date in String format
+	 * */
 	public static String extractDateNumber(final String str) 
 	{                
 		if(str == null || str.isEmpty()) return "";

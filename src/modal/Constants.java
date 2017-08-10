@@ -8,7 +8,16 @@ public class Constants {
 	public static final String imgFile = "image";
 	public static final String jpg = "jpg";
 	public static final String compress = "compress";
+	
+	
 	public static final String dot = ".";
+	public static final String colon = ":";
+	public static final String equal = "=";
+	public static final String doubleQuote = "\"";
+	public static final String newLine = "\n";
+	public static final String eof = "EOF";
+	public static final String space = " ";
+	
 	
 	
 	
@@ -79,8 +88,7 @@ public class Constants {
 	public static final String birth = "Birth";
 	public static final String year = "Year";
 	public static final String date = "Date";
-	public static final String dob = "DOB";
-	public static final String colon = ":";
+	public static final String dob = "DOB";	
 	public static final String india = "INDIA";
 	public static final String govt = "GOVTOF";
 	public static final String department = "DEPARTMENT";
@@ -114,6 +122,25 @@ public class Constants {
 		public static final String unique = "Unique";
 		public static final String authority = "Authority";
 		public static final String identification = "Identification";
+		public static final String qrUid = "uid";
+		public static final String qrName = "name";
+		public static final String qrFather = "father";
+		public static final String qrGender = "gender";
+		public static final String qrYob = "yob";
+		public static final String qrDob = "dob";
+		public static final String qrCo = "co";
+		public static final String qrHouse = "house";
+		public static final String qrStreet = "street";
+		public static final String qrLm = "lm";
+		public static final String qrLoc = "loc";
+		public static final String qrVtc = "vtc";
+		public static final String qrPo = "po";
+		public static final String qrDist = "dist";
+		public static final String qrSubdist = "subdist";
+		public static final String qrState = "state";
+		public static final String qrPc = "pc";
+		
+		
 	}
 	//Driving License Constants
 	public static class DrivingLicense{

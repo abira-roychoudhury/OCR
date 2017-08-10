@@ -26,7 +26,7 @@ function highlight(){
 		
 		drawPoly(img,ox,oy,owidth,oheight);
 		
-		console.log(ox+","+oy+","+owidth+","+oheight)
+		//console.log(ox+","+oy+","+owidth+","+oheight)
 
 	}		
 }
@@ -95,8 +95,8 @@ function drawPoly(base64,ox,oy,owidth,oheight){
 			
 			ox = ((img.width/compressedDim.width) * ox) - ((img.width / 500 ) * 5);
 			oy = ((img.width/compressedDim.width) * oy) - ((img.width / 500 ) * 5);
-			owidth = ((img.width/compressedDim.width) * owidth) + ((img.width / 500 ) * 10);
-			oheight = ((img.width/compressedDim.width) * oheight) + ((img.width / 500 ) * 10);
+			owidth = ((img.width/compressedDim.width) * owidth) + ((img.width / 500 ) * 15);
+			oheight = ((img.width/compressedDim.width) * oheight) + ((img.width / 500 ) * 15);
 			
 	   		ctx.strokeRect(ox, oy, owidth,oheight);
 	   		
@@ -109,5 +109,6 @@ function drawPoly(base64,ox,oy,owidth,oheight){
 }
 
 draw(img);
+
 
 });
