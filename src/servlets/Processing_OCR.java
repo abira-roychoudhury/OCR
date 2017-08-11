@@ -294,7 +294,7 @@ public class Processing_OCR extends HttpServlet {
 		
 		boolean validFileType = false;
 		
-		if(fileType.equals(Constants.PanCard.panCard) && ( descriptionStr.toLowerCase().contains(Constants.PanCard.income.toLowerCase()) || descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase())))
+		if(fileType.equals(Constants.PanCard.panCard) && ( descriptionStr.toLowerCase().contains(Constants.PanCard.income.toLowerCase()) || descriptionStr.toLowerCase().contains(Constants.PanCard.tax.toLowerCase())) && !descriptionStr.contains(Constants.ITReturn.itrv))
 			validFileType = true;
 		else if(fileType.equals(Constants.VoterCard.voterCard) && descriptionStr.toLowerCase().contains(Constants.VoterCard.elector.toLowerCase()))
 			validFileType = true;
@@ -302,7 +302,7 @@ public class Processing_OCR extends HttpServlet {
 			validFileType = true;
 		else if(fileType.equals(Constants.AadharCardPage1.aadharCard) && hasAadharNumber(descriptionStr)) 
 			validFileType = true;
-		else if(fileType.equals(Constants.ITReturn.iTReturn))
+		else if(fileType.equals(Constants.ITReturn.iTReturn) && descriptionStr.contains(Constants.ITReturn.itrv))
 			validFileType = true;
 	
 		return validFileType;

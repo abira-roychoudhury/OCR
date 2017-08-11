@@ -192,6 +192,7 @@ public class Constants {
 	//ITR Form Constants
 	public static class ITReturn{
 		public static final String iTReturn = "ITReturn";
+		public static final String itrv = "ITR-V";
 		public static final String name = "Name";
 		public static final String firstName = "First Name";
 		public static final String lastName = "Last Name";
