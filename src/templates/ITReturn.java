@@ -6,6 +6,9 @@ public class ITReturn {
 	private String aadharNumber = "";
 	private String assessmentYear = "";
 	private String name = "";
+	private String firstName = "";
+	private String middleName = "";
+	private String lastName = "";
 	private String status = "";
 	private String designationOfAO = "";
 	private String originalRevised = "";
@@ -52,6 +55,41 @@ public class ITReturn {
 	}
 	public void setName(String name) {
 		this.name = name;
+		name = name.replace(".", " ");
+		String nameArray[] = name.split(" ", 3);
+		
+		if(nameArray.length == 1)
+			this.setFirstName(nameArray[0]);
+		
+		else if(nameArray.length == 2){
+			this.setFirstName(nameArray[0]);
+			this.setLastName(nameArray[1]);
+		}
+		else{
+			this.setFirstName(nameArray[0]);
+			this.setMiddleName(nameArray[1]);
+			this.setLastName(nameArray[2]);
+		}		
+	}
+	
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getMiddleName() {
+		return middleName;
+	}
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getStatus() {
 		return status;

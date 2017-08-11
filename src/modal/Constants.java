@@ -100,6 +100,9 @@ public class Constants {
 	public static class PanCard{
 		public static final String panCard = "PanCard";
 		public static final String name = "Name";
+		public static final String firstName = "First Name";
+		public static final String lastName = "Last Name";
+		public static final String middleName = "Middle Name";
 		public static final String fatherName = "Father's Name";
 		public static final String dob = "DOB";
 		public static final String panNumber = "Pan Number";
@@ -113,6 +116,9 @@ public class Constants {
 	public static class AadharCardPage1{
 		public static final String aadharCard = "AadharCardPage";
 		public static final String name = "Name";
+		public static final String firstName = "First Name";
+		public static final String lastName = "Last Name";
+		public static final String middleName = "Middle Name";
 		public static final String year = "Year of Birth";
 		public static final String dob = "DOB";
 		public static final String gender = "Gender";
@@ -160,6 +166,9 @@ public class Constants {
 	public static class VoterCard{
 		public static final String voterCard = "VoterCard";
 		public static final String electorName = "Elector's Name";
+		public static final String firstName = "First Name";
+		public static final String lastName = "Last Name";
+		public static final String middleName = "Middle Name";
 		public static final String fatherName = "Father's Name";
 		public static final String dob = "DOB";
 		public static final String sex = "Sex";
@@ -184,6 +193,9 @@ public class Constants {
 	public static class ITReturn{
 		public static final String iTReturn = "ITReturn";
 		public static final String name = "Name";
+		public static final String firstName = "First Name";
+		public static final String lastName = "Last Name";
+		public static final String middleName = "Middle Name";
 		public static final String of = "Of";
 		public static final String deduction1 = "Deductions";
 		public static final String deduction2 = "Dedactions";

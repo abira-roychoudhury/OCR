@@ -41,6 +41,7 @@ public class AadharCard {
 	
 	public void setName(String name){
 		this.name = name;
+		name = name.replace(".", " ");
 		String nameArray[] = name.split(" ", 3);
 		
 		if(nameArray.length == 1)
@@ -54,8 +55,7 @@ public class AadharCard {
 			this.setFirstName(nameArray[0]);
 			this.setMiddleName(nameArray[1]);
 			this.setLastName(nameArray[2]);
-		}
-		
+		}		
 	}
 	
     public String getFirstName() {

@@ -26,12 +26,18 @@ public class DocumentTemplating {
 			PanCard panCard = new ParsePanCard().parsePanCard(textAnnotationArray,filePath);
 			PanCardCoord panCardCoord = panCard.getCoordinates();
 
-			displayDocument.put(Constants.PanCard.name, panCard.getName());
+			//displayDocument.put(Constants.PanCard.name, panCard.getName());
+			displayDocument.put(Constants.PanCard.firstName, panCard.getFirstName());
+			displayDocument.put(Constants.PanCard.middleName, panCard.getMiddleName());
+			displayDocument.put(Constants.PanCard.lastName, panCard.getLastName());
 			displayDocument.put(Constants.PanCard.fatherName, panCard.getFatherName());
 			displayDocument.put(Constants.PanCard.dob, panCard.getDobDisplay());
 			displayDocument.put(Constants.PanCard.panNumber, panCard.getPanNumber());
 
-			coordinates.put(Constants.PanCard.name, panCardCoord.getName());
+			//coordinates.put(Constants.PanCard.name, panCardCoord.getName());
+			coordinates.put(Constants.PanCard.firstName, panCardCoord.getName());
+			coordinates.put(Constants.PanCard.middleName, panCardCoord.getName());
+			coordinates.put(Constants.PanCard.lastName, panCardCoord.getName());
 			coordinates.put(Constants.PanCard.fatherName, panCardCoord.getFatherName()); 
 			coordinates.put(Constants.PanCard.dob, panCardCoord.getDobDisplay());
 			coordinates.put(Constants.PanCard.panNumber, panCardCoord.getPanNumber());
@@ -44,8 +50,17 @@ public class DocumentTemplating {
 			AadharCardCoord aadharCardCoord = aadharCard.getCoordinates();
 			Address address = aadharCard.getAddress();
 
-			displayDocument.put(Constants.AadharCardPage1.name, aadharCard.getName());
-			coordinates.put(Constants.AadharCardPage1.name, aadharCardCoord.getName());
+			/*displayDocument.put(Constants.AadharCardPage1.name, aadharCard.getName());
+			coordinates.put(Constants.AadharCardPage1.name, aadharCardCoord.getName());*/
+			
+			displayDocument.put(Constants.AadharCardPage1.firstName, aadharCard.getFirstName());
+			coordinates.put(Constants.AadharCardPage1.firstName, aadharCardCoord.getName());
+			
+			displayDocument.put(Constants.AadharCardPage1.middleName, aadharCard.getMiddleName());
+			coordinates.put(Constants.AadharCardPage1.middleName, aadharCardCoord.getName());
+			
+			displayDocument.put(Constants.AadharCardPage1.lastName, aadharCard.getLastName());
+			coordinates.put(Constants.AadharCardPage1.lastName, aadharCardCoord.getName());
 			
 			displayDocument.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, aadharCard.getFatherName());
 			coordinates.put(Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name, aadharCardCoord.getFatherName());
@@ -109,7 +124,10 @@ public class DocumentTemplating {
 			Address address = voterCard.getAddress();
 
 			displayDocument.put(Constants.VoterCard.voterId, voterCard.getVoterId());
-			displayDocument.put(Constants.VoterCard.electorName, voterCard.getName());
+			//displayDocument.put(Constants.VoterCard.electorName, voterCard.getName());
+			displayDocument.put(Constants.VoterCard.firstName, voterCard.getFirstName());
+			displayDocument.put(Constants.VoterCard.middleName, voterCard.getMiddleName());
+			displayDocument.put(Constants.VoterCard.lastName, voterCard.getLastName());
 			displayDocument.put(Constants.VoterCard.fatherName, voterCard.getFatherName());
 			displayDocument.put(Constants.VoterCard.sex, voterCard.getSex());
 			
@@ -131,7 +149,10 @@ public class DocumentTemplating {
 			
 					
 			coordinates.put(Constants.VoterCard.voterId, voterCardCoord.getVoterId());
-			coordinates.put(Constants.VoterCard.electorName, voterCardCoord.getName());
+			//coordinates.put(Constants.VoterCard.electorName, voterCardCoord.getName());
+			coordinates.put(Constants.VoterCard.firstName, voterCardCoord.getName());
+			coordinates.put(Constants.VoterCard.middleName, voterCardCoord.getName());
+			coordinates.put(Constants.VoterCard.lastName, voterCardCoord.getName());
 			coordinates.put(Constants.VoterCard.fatherName, voterCardCoord.getFatherName());
 			coordinates.put(Constants.VoterCard.sex, voterCardCoord.getSex());
 			coordinates.put(Constants.VoterCard.address, voterCardCoord.getAddress());
@@ -145,10 +166,13 @@ public class DocumentTemplating {
 			ITReturnCoord iTReturnCoord = iTReturn.getCoordinates();
 			Address address = iTReturn.getAddress();
 
-			displayDocument.put(Constants.ITReturn.pan, iTReturn.getPanNumber());
-			displayDocument.put(Constants.ITReturn.aadharNumber, iTReturn.getAadharNumber());
 			displayDocument.put(Constants.ITReturn.assessmentYear, iTReturn.getAssessmentYear());
-			displayDocument.put(Constants.ITReturn.name, iTReturn.getName());
+			displayDocument.put(Constants.ITReturn.pan, iTReturn.getPanNumber());
+			displayDocument.put(Constants.ITReturn.aadharNumber, iTReturn.getAadharNumber());			
+			//displayDocument.put(Constants.ITReturn.name, iTReturn.getName());
+			displayDocument.put(Constants.ITReturn.firstName, iTReturn.getFirstName());
+			displayDocument.put(Constants.ITReturn.middleName, iTReturn.getMiddleName());
+			displayDocument.put(Constants.ITReturn.lastName, iTReturn.getLastName());
 			displayDocument.put(Constants.ITReturn.status[0], iTReturn.getStatus());
 			displayDocument.put(Constants.ITReturn.designation, iTReturn.getDesignationOfAO());
 			displayDocument.put(Constants.ITReturn.orgRev, iTReturn.getOriginalRevised());
@@ -161,10 +185,14 @@ public class DocumentTemplating {
 			displayDocument.put(Constants.Address.state, address.getState());
 			displayDocument.put(Constants.Address.zipCode, address.getZipCode());
 
+
+			coordinates.put(Constants.ITReturn.assessmentYear, iTReturnCoord.getAssessmentYear());
 			coordinates.put(Constants.ITReturn.pan, iTReturnCoord.getPanNumber());
 			coordinates.put(Constants.ITReturn.aadharNumber, iTReturnCoord.getAadharNumber());
-			coordinates.put(Constants.ITReturn.assessmentYear, iTReturnCoord.getAssessmentYear());
-			coordinates.put(Constants.ITReturn.name, iTReturnCoord.getName());
+			//coordinates.put(Constants.ITReturn.name, iTReturnCoord.getName());
+			coordinates.put(Constants.ITReturn.firstName, iTReturnCoord.getName());
+			coordinates.put(Constants.ITReturn.middleName, iTReturnCoord.getName());
+			coordinates.put(Constants.ITReturn.lastName, iTReturnCoord.getName());
 			coordinates.put(Constants.ITReturn.status[0], iTReturnCoord.getStatus());
 			coordinates.put(Constants.ITReturn.designation, iTReturnCoord.getDesignationOfAO());
 			coordinates.put(Constants.ITReturn.orgRev, iTReturnCoord.getOriginalRevised());
