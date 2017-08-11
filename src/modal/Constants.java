@@ -8,6 +8,7 @@ public class Constants {
 	public static final String imgFile = "image";
 	public static final String jpg = "jpg";
 	public static final String compress = "compress";
+	public static final String jsonFileOfStateCity = "list_of_cities_and_state.json";
 	
 	
 	public static final String dot = ".";

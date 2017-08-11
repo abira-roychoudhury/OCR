@@ -30,6 +30,16 @@ public class ImageEnhancement {
 	    return imgMat;
 	}
 	
+	/* DESCRIPTION : Load the image file in Mat object
+	 * INPUT : Image file path in String 
+	 * OUTPUT : Mat Object
+	 * */	
+	public Mat loadOriginalImage(final String filePath) {		
+		//LOAD IMAGE IN color
+	    Mat imgMat = Imgcodecs.imread(filePath, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+	    return imgMat;
+	} 
+	
 	
 	/* DESCRIPTION : Performs image preprocessing by applying thresholding based on Document type
 	 * INPUT : Mat imgMat, String documentType
@@ -118,6 +128,40 @@ public class ImageEnhancement {
 		}				
 		return img;
 	} 
+	
+	/* DESCRIPTION :Resize the image
+	 * INPUT : Mat originalimage
+	 * OUTPUT : Mat compressedImage
+	 * */
+	public File imageResize(File imageFile){
+		
+		Mat imageMat = loadOriginalImage(imageFile.getAbsolutePath());
+		
+		if(imageMat.width() > 1500){
+
+			Date d = new Date();
+			
+			//calculate new size
+			Size newSize = new Size(1000.0 , (1000.0/imageMat.width()) * imageMat.height() );
+			
+			//resize the Mat to new size
+			Imgproc.resize(imageMat, imageMat, newSize);
+	
+			File processedFile = new File("Img"+d.getTime()+".jpg");
+	        Imgcodecs.imwrite(processedFile.getAbsolutePath(), imageMat);
+	        
+
+	        imageFile.deleteOnExit();
+	        
+	        System.out.println("imageFile deleted : "+imageFile.delete());
+	        
+	        return processedFile;		
+			
+		}
+		else 
+			return imageFile;
+			
+	}
 
 }
 

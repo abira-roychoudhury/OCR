@@ -5,6 +5,9 @@ import java.util.Calendar;
 public class AadharCard {
 	
 	private String name = "";
+	private String firstName = "";
+	private String middleName = "";
+	private String lastName = "";
 	private String fatherName = "";
 	private int yearOfBirth = 0;
 	private Calendar dob;
@@ -38,8 +41,48 @@ public class AadharCard {
 	
 	public void setName(String name){
 		this.name = name;
+		String nameArray[] = name.split(" ", 3);
+		
+		if(nameArray.length == 1)
+			this.setFirstName(nameArray[0]);
+		
+		else if(nameArray.length == 2){
+			this.setFirstName(nameArray[0]);
+			this.setLastName(nameArray[1]);
+		}
+		else{
+			this.setFirstName(nameArray[0]);
+			this.setMiddleName(nameArray[1]);
+			this.setLastName(nameArray[2]);
+		}
+		
 	}
-    public int getYearOfBirth(){
+	
+    public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public int getYearOfBirth(){
 		return this.yearOfBirth;
 	}
 	

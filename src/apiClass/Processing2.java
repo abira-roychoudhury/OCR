@@ -134,14 +134,6 @@ public class Processing2 extends HttpServlet {
 		if(checkFileType(descriptionStr, fileType))
 		{	
 			
-			//Creating Base64 of original Image
-			FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
-			byte[] bytes = new byte[(int)imgFile.length()];
-			fileInputStreamReader.read(bytes);
-			String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
-			String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
-			request.setAttribute(Constants.imgBase64, imgBase64Jsp);
-
 			//Parsing the description as per the template
 			start = new Date();
 			LinkedHashMap<String,Object> document = new DocumentTemplating().parseContent(textAnnotationArray,fileType,filePath);
@@ -151,9 +143,7 @@ public class Processing2 extends HttpServlet {
 			request.setAttribute(Constants.templating, timeDifference);
 			timelogging.fileWrite();
 			
-			//Closing ImageFile
-			fileInputStreamReader.close();
-			
+					
 			//retrieving the templates
 			LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>) document.get(Constants.displaydocument);
 			LinkedHashMap<String,int[][]> coordinates = (LinkedHashMap<String,int[][]>)document.get(Constants.coordinates);
@@ -174,6 +164,24 @@ public class Processing2 extends HttpServlet {
 			request.setAttribute(Constants.displaydocument, displayDocument);
 			request.setAttribute(Constants.coordinates, coordinates);
 			request.setAttribute(Constants.jsonCoord, jsonCoord);
+			
+			
+			
+			//resizing original image if the resolution is high
+			imgFile = ie.imageResize(imgFile);
+			
+			//Creating Base64 of original Image
+			FileInputStream fileInputStreamReader = new FileInputStream(imgFile);
+			byte[] bytes = new byte[(int)imgFile.length()];
+			fileInputStreamReader.read(bytes);
+			String imgBase64 = new String(Base64.encodeBase64(bytes), "UTF-8");
+			String imgBase64Jsp = "data:image/jpg;base64,"+imgBase64;
+			request.setAttribute(Constants.imgBase64, imgBase64Jsp);
+			
+			//Closing ImageFile
+			fileInputStreamReader.close();
+			
+			
 
 			//dispatching request to jsp page
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");

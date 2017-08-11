@@ -48,20 +48,20 @@ public class ParseAadharCard {
 	public AadharCard parseCoord(JSONArray textAnnotationArray,AadharCard aadharCardObj)
 	{
 		AadharCardCoord coord = new AadharCardCoord();
-		int n=0,f=0,yr=0,d=0,g=0,a=0,ad=0,i=1;
-		int nl=0,fl=0,yrl=0,dl=0,gl=0,al=0,adl=0;
+		int name=0,fatherName=0,yearOfBirth=0,dateOfBirth=0,gender=0,aadharNumber=0,address=0,index=1;
+		int nameLength=0,fatherNameLength=0,yearOfBirthLength=0,dateOfBirthLength=0,genderLength=0,aadharNumberLength=0,addressLength=0;
 		String year =  Integer.toString(aadharCardObj.getYearOfBirth());
 
-		for(;i<textAnnotationArray.length();i++)
+		for(;index<textAnnotationArray.length();index++)
 		{
-			JSONObject jobj = (JSONObject) textAnnotationArray.get(i);
+			JSONObject jobj = (JSONObject) textAnnotationArray.get(index);
 			String description = jobj.getString(Constants.VisionResponse.description);
 
 			//setting the coordinates for name
-			if(Arrays.asList(aadharCardObj.getName().split("\\s+")).contains(description) && nl< aadharCardObj.getName().length())
+			if(Arrays.asList(aadharCardObj.getName().split("\\s+")).contains(description) && nameLength< aadharCardObj.getName().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(n==0)
+				if(name==0)
 				{
 					for(int j=0;j<4;j++)
 					{ //iterate columns
@@ -72,7 +72,7 @@ public class ParseAadharCard {
 						coord.setName(x, 0, j);
 						coord.setName(y, 1, j);
 					}
-					n++;
+					name++;
 				}
 				else
 				{
@@ -86,14 +86,14 @@ public class ParseAadharCard {
 						coord.setName(y, 1, j);
 					}
 				}
-				nl = nl+description.length()+1;
+				nameLength = nameLength+description.length()+1;
 			}
 			
 			//setting the coordinates for father's name
-			else if(Arrays.asList(aadharCardObj.getFatherName().split("\\s+")).contains(description) && fl< aadharCardObj.getFatherName().length())
+			else if(Arrays.asList(aadharCardObj.getFatherName().split("\\s+")).contains(description) && fatherNameLength< aadharCardObj.getFatherName().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(f==0)
+				if(fatherName==0)
 				{
 					for(int j=0;j<4;j++)
 					{ //iterate columns
@@ -104,7 +104,7 @@ public class ParseAadharCard {
 						coord.setFatherName(x, 0, j);
 						coord.setFatherName(y, 1, j);
 					}
-					f++;
+					fatherName++;
 				}
 				else
 				{
@@ -118,14 +118,14 @@ public class ParseAadharCard {
 						coord.setFatherName(y, 1, j);
 					}
 				}
-				fl = fl+description.length()+1;
+				fatherNameLength = fatherNameLength+description.length()+1;
 			}
 
 			//setting the coordinates for year of birth
-			else if(aadharCardObj.getYearOfBirth()!=0 && year.contains(description) && yrl<year.length())
+			else if(aadharCardObj.getYearOfBirth()!=0 && year.contains(description) && yearOfBirthLength<year.length())
 			{	
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(yr==0)
+				if(yearOfBirth==0)
 				{
 					for(int j=0;j<4;j++)
 					{ //iterate columns
@@ -136,7 +136,7 @@ public class ParseAadharCard {
 						coord.setYearOfBirth(x, 0, j);
 						coord.setYearOfBirth(y, 1, j);
 					}
-					yr++;
+					yearOfBirth++;
 				}
 				else
 				{
@@ -150,14 +150,14 @@ public class ParseAadharCard {
 						coord.setYearOfBirth(y, 1, j);
 					}
 				}
-				yrl = yrl+description.length();
+				yearOfBirthLength = yearOfBirthLength+description.length();
 			}
 
 			//setting the coordinates for date of birth
-			else if(aadharCardObj.getDobDisplay().contains(description) && dl< aadharCardObj.getDobDisplay().length())
+			else if(aadharCardObj.getDobDisplay().contains(description) && dateOfBirthLength< aadharCardObj.getDobDisplay().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(d==0)
+				if(dateOfBirth==0)
 				{
 					for(int j=0;j<4;j++){ //iterate columns
 						JSONArray vertices=(JSONArray)boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -167,7 +167,7 @@ public class ParseAadharCard {
 						coord.setDobDisplay(x, 0, j);
 						coord.setDobDisplay(y, 1, j);
 					}
-					d++;
+					dateOfBirth++;
 				}
 				else
 				{
@@ -181,14 +181,14 @@ public class ParseAadharCard {
 						coord.setDobDisplay(y, 1, j);
 					}
 				}
-				dl = dl+description.length();
+				dateOfBirthLength = dateOfBirthLength+description.length();
 			}
 
 			//setting the coordinates for gender
-			else if(description.toLowerCase().contains(aadharCardObj.getGender().toLowerCase()) && gl< aadharCardObj.getGender().length())
+			else if(description.toLowerCase().contains(aadharCardObj.getGender().toLowerCase()) && genderLength< aadharCardObj.getGender().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(g==0)
+				if(gender==0)
 				{
 					for(int j=0;j<4;j++)
 					{ //iterate columns
@@ -199,7 +199,7 @@ public class ParseAadharCard {
 						coord.setGender(x, 0, j);
 						coord.setGender(y, 1, j);
 					}
-					g++;
+					gender++;
 				}
 				else
 				{
@@ -213,13 +213,13 @@ public class ParseAadharCard {
 						coord.setGender(y, 1, j);
 					}
 				}
-				gl = gl+description.length();	
+				genderLength = genderLength+description.length();	
 			}
 
 			//setting the coordinates for aadhar card number
-			else if(Arrays.asList(aadharCardObj.getAadharNumber().split("\\s+")).contains(description) && al< aadharCardObj.getAadharNumber().length()){
+			else if(Arrays.asList(aadharCardObj.getAadharNumber().split("\\s+")).contains(description) && aadharNumberLength< aadharCardObj.getAadharNumber().length()){
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(a==0)
+				if(aadharNumber==0)
 				{
 					for(int j=0;j<4;j++)
 					{ //iterate columns
@@ -230,7 +230,7 @@ public class ParseAadharCard {
 						coord.setAadharNumber(x, 0, j);
 						coord.setAadharNumber(y, 1, j);
 					}
-					a++;
+					aadharNumber++;
 				}
 				else
 				{
@@ -244,14 +244,14 @@ public class ParseAadharCard {
 						coord.setAadharNumber(y, 1, j);
 					}
 				}
-				al = al+description.length()+1;	
+				aadharNumberLength = aadharNumberLength+description.length()+1;	
 			}
 			
 			//setting the coordinates for address
-			else if(Arrays.asList(aadharCardObj.getAddress().toString().split("\\s+")).contains(description) && adl< aadharCardObj.getAddress().toString().length())
+			else if(Arrays.asList(aadharCardObj.getAddress().toString().split("\\s+")).contains(description) && addressLength< aadharCardObj.getAddress().toString().length())
 			{
 				JSONObject boundingPoly = jobj.getJSONObject(Constants.VisionResponse.boundingPoly);
-				if(ad==0)
+				if(address==0)
 				{
 					for(int j=0;j<4;j++)
 					{ //iterate columns
@@ -262,7 +262,7 @@ public class ParseAadharCard {
 						coord.setAddress(x, 0, j);
 						coord.setAddress(y, 1, j);
 					}
-					ad++;
+					address++;
 				}
 				else
 				{
@@ -277,7 +277,7 @@ public class ParseAadharCard {
 						coord.setAddress(y, 1, j);
 					}
 				}
-				adl = adl+description.length()+1;
+				addressLength = addressLength+description.length()+1;
 			}
 		}
 			
@@ -301,7 +301,6 @@ public class ParseAadharCard {
 		try {
 
 			resultQR = QRScan.scanQR(filePath);
-			System.out.println(resultQR);
 			if(resultQR.isEmpty() || resultQR.matches("^[0-9]{1,12}$"))
 				throw new BarCodeException();
 
@@ -364,8 +363,7 @@ public class ParseAadharCard {
 			aadharCardObj.setAddress(addr);
 			
 		} catch (NotFoundException | BarCodeException e1) {
-			System.out.println("couldn't detect QR code");
-			content = content.concat("\\n EOF");
+			content = content.concat("\\n "+Constants.eof);
 			String splitDesc[] = content.split("\\n");
 			int i;
 			for(i = 0;i<splitDesc.length;i++)
@@ -409,7 +407,7 @@ public class ParseAadharCard {
 					catch(Exception e)
 					{
 						System.err.println(e);
-						String dateArr[] = splitDesc[i].split(":");
+						String dateArr[] = splitDesc[i].split(Constants.colon);
 						dobstr = dateArr[dateArr.length-1];
 						System.out.println(dobstr);
 					}
@@ -435,7 +433,6 @@ public class ParseAadharCard {
 					try
 					{
 						String yearstr = extractDateNumber(splitDesc[i]);
-						//System.out.println("year"+yearstr);
 						if(yearstr.isEmpty())
 						{
 							yearstr = extractDateNumber(splitDesc[i+1]);
@@ -471,7 +468,7 @@ public class ParseAadharCard {
 					address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
 					while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
 						i++;						
-						address = address + "\n" + splitDesc[i];		
+						address = address + Constants.newLine + splitDesc[i];		
 					}		
 					Address completeAddr = new ParseAddress().getAddress(address);
 					aadharCardObj.setAddress(completeAddr);
@@ -487,7 +484,7 @@ public class ParseAadharCard {
 						address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
 						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
 							i++;						
-							address = address + "\n" + splitDesc[i];		
+							address = address + Constants.newLine + splitDesc[i];		
 						}				
 					
 						Address completeAddr = new ParseAddress().getAddress(address);
@@ -517,6 +514,7 @@ public class ParseAadharCard {
 		return aadharCardObj;
 	}
 
+	
 	/* DESCRIPTION : Extract number form String. Ignore all characters and iterate up to length 14 (Aadhaar plus 2 spaces)
 	 * INPUT : String that may contain aadhar number
 	 * OUTPUT : String of aadhar number
@@ -532,7 +530,7 @@ public class ParseAadharCard {
 			if(Character.isDigit(c) && sb.length()<14)
 			{
 				if(i>1 && i%4==0)
-					sb.append(" ");
+					sb.append(Constants.space);
 				sb.append(c);
 				i++;
 				found = true;

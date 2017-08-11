@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import modal.Constants;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,32 +20,26 @@ import templates.Address;
 public class ParseAddress {
 	
 	private JSONObject StateCityJSON = null;
-	private List<String> listOfCities = null;
-	
+	private List<String> listOfCities = null;	
 	private Map<String, String[]> mapStateCity = null;
 	
+	
+	/* DESCRIPTION : Constructor reads file and loads the required data structure
+	  * */
 	public ParseAddress() {
 		
 		try {
-
 			JSONParser parser = new JSONParser();
-			StateCityJSON = (JSONObject) parser.parse(new FileReader("list_of_cities_and_state.json"));
+			StateCityJSON = (JSONObject) parser.parse(new FileReader(Constants.jsonFileOfStateCity));
         	
     		mapStateCity = new HashMap<String,String[]>();
     		listOfCities = new LinkedList<String>();
     		
-    		for(Object key : StateCityJSON.keySet()){
-    			
+    		for(Object key : StateCityJSON.keySet()){    			
     			JSONArray cities =  (JSONArray) StateCityJSON.get(key);
-    			
-    			//System.out.println(cities.toString());
-    			
-    			String cityList[] = (String[]) cities.toArray(new String[mapStateCity.size()]);
-    			
-    			mapStateCity.put((String)key, cityList);
-    			
-    			listOfCities.addAll(Arrays.asList(cityList));
-    			
+    			String cityList[] = (String[]) cities.toArray(new String[mapStateCity.size()]);    			
+    			mapStateCity.put((String)key, cityList);    			
+    			listOfCities.addAll(Arrays.asList(cityList)); 			
     		}
 			
 		} catch (Exception e) {
@@ -52,8 +48,12 @@ public class ParseAddress {
 		}
 	}
 	
-	public Address getAddress(String address){
-		
+	
+	/* DESCRIPTION : Fetches state city pincode and addressline from a complete address string
+	 * INPUT : String address
+	 * OUTPUT : Address Object
+	 * */
+	public Address getAddress(String address){		
 		Address addressObject = new Address();
 		
 		String STATE = "";
@@ -62,39 +62,27 @@ public class ParseAddress {
 		String ADDRESSLINE = "";
 		
         try{
-    		
-    		for(Map.Entry<String, String[]> entry : mapStateCity.entrySet())
-    		{
-    			if(address.toUpperCase().contains(entry.getKey().toUpperCase())){
-    				
-    				STATE = entry.getKey();
-    				
-    				String cities[] = entry.getValue();
-    				
-    				for(String city : cities ){
-    					
+    		for(Map.Entry<String, String[]> entry : mapStateCity.entrySet()){
+    			if(address.toUpperCase().contains(entry.getKey().toUpperCase())){    				
+    				STATE = entry.getKey();    				
+    				String cities[] = entry.getValue();    				
+    				for(String city : cities ){    					
     					if(address.toUpperCase().contains(city.toUpperCase())){
     						CITY = city.toUpperCase();
     						break;
-    					}
-    					
+    					}    					
     				}
     				break;
     			}
     		}
-    		
-    	
-    		if(STATE.equals("")){
-    			
-    			for (String city : listOfCities){
-    				
+    		    	
+    		if(STATE.equals("")){    			
+    			for (String city : listOfCities){    				
     				if(city != null && address.toUpperCase().contains(city)){
     					CITY = city;
     					break;
-    				}
-    				
-    			}
-    			
+    				}    				
+    			}    			
     		}
     		
     		//GET PIN
@@ -105,9 +93,7 @@ public class ParseAddress {
 				PIN = matcher.group(0).trim();
 			
 			//GET ADDRESSLINE
-			ADDRESSLINE = address.toUpperCase().replace(CITY, "").replace(STATE, "").replace(PIN, "");
-			
-    		
+			ADDRESSLINE = address.toUpperCase().replace(CITY, "").replace(STATE, "").replace(PIN, "");    		
         }
         catch(Exception e){
         	e.printStackTrace();
@@ -122,7 +108,8 @@ public class ParseAddress {
 	}
 
 	
-	public static void main(String[] args) {
+	
+	/*public static void main(String[] args) {
 		
 		ParseAddress addressParser = new ParseAddress();
 		
@@ -132,6 +119,6 @@ public class ParseAddress {
 		
 		System.out.println(addressObject.getAddressLine()+"\n"+addressObject.getCity()+"\n"+addressObject.getState()+"\n"+addressObject.getZipCode());
 		
-	}
+	}*/
 	
 }
