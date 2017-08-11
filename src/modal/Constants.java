@@ -6,6 +6,7 @@ public class Constants {
 	
 	//Inside servlet Processing2
 	public static final String imgFile = "image";
+	public static final String logFile = "Log_File.txt";
 	public static final String jpg = "jpg";
 	public static final String compress = "compress";
 	public static final String jsonFileOfStateCity = "list_of_cities_and_state.json";
@@ -45,8 +46,6 @@ public class Constants {
 	public static final String compressWidth = "compressWidth";
 	public static final String compressHeight = "compressHeight";
 	
-	//minimum image size
-	public static final int minimumImageSize = 4000000;
 	
 	//Vision API response JSON Keys
 	public static class VisionResponse{
@@ -71,6 +70,11 @@ public class Constants {
 		public static final String maxResults = "maxResults";
 		public static final String textDetection = "TEXT_DETECTION";
 		public static final String documentTextDetection = "DOCUMENT_TEXT_DETECTION";	
+		public static final String requests = "requests";
+		public static final String features = "features";
+		public static final String requestMethod = "POST";
+		public static final String contentType = "Content-Type";
+		public static final String contentTypeValue = "application/json";
 		
 	} 
 	
@@ -94,6 +98,12 @@ public class Constants {
 	public static final String govt = "GOVTOF";
 	public static final String department = "DEPARTMENT";
 	public static final String ITdepartment = "INCOME TAX DEPARTMENT";
+	
+	public static class DisplayImageParameters{		
+		public static final int minimumImageSize = 4000000;     //minimum image size
+		public static final int maximumImageWidth = 1500;       //maximum image width in pixel
+		public static final double scaledImageWidth = 1000.0;        //width of image after down scaling
+	}
 	
 
 	//Pan Card Constants

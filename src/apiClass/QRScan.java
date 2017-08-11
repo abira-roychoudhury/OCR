@@ -51,7 +51,10 @@ public class QRScan {
 	 * */
 	public static String readQRCode(String filePath, String charset, Map<DecodeHintType,Object> hintMap, Map<DecodeHintType,Object> hintPure)
 			throws FileNotFoundException, IOException, NotFoundException {
-		BufferedImage image = ImageIO.read(new FileInputStream(filePath));
+		FileInputStream imageFile = new FileInputStream(filePath);
+		BufferedImage image = ImageIO.read(imageFile);
+		imageFile.close();     //Close the stream					 
+
 		LuminanceSource source = new BufferedImageLuminanceSource(image);
 		BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
 		Reader reader = new MultiFormatReader();

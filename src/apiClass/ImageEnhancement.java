@@ -36,7 +36,7 @@ public class ImageEnhancement {
 	 * */	
 	public Mat loadOriginalImage(final String filePath) {		
 		//LOAD IMAGE IN color
-	    Mat imgMat = Imgcodecs.imread(filePath, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+	    Mat imgMat = Imgcodecs.imread(filePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
 	    return imgMat;
 	} 
 	
@@ -69,11 +69,12 @@ public class ImageEnhancement {
 	 * */
 	public File saveImage(Mat img){
 		Date d = new Date();
-		File processedFile = new File("Img"+d.getTime()+".jpg");
+		File processedFile = new File(Constants.imgFile+d.getTime()+Constants.dot+Constants.jpg);
         Imgcodecs.imwrite(processedFile.getAbsolutePath(), img);
 		//System.out.println("New image saved at location : "+processedFile.getAbsolutePath());
 		return processedFile;
 	}
+	
 	
 	/* DESCRIPTION : Wrapper function which loads image, perform compression, saves to file and converts to Base64 String
 	 * INPUT : String filePathm String documentType
@@ -90,7 +91,7 @@ public class ImageEnhancement {
 		File img = saveImage(imgMat);
 		String imgBase64 = convertToBase64(img.getAbsolutePath());
 		
-		//img.delete();
+		img.delete();
 		return imgBase64;		
 	}
 	
@@ -119,7 +120,7 @@ public class ImageEnhancement {
 		long size = img.step1(0) * img.rows();
 		//long size = img.total() * img.elemSize();
 		
-		while(size > Constants.minimumImageSize)
+		while(size > Constants.DisplayImageParameters.minimumImageSize)
 		{
 			Imgproc.resize(img, img, new Size(img.width()/1.2, img.height()/1.2));
 			size = img.step1(0) * img.rows();
@@ -136,32 +137,28 @@ public class ImageEnhancement {
 	public File imageResize(File imageFile){
 		
 		Mat imageMat = loadOriginalImage(imageFile.getAbsolutePath());
+		Date d = new Date();
 		
-		if(imageMat.width() > 1500){
-
-			Date d = new Date();
-			
+		if(imageMat.width() > Constants.DisplayImageParameters.maximumImageWidth){
 			//calculate new size
-			Size newSize = new Size(1000.0 , (1000.0/imageMat.width()) * imageMat.height() );
+			Size newSize = new Size(Constants.DisplayImageParameters.scaledImageWidth , (Constants.DisplayImageParameters.scaledImageWidth/imageMat.width()) * imageMat.height() );
 			
 			//resize the Mat to new size
 			Imgproc.resize(imageMat, imageMat, newSize);
-	
-			File processedFile = new File("Img"+d.getTime()+".jpg");
-	        Imgcodecs.imwrite(processedFile.getAbsolutePath(), imageMat);
-	        
-
-	        imageFile.deleteOnExit();
-	        
-	        System.out.println("imageFile deleted : "+imageFile.delete());
-	        
-	        return processedFile;		
-			
 		}
-		else 
-			return imageFile;
+		
+		File processedFile = new File(Constants.imgFile+d.getTime()+Constants.dot+Constants.jpg);
+        Imgcodecs.imwrite(processedFile.getAbsolutePath(), imageMat);
+        
+        imageFile.deleteOnExit();
+        
+        System.out.println("imageFile deleted : "+imageFile.delete());
+        
+        return processedFile;		
+		
 			
 	}
+
 
 }
 

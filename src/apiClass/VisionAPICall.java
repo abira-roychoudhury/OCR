@@ -31,16 +31,16 @@ public class VisionAPICall {
 			
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{
-				System.out.println("System proxy : "+ System.setProperty("https.proxyHost", Constants.proxyHost));
-				System.out.println("System port : "+ System.setProperty("https.proxyPort", Constants.proxyPort));
+				System.setProperty("https.proxyHost", Constants.proxyHost);
+				System.setProperty("https.proxyPort", Constants.proxyPort);
 			}catch(Exception ex){
 				System.out.println(ex.getMessage());
 			}
 			
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestMethod(Constants.VisionRequest.requestMethod);
+			conn.setRequestProperty(Constants.VisionRequest.contentType, Constants.VisionRequest.contentTypeValue);
 			
 			
 			//strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
@@ -53,27 +53,15 @@ public class VisionAPICall {
 			outputStream.flush();
 			
 			
-			/*if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}*/
-			
-			BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-			
-			//StringBuffer output = new StringBuffer();
-			StringBuilder output = new StringBuilder();
-			
+			BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
+			StringBuilder output = new StringBuilder();			
 			String op;
 			while ((op = bufferedReaderObject.readLine()) != null) {
-				//output.append(op);
 				output.append(op);
-				//System.out.println(output);
 			}
 
-			result.put(Constants.VisionResponse.body, output.toString());
-			
+			result.put(Constants.VisionResponse.body, output.toString());			
 			conn.disconnect();
-
 		}
 		catch(Exception e){
 			System.err.print("inside error in vision catch"+e);
@@ -87,8 +75,7 @@ public class VisionAPICall {
 	 * */
 	public JSONObject getBody(String base64String, String type){
         JSONObject Body = new JSONObject();
-        JSONArray requests = new JSONArray();
-        
+        JSONArray requests = new JSONArray();        
         JSONObject requestBody = new JSONObject();
         
         JSONObject content = new JSONObject();
@@ -98,11 +85,11 @@ public class VisionAPICall {
         
         JSONArray features = new JSONArray();
         features.put(new JSONObject().put(Constants.VisionRequest.type, type).put(Constants.VisionRequest.maxResults, 1000));
-        requestBody.put("features",features);
+        requestBody.put(Constants.VisionRequest.features,features);
  
         requests.put(requestBody);
         
-        Body.put("requests", requests);
+        Body.put(Constants.VisionRequest.requests, requests);
  
         return Body;
  }

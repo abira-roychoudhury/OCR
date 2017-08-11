@@ -21,17 +21,17 @@ public class ParseITReturn {
 	 * OUTPUT : AadharCard object
 	 * */
 	public ITReturn parseITReturn(JSONArray textAnnotationArray,String filePath){
-		ITReturn obj = new ITReturn();
+		ITReturn iTReturnObject = new ITReturn();
 		try{
 			JSONObject firstObj=(JSONObject) textAnnotationArray.get(0);
 			String descriptionStr=firstObj.getString(Constants.VisionResponse.description);
 			descriptionStr = descriptionStr.replaceAll("[^\\x00-\\x7F]+", "");
-			obj = parseContent(descriptionStr,filePath,obj);		
-			obj = parseCoord(textAnnotationArray,obj);	
+			iTReturnObject = parseContent(descriptionStr,filePath,iTReturnObject);		
+			iTReturnObject = parseCoord(textAnnotationArray,iTReturnObject);	
 		}catch(JSONException je){ je.printStackTrace();
 		}catch(Exception e){ e.printStackTrace();
 		}
-		return obj;
+		return iTReturnObject;
 	}
 	
 	
@@ -39,18 +39,18 @@ public class ParseITReturn {
 	 * INPUT :  JSONArray response from Vision API Call and ITReturn object
 	 * OUTPUT : ITReturn object
 	 * */
-	private ITReturn parseCoord(JSONArray textAnnotationArray, ITReturn obj) {
+	private ITReturn parseCoord(JSONArray textAnnotationArray, ITReturn iTReturnObject) {
 		ITReturnCoord iTReturnCoord = new ITReturnCoord();
 		int name = 0, address = 0, assessmenYear = 0, designationOfWard = 0, startIndex = 1;
 		int nameLength = 0, addressLength = 0, assessmenYearLength = 0, designationOfWardLength = 0;
 		
-		for (;startIndex < textAnnotationArray.length()  && assessmenYearLength < obj.getAssessmentYear().length(); startIndex++) {
+		for (;startIndex < textAnnotationArray.length()  && assessmenYearLength < iTReturnObject.getAssessmentYear().length(); startIndex++) {
 			JSONObject jsonObject = (JSONObject) textAnnotationArray.get(startIndex);
 			String description = jsonObject.getString(Constants.VisionResponse.description);
 			System.out.println(description);
 			
 			// setting the coordinates for assessmentYear
-			if(Arrays.asList(obj.getAssessmentYear().split("-")).contains(description)){
+			if(Arrays.asList(iTReturnObject.getAssessmentYear().split("-")).contains(description)){
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if (assessmenYear == 0) {
 					for (int j = 0; j < 4; j++) { // iterate columns
@@ -94,7 +94,7 @@ public class ParseITReturn {
 			
 				
 			// setting the coordinates for panNumber
-			else if(obj.getPanNumber().equals(description)){
+			else if(iTReturnObject.getPanNumber().equals(description)){
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
 					JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -108,7 +108,7 @@ public class ParseITReturn {
 			
 			
 			// setting the coordinates for name
-			else if(Arrays.asList(obj.getName().split("\\s+")).contains(description) && nameLength < obj.getName().length()) {
+			else if(Arrays.asList(iTReturnObject.getName().split("\\s+")).contains(description) && nameLength < iTReturnObject.getName().length()) {
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				
 				if (name == 0) {
@@ -136,7 +136,7 @@ public class ParseITReturn {
 			
 			
 			// setting the coordinates for address
-			else if(obj.getAddress().toString().contains(description) && addressLength< obj.getAddress().toString().length())			{
+			else if(iTReturnObject.getAddress().toString().contains(description) && addressLength< iTReturnObject.getAddress().toString().length())			{
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				if(address==0){
 					for(int j=0;j<4;j++){ //iterate columns
@@ -164,7 +164,7 @@ public class ParseITReturn {
 			}
 			
 			// setting the coordinates for status
-			else if(obj.getStatus().equalsIgnoreCase(description)){
+			else if(iTReturnObject.getStatus().equalsIgnoreCase(description)){
 				System.out.println("inside status coord");
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
@@ -178,7 +178,7 @@ public class ParseITReturn {
 			}
 			
 			// setting the coordinates for aadharNumber
-			else if(obj.getAadharNumber().equals(description)){
+			else if(iTReturnObject.getAadharNumber().equals(description)){
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
 					JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -192,7 +192,7 @@ public class ParseITReturn {
 						
 			
 			// setting the coordinates for designationOfAO
-			else if(Arrays.asList(obj.getDesignationOfAO().split("\\s+")).contains(description) && designationOfWardLength < obj.getDesignationOfAO().length()) {
+			else if(Arrays.asList(iTReturnObject.getDesignationOfAO().split("\\s+")).contains(description) && designationOfWardLength < iTReturnObject.getDesignationOfAO().length()) {
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				
 				if (designationOfWard == 0) {
@@ -219,7 +219,7 @@ public class ParseITReturn {
 			}
 			
 			// setting the coordinates for originalRevised
-			else if(obj.getOriginalRevised().equalsIgnoreCase(description)){
+			else if(iTReturnObject.getOriginalRevised().equalsIgnoreCase(description)){
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
 					JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -232,7 +232,7 @@ public class ParseITReturn {
 			}
 			
 			// setting the coordinates for eFillingAckNumber
-			else if(obj.geteFillingAckNumber().equals(description)){
+			else if(iTReturnObject.geteFillingAckNumber().equals(description)){
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
 					JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -265,7 +265,7 @@ public class ParseITReturn {
 			}
 			
 			// setting the coordinates for grossTotalIncome
-			else if(obj.getGrossTotalIncome().equals(description)){
+			else if(iTReturnObject.getGrossTotalIncome().equals(description)){
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
 					JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -278,8 +278,8 @@ public class ParseITReturn {
 			}			
 		}
 		
-		obj.setCoordinates(iTReturnCoord);
-		return obj;
+		iTReturnObject.setCoordinates(iTReturnCoord);
+		return iTReturnObject;
 	}
 
 	
@@ -287,7 +287,7 @@ public class ParseITReturn {
 	 * INPUT : String content containing the entire text as detected by Vision API and ITReturn object
 	 * OUTPUT : ITReturn object
 	 * */
-	private ITReturn parseContent(String content, String filePath, ITReturn obj) {
+	private ITReturn parseContent(String content, String filePath, ITReturn iTReturnObject) {
 		int upperIndex;
 		String name="",panNumber="",assessmentYear="",address="",ward="",aadharNumber="",originalRevised="",eFilingAck="",date="",
 				grossIncome="",status="";
@@ -369,25 +369,28 @@ public class ParseITReturn {
 			
 		}
 		
-		obj.setAssessmentYear(assessmentYear);
-		obj.setPanNumber(panNumber);
-		obj.setAadharNumber(aadharNumber);
-		obj.setName(name);
-		obj.setDesignationOfAO(ward);
-		obj.seteFillingAckNumber(eFilingAck);
-		obj.seteFillingDate(date);
-		obj.setGrossTotalIncome(grossIncome);
-		obj.setOriginalRevised(originalRevised);
-		obj.setStatus(status);
+		iTReturnObject.setAssessmentYear(assessmentYear);
+		iTReturnObject.setPanNumber(panNumber);
+		iTReturnObject.setAadharNumber(aadharNumber);
+		iTReturnObject.setName(name);
+		iTReturnObject.setDesignationOfAO(ward);
+		iTReturnObject.seteFillingAckNumber(eFilingAck);
+		iTReturnObject.seteFillingDate(date);
+		iTReturnObject.setGrossTotalIncome(grossIncome);
+		iTReturnObject.setOriginalRevised(originalRevised);
+		iTReturnObject.setStatus(status);
 		
 		Address addressObj = new ParseAddress().getAddress(address.trim());
-		obj.setAddress(addressObj);
+		iTReturnObject.setAddress(addressObj);
 		
-		return obj;
+		return iTReturnObject;
 	}
 
 	
-
+	/* DESCRIPTION : Searches for the Assessment Year in the entire String 
+	 * INPUT : String containing Assessment year
+	 * OUTPUT : Assessment year
+	 * */
 	private String getAssessmentYear(String descriptionStr) {
 		String year = "";
 		Pattern pattern = Pattern.compile("[0-9]{4}-[0-9]{2}");
@@ -401,6 +404,11 @@ public class ParseITReturn {
 		return year;
 	}
 	
+	
+	/* DESCRIPTION : Searches for PAN in the entire String
+	 * INPUT : String containing PAN
+	 * OUTPUT : PAN 
+	 * */
 	private String getPanNumber(String content) {
 		String pan = "";
 		Pattern pattern = Pattern.compile("[A-Z0-9 ]{9,11}");
@@ -414,6 +422,11 @@ public class ParseITReturn {
 		return pan;
 	}
 	
+	
+	/* DESCRIPTION : Searches for Aadhar Number in the entire String
+	 * INPUT : String containing Aadhar Number
+	 * OUTPUT : Aadhar Number
+	 * */
 	private String getAadharNumber(String content) {
 		String pan = "";
 		Pattern pattern = Pattern.compile("[0-9 ]{12}");
@@ -428,11 +441,15 @@ public class ParseITReturn {
 	}
 	
 	
+	/* DESCRIPTION : Find the position of upper index , the point to which the words should be processed
+	 * INPUT : String content to be processed
+	 * OUTPUT : Index position of words "Deductions or Verification.
+	 * */
 	private int getUpperIndex(String content) {
 		int index = 0;
-		content = content.toLowerCase();
-		
+		content = content.toLowerCase();		
 		index = content.indexOf(Constants.ITReturn.deduction1.toLowerCase());
+		
 		if(index < 0)
 			index = content.indexOf(Constants.ITReturn.deduction2.toLowerCase());
 					
@@ -442,9 +459,13 @@ public class ParseITReturn {
 		if(index < 0)
 			return content.length();
 		return index;
-		
-		}
+	}
 	
+	
+	/* DESCRIPTION : Checks if the row is required to be processed 
+	 * INPUT : String content of row
+	 * OUTPUT : Boolean
+	 * */
 	private boolean isRequired(String rowContent) {
 		if(Arrays.stream(Constants.ITReturn.notRequiredRows).parallel().anyMatch(rowContent::contains)){
 			return false;
@@ -452,6 +473,11 @@ public class ParseITReturn {
 		return true;
 	}
 	
+	
+	/* DESCRIPTION :Extracts the E Filling Acknowledgement number from a row of String 
+	 * INPUT : String content of the row
+	 * OUTPUT : String of E Filling Acknowledgement Number
+	 * */
 	private String getEFilingAckNumber(String content) {
 		int i=0;
 		if(content == null || content.isEmpty()) return "";
@@ -474,7 +500,11 @@ public class ParseITReturn {
 		return sb.toString();
 	}
 	
-	//salary
+	
+	/* DESCRIPTION :Extracts the salary from a row of String 
+	 * INPUT : String content of the row
+	 * OUTPUT : String of salary
+	 * */
 	private String getNumber(String content) {
 		int index=0;
 		if(content == null || content.isEmpty()) return "";
@@ -506,14 +536,18 @@ public class ParseITReturn {
 		}
 	}
 	
+	
+	/* DESCRIPTION : Finds the Description "Name" from the JSONArray and marks it as startIndex for finding co-ordinates
+	 * INPUT : JSONArray response from Vision API and Integer startIndex
+	 * OUTPUT : Integer startIndex
+	 * */
 	private int getStartIndex(JSONArray textAnnotationArray, int startIndex) {
 		for (; startIndex < textAnnotationArray.length(); startIndex++) {
 			JSONObject jobj = (JSONObject) textAnnotationArray.get(startIndex);
 			String description = jobj.getString(Constants.VisionResponse.description);
 			if (description.toLowerCase().contains(Constants.ITReturn.name.toLowerCase()))
 				break;
-		}
-		
+		}		
 		return startIndex;
 	}
 	

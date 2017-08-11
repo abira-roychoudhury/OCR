@@ -209,18 +209,15 @@ public class ParsePanCard {
 	 * INPUT : String content containing the entire text as detected by Vision API and PanCard object
 	 * OUTPUT : PanCard object
 	 * */
-	public PanCard parseContent(String content, String filePath, PanCard obj)throws WriterException, IOException
+	public PanCard parseContent(String content, String filePath, PanCard panCardObject)throws WriterException, IOException
 	{
 		int i;
 		String name = "", fname = "", dob = "", pan = "";
 		Calendar calendarObject = Calendar.getInstance();
-		//System.out.println("Inside parsecontent pan card " + content);
+		
 		
 		if (!content.contains(Constants.PanCard.name)) 
 		{ 
-			// New type of PAN Card
-			//System.out.println("inside new pan card");
-			
 			content = filterContent(content);
 			
 			String splitDesc[] = content.split("\\n");
@@ -425,13 +422,13 @@ public class ParsePanCard {
 			
 		}
 		// setting the PanCard object
-		obj.setName(name);
-		obj.setFatherName(fname);
-		obj.setDob(calendarObject);
-		obj.setPanNumber(pan);
-		obj.setDobDisplay(dob);
+		panCardObject.setName(name);
+		panCardObject.setFatherName(fname);
+		panCardObject.setDob(calendarObject);
+		panCardObject.setPanNumber(pan);
+		panCardObject.setDobDisplay(dob);
 
-		return obj;
+		return panCardObject;
 	}
 	
 	/* DESCRIPTION : Filters string removes all characters that are not Capital Letter or digit
@@ -460,11 +457,16 @@ public class ParsePanCard {
 					filteredToken = filteredToken + " " + token;
 			
 			if (!filteredToken.isEmpty())
-				filteredContent = filteredContent + "\n" + filteredToken.trim();
+				filteredContent = filteredContent + Constants.newLine + filteredToken.trim();
 		}
 		return filteredContent;
 	}
 	
+	
+	/* DESCRIPTION : Finds the index of "INDIA" to start loop
+	 * INPUT : JSONArray of Vision API Response
+	 * OUTPUT : Integer startIndex
+	 * */
 	private int getStartIndex(JSONArray textAnnotationArray){
 		int startIndex = 1;
 		

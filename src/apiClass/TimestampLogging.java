@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Date;
 
+import modal.Constants;
+
 public class TimestampLogging {
 	
 	String logFilePath,logs;
@@ -16,7 +18,7 @@ public class TimestampLogging {
 	 * */
 	public TimestampLogging()
 	{
-		File logFile = new File("Log_File.txt");
+		File logFile = new File(Constants.logFile);
 		try {
 			logFile.createNewFile();
 		} catch (IOException e) {
