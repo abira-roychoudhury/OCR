@@ -67,7 +67,7 @@ public class ParseAddress {
     				STATE = entry.getKey();    				
     				String cities[] = entry.getValue();    				
     				for(String city : cities ){    					
-    					if(address.toUpperCase().contains(city.toUpperCase())){
+    					if(address.toUpperCase().contains(city.toUpperCase()+" ") || address.toUpperCase().contains(city.toUpperCase()+",") || address.toUpperCase().contains(city.toUpperCase()+"\n")){
     						CITY = city.toUpperCase();
     						break;
     					}    					
@@ -78,7 +78,8 @@ public class ParseAddress {
     		    	
     		if(STATE.equals("")){    			
     			for (String city : listOfCities){    				
-    				if(city != null && address.toUpperCase().contains(city)){
+    				if(city != null && (address.toUpperCase().contains(city.toUpperCase()+" ") || address.toUpperCase().contains(city.toUpperCase()+",") || address.toUpperCase().contains(city.toUpperCase()+"\n")) ) {
+        					
     					CITY = city;
     					break;
     				}    				

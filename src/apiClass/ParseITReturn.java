@@ -47,7 +47,7 @@ public class ParseITReturn {
 		for (;startIndex < textAnnotationArray.length()  && assessmenYearLength < iTReturnObject.getAssessmentYear().length(); startIndex++) {
 			JSONObject jsonObject = (JSONObject) textAnnotationArray.get(startIndex);
 			String description = jsonObject.getString(Constants.VisionResponse.description);
-			System.out.println(description);
+			//System.out.println(description);
 			
 			// setting the coordinates for assessmentYear
 			if(Arrays.asList(iTReturnObject.getAssessmentYear().split("-")).contains(description)){
@@ -81,7 +81,7 @@ public class ParseITReturn {
 		for (;startIndex < textAnnotationArray.length(); startIndex++) {
 			JSONObject jsonObject = (JSONObject) textAnnotationArray.get(startIndex);
 			String description = jsonObject.getString(Constants.VisionResponse.description);
-			System.out.println(description);
+			//System.out.println(description);
 			
 			if(description.equals("/") || description.equals("-") || description.equalsIgnoreCase(Constants.ITReturn.of))
 				continue;
@@ -350,6 +350,9 @@ public class ParseITReturn {
 			}
 			
 			else if(Arrays.stream(Constants.ITReturn.grossIncome).parallel().anyMatch(splitDesc[index]::contains)){
+
+				//System.out.println(splitDesc[index]+"||||||"+splitDesc[index+1]);
+				
 				grossIncome = getNumber(splitDesc[index]);
 				if(grossIncome.isEmpty())
 					grossIncome = getNumber(splitDesc[++index]);
@@ -362,8 +365,10 @@ public class ParseITReturn {
 				continue; //do nothing
 			
 			else{
-				if(!splitDesc[index].equals(aadharNumber))
+				if(!splitDesc[index].equals(aadharNumber)){
+					System.out.println(splitDesc[index]);
 					address = address + splitDesc[index] + ",\n";
+				}
 			}
 				
 			
@@ -371,7 +376,10 @@ public class ParseITReturn {
 		
 		iTReturnObject.setAssessmentYear(assessmentYear);
 		iTReturnObject.setPanNumber(panNumber);
-		iTReturnObject.setAadharNumber(aadharNumber);
+
+		if(!aadharNumber.equalsIgnoreCase(eFilingAck))
+			iTReturnObject.setAadharNumber(aadharNumber);
+		
 		iTReturnObject.setName(name);
 		iTReturnObject.setDesignationOfAO(ward);
 		iTReturnObject.seteFillingAckNumber(eFilingAck);
@@ -379,6 +387,7 @@ public class ParseITReturn {
 		iTReturnObject.setGrossTotalIncome(grossIncome);
 		iTReturnObject.setOriginalRevised(originalRevised);
 		iTReturnObject.setStatus(status);
+		
 		
 		Address addressObj = new ParseAddress().getAddress(address.trim());
 		iTReturnObject.setAddress(addressObj);
@@ -405,39 +414,21 @@ public class ParseITReturn {
 	}
 	
 	
-	/* DESCRIPTION : Searches for PAN in the entire String
-	 * INPUT : String containing PAN
-	 * OUTPUT : PAN 
-	 * */
-	private String getPanNumber(String content) {
-		String pan = "";
-		Pattern pattern = Pattern.compile("[A-Z0-9 ]{9,11}");
-		Matcher matcher = pattern.matcher(content);
-		if (matcher.find())
-		{
-			try{
-				pan = matcher.group(0);
-			}catch(Exception e){}
-		}
-		return pan;
-	}
-	
-	
 	/* DESCRIPTION : Searches for Aadhar Number in the entire String
 	 * INPUT : String containing Aadhar Number
 	 * OUTPUT : Aadhar Number
 	 * */
 	private String getAadharNumber(String content) {
-		String pan = "";
+		String addharNumber = "";
 		Pattern pattern = Pattern.compile("[0-9 ]{12}");
 		Matcher matcher = pattern.matcher(content);
 		if (matcher.find())
 		{
 			try{
-				pan = matcher.group(0);
+				addharNumber = matcher.group(0);
 			}catch(Exception e){}
 		}
-		return pan;
+		return addharNumber.trim();
 	}
 	
 	
@@ -517,7 +508,7 @@ public class ParseITReturn {
 				stringBuilderObj.append(singleChar);
 				found = true;
 			} 
-			else if(singleChar!='\n' && singleChar!=' ' && found)
+			else if(found)
 			{
 				// If we already found a digit before and this char is not a digit or \n or space, stop looping
 				break;                
