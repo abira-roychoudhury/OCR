@@ -68,7 +68,7 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 							</c:forEach>
 						</div>
 						
-							<button type="button" class="btn btn-primary">Submit</button>
+							<button type="button" id="submit" class="btn btn-primary">Submit</button>
 					</form>
 				</div>
 			</div>

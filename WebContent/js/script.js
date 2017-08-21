@@ -111,4 +111,30 @@ function drawPoly(base64,ox,oy,owidth,oheight){
 draw(img);
 
 
+//On form submit
+
+document.getElementById("submit").addEventListener("click", function(){
+	
+	var client_id = "3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j";
+	var client_secret = "7967524131757639248";
+	var grant_type = "password";
+	var username = "dharmvir_singh@herofincorp.com.herodev2";
+	var password= "test@1234";
+	
+	var url = "https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?client_id="+client_id+"&client_secret="+client_secret+"&grant_type="+grant_type+"&username="+username+"&password="+password;
+	
+	$.ajax({
+		url : url, 
+		type: 'POST',
+	    crossDomain: true,
+		success : function(res){
+					console.log(res);
+					console.log("access token : "+res.access_token);
+				}
+	
+	});
+	
+});
+
+
 });
