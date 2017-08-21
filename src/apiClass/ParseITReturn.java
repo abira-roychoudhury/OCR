@@ -470,7 +470,6 @@ public class ParseITReturn {
 	 * OUTPUT : String of E Filling Acknowledgement Number
 	 * */
 	private String getEFilingAckNumber(String content) {
-		int i=0;
 		if(content == null || content.isEmpty()) return "";
 		StringBuilder sb = new StringBuilder();
 		boolean found = false;
@@ -479,7 +478,6 @@ public class ParseITReturn {
 			if(Character.isDigit(c) && sb.length()<15)
 			{
 				sb.append(c);
-				i++;
 				found = true;
 			} 
 			else if(found)
