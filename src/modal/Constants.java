@@ -257,4 +257,57 @@ public class Constants {
 	public static final String originalJson = "originalJson";
 	public static final String correctedJson = "correctedJson";
 	
+	
+	public static class SFRequest{
+		public static final String batchRequests = "batchRequests";
+		public static final String richInput = "richInput";
+		public static final String url = "url";
+		public static final String urlValue = "v39.0/sobjects/EKYCStaging__c/";
+		public static final String method = "method";
+		public static final String methodType = "PATCH";
+		
+		public static final String AadharNo__c = "AadharNo__c";
+		public static final String AadharNoOld__c = "AadharNoOld__c";
+		public static final String Address__c = "Address__c";
+		public static final String AddressOld__c = "AddressOld__c";
+		public static final String AssessmentYear__c = "AssessmentYear__c";
+		public static final String AssessmentYearOld__c = "AssessmentYearOld__c";
+		public static final String City__c = "City__c";
+		public static final String CityOld__c = "CityOld__c";
+		public static final String Date__c = "Date__c";
+		public static final String DateOld__c = "DateOld__c";
+		public static final String DesignationofAO__c = "DesignationofAO__c";
+		public static final String DesignationofAOOld__c = "DesignationofAOOld__c";
+		public static final String DOBOrAge__c = "DOBOrAge__c";
+		public static final String DOBOrAgeOld__c = "DOBOrAgeOld__c";
+		public static final String EfillingAcknowledgementNo__c = "EfillingAcknowledgementNo__c";
+		public static final String EfillingAcknowledgementNoOld__c = "EfillingAcknowledgementNoOld__c";
+		public static final String FatherName__c = "FatherName__c";
+		public static final String FatherNameOld__c = "FatherNameOld__c";
+		public static final String FirstName__c = "FirstName__c";
+		public static final String FirstNameOld__c = "FirstNameOld__c";
+		public static final String FullName__c = "FullName__c";
+		public static final String FullNameOld__c = "FullNameOld__c";
+		public static final String Gender__c = "Gender__c";
+		public static final String GenderOld__c = "GenderOld__c";
+		public static final String GrossTotalIncome__c = "GrossTotalIncome__c";
+		public static final String GrossTotalIncomeOld__c = "GrossTotalIncomeOld__c";
+		public static final String LastName__c = "LastName__c";
+		public static final String LastNameOld__c = "LastNameOld__c";
+		public static final String OriginalOrRevised__c = "OriginalOrRevised__c";
+		public static final String OriginalOrRevisedOld__c = "OriginalOrRevisedOld__c";
+		public static final String PANNo__c = "PANNo__c";
+		public static final String PANNoOld__c = "PANNoOld__c";
+		public static final String State__c = "State__c";
+		public static final String StateOld__c = "StateOld__c";
+		public static final String Status__c = "Status__c";
+		public static final String StatusOld__c = "StatusOld__c";
+		public static final String VoterCardNo__c = "VoterCardNo__c";
+		public static final String VoterCardNoOld__c = "VoterCardNoOld__c";
+		public static final String ZipCodeOld__c = "ZipCodeOld__c";
+		public static final String ZipCode__c = "ZipCode__c";
+		
+			
+	}
+	
 }

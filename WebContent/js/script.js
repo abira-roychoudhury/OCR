@@ -138,7 +138,7 @@ $("#submit").click
         (
             {
                 url:'/OCR/SubmitToSF',
-                data: {"fileType":fileType,"originalJson":originalJson,"correctedJson":correctedJson},
+                data: {"fileType":fileType,"salesforcerecordID":salesforcerecordID,"originalJson":originalJson,"correctedJson":correctedJson},
                 type:'post',
                 success:function(data){alert(data);},
                 error:function(err){alert(err);

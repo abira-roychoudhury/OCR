@@ -166,7 +166,7 @@ public class Processing_SF extends HttpServlet {
 
 
 			//dispatching request to jsp page
-			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
+			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewFormSF.jsp");
 			dispatcher.forward(request, response);
 		}
 		else
