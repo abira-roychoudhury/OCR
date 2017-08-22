@@ -52,6 +52,9 @@ public class Processing_SF extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String imgUploadBase64 = request.getParameter("file");
 		String fileType = request.getParameter("fileType");
+		String salesforcerecordID = request.getParameter("salesforcerecordID");
+		
+		request.setAttribute("salesforcerecordID",salesforcerecordID);
 		
 		//Initialization
 		Date start = new Date(),end = new Date();

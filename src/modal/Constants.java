@@ -254,4 +254,7 @@ public class Constants {
 	public static final String india7 = "LNOIA";
 	public static final String india8 = "LNOLA";
 	
+	public static final String originalJson = "originalJson";
+	public static final String correctedJson = "correctedJson";
+	
 }

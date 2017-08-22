@@ -15,6 +15,7 @@ var data = <%=request.getAttribute("jsonCoord")%>
 var img = '<%=request.getAttribute("imgBase64").toString()%>'
 var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 					 "width" : <%=request.getAttribute("compressWidth")%>} 
+var fileType = <%=request.getAttribute("fileType")%> 
 </script>
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -22,6 +23,8 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <body>
 
+	<% LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>)request.getAttribute("displayDocument");
+		request.setAttribute("displayDocument",displayDocument); %>
 
 	<div class="container">
 	<div class="row" style="margin-top: 50px">
@@ -58,11 +61,11 @@ var compressedDim = {"height" : <%=request.getAttribute("compressHeight")%>,
 									<label for="${doc.key}">${doc.key}</label>
 									<c:choose>
          						         <c:when test = "${doc.key == addrKey}">
-								            <textarea class="form-control" id="${doc.key}" rows="4" cols="50">${doc.value}</textarea>
+								            <textarea class="form-control" id="${doc.key}" name="${doc.key}" rows="4" cols="50">${doc.value}</textarea>
 								         </c:when>								         		         
 								         <c:otherwise>
-								            <input class="form-control" type="text" value="${doc.value}" id="${doc.key}">
-								         </c:otherwise>
+								            <input class="form-control" type="text" value="${doc.value}" id="${doc.key}" name="${doc.key}">
+								          </c:otherwise>
 								      </c:choose>									
 								</div>
 							</c:forEach>

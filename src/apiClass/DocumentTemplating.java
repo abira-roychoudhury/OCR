@@ -160,7 +160,8 @@ public class DocumentTemplating {
 			coordinates.put(Constants.Address.state, voterCardCoord.getAddress());
 			coordinates.put(Constants.Address.zipCode, voterCardCoord.getAddress());
 		}	
-		if(fileType.equals(Constants.ITReturn.iTReturn))
+		
+		else if(fileType.equals(Constants.ITReturn.iTReturn))
 		{
 			ITReturn iTReturn = new ParseITReturn().parseITReturn(textAnnotationArray,filePath);
 			ITReturnCoord iTReturnCoord = iTReturn.getCoordinates();
