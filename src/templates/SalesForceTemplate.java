@@ -67,6 +67,8 @@ public class SalesForceTemplate {
 	String TaxPayable__c = "";
 	String TaxPayableOld__c = "";
 	String TCS__c = "";
+	String TCSOld__c = "";
+	String TDC__c = "";
 	String TDCOld__c = "";
 	String TotalIncome__c = "";
 	String TotalIncomeOld__c = "";
@@ -468,6 +470,18 @@ public class SalesForceTemplate {
 	}
 	public void setTCS__c(String tCS__c) {
 		TCS__c = tCS__c;
+	}
+	public String getTCSOld__c() {
+		return TCSOld__c;
+	}
+	public void setTCSOld__c(String tCSOld__c) {
+		TCSOld__c = tCSOld__c;
+	}
+	public String getTDC__c() {
+		return TDC__c;
+	}
+	public void setTDC__c(String tDC__c) {
+		TDC__c = tDC__c;
 	}
 	public String getTDCOld__c() {
 		return TDCOld__c;

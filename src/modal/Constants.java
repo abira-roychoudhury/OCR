@@ -307,6 +307,40 @@ public class Constants {
 		public static final String ZipCodeOld__c = "ZipCodeOld__c";
 		public static final String ZipCode__c = "ZipCode__c";
 		
+		public static final String AdvanceTax__c = "AdvanceTax__c";
+		public static final String AdvanceTaxOld__c = "AdvanceTaxOld__c";
+		public static final String CurrentYearLoss__c = "CurrentYearLoss__c";
+		public static final String CurrentYearLossOld__c = "CurrentYearLossOld__c";
+		public static final String DeductionUnderChapterVI__c = "DeductionUnderChapterVI__c";
+		public static final String DeductionUnderChapterVIOld__c = "DeductionUnderChapterVIOld__c";
+		public static final String ExemptIncome__c = "ExemptIncome__c";
+		public static final String ExemptIncomeOld__c = "ExemptIncomeOld__c";
+		public static final String FormNoWhichHasBeenTransmitted__c = "FormNoWhichHasBeenTransmitted__c";
+		public static final String FormNoWhichHasBeenTransmittedOld__c = "FormNoWhichHasBeenTransmittedOld__c";
+		public static final String InterestPayable__c = "InterestPayable__c";
+		public static final String InterestPayableOld__c = "InterestPayableOld__c";
+		public static final String NetTaxPayable__c = "NetTaxPayable__c";
+		public static final String NetTaxPayableOld__c = "NetTaxPayableOld__c";
+		public static final String Place__c = "Place__c";
+		public static final String PlaceOld__c = "PlaceOld__c";
+		public static final String Refund__c = "Refund__c";
+		public static final String RefundOld__c = "RefundOld__c";
+		public static final String SelfAsssessmentTax__c = "SelfAsssessmentTax__c";
+		public static final String SelfAsssessmentTaxOld__c = "SelfAsssessmentTaxOld__c";
+		public static final String TaxPayable__c = "TaxPayable__c";
+		public static final String TaxPayableOld__c = "TaxPayableOld__c";
+		public static final String TCS__c = "TCS__c";
+		public static final String TCSOld__c = "TCSOld__c";
+		public static final String TDC__c = "TDC__c";
+		public static final String TDCOld__c = "TDCOld__c";
+		public static final String TotalIncome__c = "TotalIncome__c";
+		public static final String TotalIncomeOld__c = "TotalIncomeOld__c";
+		public static final String TotalTaxAndInterestPayable__c = "TotalTaxAndInterestPayable__c";
+		public static final String TotalTaxAndInterestPayableOld__c = "TotalTaxAndInterestPayableOld__c";
+		public static final String TotalTaxesPaid__c = "TotalTaxesPaid__c";
+		public static final String TotalTaxesPaidOld__c = "TotalTaxesPaidOld__c";
+		
+		
 			
 	}
 	

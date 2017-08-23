@@ -16,6 +16,7 @@ import modal.Constants;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,6 +26,8 @@ import java.net.URL;
  */
 @WebServlet("/SubmitToSF")
 public class SubmitToSF extends HttpServlet {
+	
+	static String accessToken = "";
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -54,11 +57,6 @@ public class SubmitToSF extends HttpServlet {
 		
 		SalesForceTemplate salesForceTemplateObject = new SalesForceTemplate();
 				
-		
-		
-		
-		
-		
 		if(fileType.equals(Constants.PanCard.panCard))
 		{
 			String fullnameOriginal = request.getParameter(Constants.originalJson+"["+Constants.PanCard.firstName+"]") + " " +
@@ -70,7 +68,6 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setFatherNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.fatherName+"]"));
 			salesForceTemplateObject.setDOBOrAgeOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.dob+"]"));
 			salesForceTemplateObject.setPANNoOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.panNumber+"]"));			
-			
 			
 			
 			String fullnameCorrected = request.getParameter(Constants.correctedJson+"["+Constants.PanCard.firstName+"]") + " " +
@@ -245,21 +242,72 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setDOBOrAge__c(request.getParameter(Constants.correctedJson+"["+Constants.DrivingLicense.dob+"]"));				
 		}	
 		
-		
-		String nameOld = request.getParameter(Constants.originalJson+"["+Constants.PanCard.firstName+"]");
-		out.println("OLD NAME : "+nameOld);
-		
-		String nameNew = request.getParameter(Constants.correctedJson+"["+Constants.PanCard.firstName+"]");
-		out.println("NEW NAME : "+nameNew);
-		
-		String accessToken = getAccessToken();
-		out.println("accessToken : "+accessToken);		
-		
 		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	
-		out.println("requestBody : "+requestBody);
+		//String accessToken = "";
+		JSONObject apiResponse = pushOCRResponseToSF(requestBody,accessToken);
+		
+		out.println(apiResponse.toString());
 	}
 	
 	
+
+	private JSONObject pushOCRResponseToSF(JSONObject requestBody, String accessToken) {
+		
+		try{
+			URL url = new URL("https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch");
+			
+			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
+			try{
+				System.setProperty("https.proxyHost", "ptproxy.persistent.co.in");
+				System.setProperty("https.proxyPort", "8080");
+			}catch(Exception ex){
+				System.out.println(ex.getMessage());
+			}
+			
+			
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("Authorization", "Bearer "+accessToken);
+			
+
+			String stringBody = requestBody.toString();
+			
+			OutputStream outputStream = conn.getOutputStream();
+			outputStream.write(stringBody.getBytes());
+			outputStream.flush();
+			
+			int code = conn.getResponseCode();
+			System.out.println("############ status code : "+code);
+			if(code == 200)
+			{
+				BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
+				StringBuilder output = new StringBuilder();			
+				String op;
+				while ((op = bufferedReaderObject.readLine()) != null) {
+					output.append(op);
+				}
+				conn.disconnect();
+				
+				JSONObject response = new JSONObject(output.toString());
+				return response;
+				//return (boolean)response.get("hasErrors");
+			}
+			
+			else{
+				String newAccessToken = getAccessToken();
+				return pushOCRResponseToSF(requestBody, newAccessToken);
+			}
+			
+	    }
+		catch(Exception e){
+			e.printStackTrace();
+			System.err.print("inside error in SF pushing ocr data catch "+e);
+		}
+		
+		return new JSONObject();
+	}
 
 	private JSONObject createSFRequestBody(SalesForceTemplate salesForceTemplateObject,	String salesforcerecordID) {
 		JSONObject requestBody = new JSONObject();
@@ -404,12 +452,15 @@ public class SubmitToSF extends HttpServlet {
 				output.append(op);
 			}
 			conn.disconnect();
-			return output.toString();				
+			
+			JSONObject response = new JSONObject(output.toString());
+			
+			return response.getString("access_token");				
 		}
 		catch(Exception e){
 			System.err.print("inside error in SF ACCESS TOKEN catch"+e);
 		}
-		return null;
+		return "";
 	}
 
 }
