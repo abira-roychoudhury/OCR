@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import templates.SalesForceTemplate;
 import modal.Constants;
+import modal.Constants.SFRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -29,18 +30,12 @@ public class SubmitToSF extends HttpServlet {
 	
 	static String accessToken = "";
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+           
     public SubmitToSF() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
@@ -242,24 +237,25 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setDOBOrAge__c(request.getParameter(Constants.correctedJson+"["+Constants.DrivingLicense.dob+"]"));				
 		}	
 		
-		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	
-		//String accessToken = "";
-		JSONObject apiResponse = pushOCRResponseToSF(requestBody,accessToken);
 		
-		out.println(apiResponse.toString());
+		//sending back the response
+		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	//forming the response body
+		JSONObject apiResponse = pushOCRResponseToSF(requestBody,accessToken);  //api call to push OCR data to SF
+		out.println(apiResponse.toString());  //response to the view page
 	}
 	
 	
-
+	/* DESCRIPTION : Makes the api call to push the form data to SF
+	 * INPUT : JSONObject Request body consisting of the form data and String accessToken retrieved by api call from SF
+	 * OUTPUT : JSONObject of response received from the api call
+	 * */
 	private JSONObject pushOCRResponseToSF(JSONObject requestBody, String accessToken) {
-		
 		try{
-			URL url = new URL("https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch");
-			
+			URL url = new URL(Constants.SFRequest.urlToPushOCRResponse);			
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{
-				System.setProperty("https.proxyHost", "ptproxy.persistent.co.in");
-				System.setProperty("https.proxyPort", "8080");
+				System.setProperty("https.proxyHost", Constants.proxyHost);
+				System.setProperty("https.proxyPort", Constants.proxyPort);
 			}catch(Exception ex){
 				System.out.println(ex.getMessage());
 			}
@@ -267,9 +263,9 @@ public class SubmitToSF extends HttpServlet {
 			
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", "Bearer "+accessToken);
+			conn.setRequestMethod(Constants.SFRequest.requestMethod);
+			conn.setRequestProperty(Constants.SFRequest.contentType, Constants.SFRequest.contentTypeValue);
+			conn.setRequestProperty(Constants.SFRequest.authorization, Constants.SFRequest.bearer+accessToken);
 			
 
 			String stringBody = requestBody.toString();
@@ -278,9 +274,8 @@ public class SubmitToSF extends HttpServlet {
 			outputStream.write(stringBody.getBytes());
 			outputStream.flush();
 			
-			int code = conn.getResponseCode();
-			System.out.println("############ status code : "+code);
-			if(code == 200)
+			int statusCode = conn.getResponseCode();
+			if(statusCode == 200)
 			{
 				BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
 				StringBuilder output = new StringBuilder();			
@@ -292,7 +287,6 @@ public class SubmitToSF extends HttpServlet {
 				
 				JSONObject response = new JSONObject(output.toString());
 				return response;
-				//return (boolean)response.get("hasErrors");
 			}
 			
 			else{
@@ -304,11 +298,63 @@ public class SubmitToSF extends HttpServlet {
 		catch(Exception e){
 			e.printStackTrace();
 			System.err.print("inside error in SF pushing ocr data catch "+e);
-		}
-		
+		}		
 		return new JSONObject();
 	}
-
+	
+	
+	
+	/* DESCRIPTION : Makes the api call to retrieve the access token from SF 
+	 * INPUT : 
+	 * OUTPUT : String accessToken received in the response
+	 * */
+	private String getAccessToken() {
+		String urlValue = Constants.SFRequest.urlToReceiveAccessToken
+				+ Constants.SFRequest.client_id
+				+ Constants.SFRequest.client_secret
+				+ Constants.SFRequest.grant_type
+				+ Constants.SFRequest.username
+				+ Constants.SFRequest.password;
+		try{
+			URL url = new URL(urlValue);
+			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
+			try{
+				System.setProperty("https.proxyHost", Constants.proxyHost);
+				System.setProperty("https.proxyPort", Constants.proxyPort);
+			}catch(Exception ex){
+				System.out.println(ex.getMessage());
+			}
+			
+			
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod(Constants.SFRequest.requestMethod);
+			conn.setRequestProperty(Constants.SFRequest.contentType, Constants.SFRequest.contentTypeValue);
+			
+			BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
+			StringBuilder output = new StringBuilder();			
+			String op;
+			while ((op = bufferedReaderObject.readLine()) != null) {
+				output.append(op);
+			}
+			conn.disconnect();
+			
+			JSONObject response = new JSONObject(output.toString());
+			
+			return response.getString(Constants.SFRequest.accessTokenKey);				
+		}
+		catch(Exception e){
+			System.err.print("inside error in SF ACCESS TOKEN catch"+e);
+		}
+		return "";
+	}
+	
+	
+	
+	/* DESCRIPTION : Creates the Body of the api call to push form data to SF by appending the form data in JSONObject  
+	 * INPUT : SalesForceTemplate object containing original and corrected form data, String salesforcerecordID sent by SF
+	 * OUTPUT : JSONObject of requestBody
+	 * */
 	private JSONObject createSFRequestBody(SalesForceTemplate salesForceTemplateObject,	String salesforcerecordID) {
 		JSONObject requestBody = new JSONObject();
 		
@@ -414,7 +460,7 @@ public class SubmitToSF extends HttpServlet {
 		richInput.put(Constants.SFRequest.ZipCode__c, salesForceTemplateObject.getZipCode__c());
 		
 		
-		String url =  Constants.SFRequest.urlValue+salesforcerecordID;
+		String url =  Constants.SFRequest.urlValueToReceiveAccessToken+salesforcerecordID;
 		
 		JSONObject  batchRequestsObject = new JSONObject();
 		batchRequestsObject.put(Constants.SFRequest.method,Constants.SFRequest.methodType);
@@ -428,39 +474,5 @@ public class SubmitToSF extends HttpServlet {
 		return requestBody;
 	}
 
-	private String getAccessToken() {
-		try{
-			URL url = new URL("https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?client_id=3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j&client_secret=7967524131757639248&grant_type=password&username=dharmvir_singh@herofincorp.com.herodev2&password=test@1234");
-			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
-			try{
-				System.setProperty("https.proxyHost", "ptproxy.persistent.co.in");
-				System.setProperty("https.proxyPort", "8080");
-			}catch(Exception ex){
-				System.out.println(ex.getMessage());
-			}
-			
-			
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
-			
-			BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
-			StringBuilder output = new StringBuilder();			
-			String op;
-			while ((op = bufferedReaderObject.readLine()) != null) {
-				output.append(op);
-			}
-			conn.disconnect();
-			
-			JSONObject response = new JSONObject(output.toString());
-			
-			return response.getString("access_token");				
-		}
-		catch(Exception e){
-			System.err.print("inside error in SF ACCESS TOKEN catch"+e);
-		}
-		return "";
-	}
-
+	
 }
