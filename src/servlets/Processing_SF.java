@@ -55,6 +55,7 @@ public class Processing_SF extends HttpServlet {
 		String salesforcerecordID = request.getParameter("salesforcerecordID");
 		
 		request.setAttribute("salesforcerecordID",salesforcerecordID);
+		request.setAttribute(Constants.fileType, fileType);
 		
 		//Initialization
 		Date start = new Date(),end = new Date();
@@ -111,6 +112,9 @@ public class Processing_SF extends HttpServlet {
 
 		//set description
 		request.setAttribute(Constants.description, descriptionStr);	
+		
+		System.out.println("######################################################fileType "+fileType);
+		System.out.println("######################################################description string "+descriptionStr);
 
 		//checking for correct File type
 		if(checkFileType(descriptionStr, fileType))
@@ -282,7 +286,7 @@ public class Processing_SF extends HttpServlet {
 			validFileType = true;
 		else if(fileType.equals(Constants.ITReturn.iTReturn) && descriptionStr.toUpperCase().contains(Constants.ITReturn.itr.toUpperCase()))
 			validFileType = true;
-
+	
 		return validFileType;
 	}		
 

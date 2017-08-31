@@ -263,7 +263,7 @@ public class Constants {
 		public static final String contentType = "Content-Type";
 		public static final String contentTypeValue = "application/json";
 		public static final String authorization = "Authorization";
-		public static final String bearer = "Bearer";
+		public static final String bearer = "Bearer ";
 		
 		
 		public static final String batchRequests = "batchRequests";
@@ -276,12 +276,13 @@ public class Constants {
 		public static final String urlToReceiveAccessToken = "https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?";
 		public static final String client_id = "client_id=3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j&";
 		public static final String client_secret = "client_secret=7967524131757639248&";
-		public static final String grant_type = "grant_type=password";
+		public static final String grant_type = "grant_type=password&";
 		public static final String username = "username=dharmvir_singh@herofincorp.com.herodev2&";
 		public static final String password = "password=test@1234";
 		public static final String accessTokenKey = "access_token";
 		
 		public static final String urlToPushOCRResponse = "https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch";
+		public static final String hasErrorKey = "hasErrors";
 		
 		public static final String AadharNo__c = "AadharNo__c";
 		public static final String AadharNoOld__c = "AadharNoOld__c";

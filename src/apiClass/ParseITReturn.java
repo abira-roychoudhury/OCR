@@ -165,7 +165,6 @@ public class ParseITReturn {
 			
 			// setting the coordinates for status
 			else if(iTReturnObject.getStatus().equalsIgnoreCase(description)){
-				System.out.println("inside status coord");
 				JSONObject boundingPoly = jsonObject.getJSONObject(Constants.VisionResponse.boundingPoly);
 				for (int j = 0; j < 4; j++) { // iterate columns
 					JSONArray vertices = (JSONArray) boundingPoly.getJSONArray(Constants.VisionResponse.vertices);
@@ -366,7 +365,7 @@ public class ParseITReturn {
 			
 			else{
 				if(!splitDesc[index].equals(aadharNumber)){
-					System.out.println(splitDesc[index]);
+					//System.out.println(splitDesc[index]);
 					address = address + splitDesc[index] + ",\n";
 				}
 			}

@@ -134,6 +134,8 @@ public class Processing_OCR extends HttpServlet {
 
 		//set description
 		request.setAttribute(Constants.description, descriptionStr);	
+		System.out.println("######################################################description string "+descriptionStr);
+
 
 		//checking for correct File type
 		if(checkFileType(descriptionStr, fileType))

@@ -80,11 +80,16 @@ public class SubmitToSF extends HttpServlet {
 		{
 			String dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.dob+"]");
 			String dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.dob+"]");
-			if(dobOriginal.isEmpty()){
-				dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.year+"]");
-				dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.year+"]");
+			try{
+				if(dobOriginal.isEmpty()){
+					dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.VoterCard.age+"]");
+					dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.age+"]");
+				}
+			}catch(Exception e){
+				dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.VoterCard.age+"]");
+				dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.age+"]");
 			}
-				
+			
 			
 			String fullnameOriginal = request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.firstName+"]") + " " +
 					request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.middleName+"]") + " " +
@@ -124,10 +129,16 @@ public class SubmitToSF extends HttpServlet {
 		{
 			String dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.VoterCard.dob+"]");
 			String dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.dob+"]");
-			if(dobOriginal.isEmpty()){
+			try{
+				if(dobOriginal.isEmpty()){
+					dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.VoterCard.age+"]");
+					dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.age+"]");
+				}
+			}catch(Exception e){
 				dobOriginal = request.getParameter(Constants.originalJson+"["+Constants.VoterCard.age+"]");
 				dobCorrected = request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.age+"]");
 			}
+			
 				
 			
 			String fullnameOriginal = request.getParameter(Constants.originalJson+"["+Constants.VoterCard.firstName+"]") + " " +
@@ -235,23 +246,29 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setZipCode__c(request.getParameter(Constants.correctedJson+"["+Constants.DrivingLicense.pin+"]"));
 			//salesForceTemplateObject.set(Constants.DrivingLicense.bloodGroup, drivingLicense.getBloodGroup());
 			salesForceTemplateObject.setDOBOrAge__c(request.getParameter(Constants.correctedJson+"["+Constants.DrivingLicense.dob+"]"));				
-		}	
+		}			
 		
 		
 		//sending back the response
+		int maxCountForAPICall = 0;
 		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	//forming the response body
-		JSONObject apiResponse = pushOCRResponseToSF(requestBody,accessToken);  //api call to push OCR data to SF
-		out.println(apiResponse.toString());  //response to the view page
+		boolean hasError = pushOCRResponseToSF(requestBody,accessToken, maxCountForAPICall);  //api call to push OCR data to SF 
+		if(hasError)
+			out.println("There has been an error while submitting. Please try again");  //response to the view page
+		else
+			out.println("The data was successfully submitted");
 	}
+	
+	
 	
 	
 	/* DESCRIPTION : Makes the api call to push the form data to SF
 	 * INPUT : JSONObject Request body consisting of the form data and String accessToken retrieved by api call from SF
 	 * OUTPUT : JSONObject of response received from the api call
 	 * */
-	private JSONObject pushOCRResponseToSF(JSONObject requestBody, String accessToken) {
+	private boolean pushOCRResponseToSF(JSONObject requestBody, String accessToken, int maxCount) {
 		try{
-			URL url = new URL(Constants.SFRequest.urlToPushOCRResponse);			
+			URL url = new URL("https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch");			
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{
 				System.setProperty("https.proxyHost", Constants.proxyHost);
@@ -259,7 +276,6 @@ public class SubmitToSF extends HttpServlet {
 			}catch(Exception ex){
 				System.out.println(ex.getMessage());
 			}
-			
 			
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -275,7 +291,8 @@ public class SubmitToSF extends HttpServlet {
 			outputStream.flush();
 			
 			int statusCode = conn.getResponseCode();
-			if(statusCode == 200)
+			System.out.println(statusCode);
+			if(statusCode >= 200 && statusCode <= 299)
 			{
 				BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
 				StringBuilder output = new StringBuilder();			
@@ -286,12 +303,16 @@ public class SubmitToSF extends HttpServlet {
 				conn.disconnect();
 				
 				JSONObject response = new JSONObject(output.toString());
-				return response;
+				return response.getBoolean(Constants.SFRequest.hasErrorKey);
 			}
 			
-			else{
+			else if(maxCount<2){
 				String newAccessToken = getAccessToken();
-				return pushOCRResponseToSF(requestBody, newAccessToken);
+				maxCount++;
+				return pushOCRResponseToSF(requestBody, newAccessToken,maxCount);
+			}
+			else{
+				return false;
 			}
 			
 	    }
@@ -299,7 +320,7 @@ public class SubmitToSF extends HttpServlet {
 			e.printStackTrace();
 			System.err.print("inside error in SF pushing ocr data catch "+e);
 		}		
-		return new JSONObject();
+		return false;
 	}
 	
 	
@@ -315,6 +336,9 @@ public class SubmitToSF extends HttpServlet {
 				+ Constants.SFRequest.grant_type
 				+ Constants.SFRequest.username
 				+ Constants.SFRequest.password;
+				
+		System.out.println("access token called");
+		//String urlValue = "https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?client_id=3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j&client_secret=7967524131757639248&grant_type=password&username=dharmvir_singh@herofincorp.com.herodev2&password=test@1234";
 		try{
 			URL url = new URL(urlValue);
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
@@ -329,7 +353,9 @@ public class SubmitToSF extends HttpServlet {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod(Constants.SFRequest.requestMethod);
-			conn.setRequestProperty(Constants.SFRequest.contentType, Constants.SFRequest.contentTypeValue);
+			conn.setRequestProperty("content-type", "application/json");
+			
+			
 			
 			BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
 			StringBuilder output = new StringBuilder();			
@@ -340,11 +366,10 @@ public class SubmitToSF extends HttpServlet {
 			conn.disconnect();
 			
 			JSONObject response = new JSONObject(output.toString());
-			
 			return response.getString(Constants.SFRequest.accessTokenKey);				
 		}
 		catch(Exception e){
-			System.err.print("inside error in SF ACCESS TOKEN catch"+e);
+			System.err.print("inside error in SF ACCESS TOKEN catch "+e);
 		}
 		return "";
 	}
@@ -471,6 +496,7 @@ public class SubmitToSF extends HttpServlet {
 		batchRequests.put(batchRequestsObject);	
 		
 		requestBody.put(Constants.SFRequest.batchRequests, batchRequests);	
+		System.out.println(requestBody);
 		return requestBody;
 	}
 
