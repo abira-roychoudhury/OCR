@@ -254,9 +254,9 @@ public class SubmitToSF extends HttpServlet {
 		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	//forming the response body
 		boolean hasError = pushOCRResponseToSF(requestBody,accessToken, maxCountForAPICall);  //api call to push OCR data to SF 
 		if(hasError)
-			out.println("There has been an error while submitting. Please try again");  //response to the view page
+			out.println(Constants.pushOCRDataError);  //response to the view page
 		else
-			out.println("The data was successfully submitted");
+			out.println(Constants.pushOCRDataSuccess);
 	}
 	
 	
@@ -268,7 +268,7 @@ public class SubmitToSF extends HttpServlet {
 	 * */
 	private boolean pushOCRResponseToSF(JSONObject requestBody, String accessToken, int maxCount) {
 		try{
-			URL url = new URL("https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch");			
+			URL url = new URL(Constants.SFRequest.urlToPushOCRResponse);			
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{
 				System.setProperty("https.proxyHost", Constants.proxyHost);

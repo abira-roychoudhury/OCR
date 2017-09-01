@@ -41,6 +41,8 @@ public class Constants {
 	//error message
 	public static final String fileTypeMismatch1 = "The Image file uploaded and the File Type selected does not match";
 	public static final String fileTypeMismatchAadharCard ="OR The aadhar number could not be detected properly from the image uploaded";
+	public static final String pushOCRDataError = "There has been an error while submitting. Please try again";
+	public static final String pushOCRDataSuccess = "The data was successfully submitted";
 	
 	//compress image dimensions
 	public static final String compressWidth = "compressWidth";
@@ -79,8 +81,8 @@ public class Constants {
 	} 
 	
 	//Proxy settings
-	public static final String proxyHost = "ptproxy.persistent.co.in";
-	public static final String proxyPort = "8080";
+	public static final String proxyHost = "";      //"ptproxy.persistent.co.in";
+	public static final String proxyPort = "";     // "8080";
 
 	//date format
 	public static final String dateFormatSlash = "dd/MM/yyyy";
