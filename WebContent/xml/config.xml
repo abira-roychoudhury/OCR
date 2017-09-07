@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<configuration>
+	
+		<enviornment>QA</enviornment>
+		
+		<url enviornment = "Development">
+			<urlToReceiveAccessToken>https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token</urlToReceiveAccessToken>
+			<client_id>3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j</client_id>
+			<client_secret>7967524131757639248</client_secret>
+			<grant_type>password</grant_type>
+			<username>dharmvir_singh@herofincorp.com.herodev2</username>
+			<password>test@1234</password>
+			<urlToPushOCRResponse>https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch</urlToPushOCRResponse>		
+		</url>
+		<url enviornment = "QA">
+			<urlToReceiveAccessToken>https://fincorp--herofinqa.cs57.my.salesforce.com/services/oauth2/token</urlToReceiveAccessToken>
+			<client_id>3MVG959Nd8JMmavSrMp7slzowB1._S0SzOQgiw_7hTd39FVOe3lyImeKR.OJwyFq7p8d9vbm5Db28AY8ynQmR</client_id>
+			<client_secret>2209237443211164129</client_secret>
+			<grant_type>password</grant_type>
+			<username>ranvijay.singh@hfclmail.com.herofinqa</username>
+			<password>Hero@1234</password>
+			<urlToPushOCRResponse>https://fincorp--herofinqa.cs57.my.salesforce.com/services/data/v39.0/composite/batch</urlToPushOCRResponse>		
+		</url>		
+	</configuration>

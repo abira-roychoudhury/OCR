@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import templates.SalesForceTemplate;
 import modal.Constants;
-import modal.Constants.SFRequest;
+import modal.ApiUrl;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -250,9 +250,12 @@ public class SubmitToSF extends HttpServlet {
 		
 		
 		//sending back the response
-		int maxCountForAPICall = 0;
+		int countForAPICall = 0;
+		ApiUrl.getURLs();
 		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	//forming the response body
-		boolean hasError = pushOCRResponseToSF(requestBody,accessToken, maxCountForAPICall);  //api call to push OCR data to SF 
+		//JSONObject responsefrompush = pushOCRResponseToSF(requestBody,accessToken, countForAPICall);
+		//out.println(responsefrompush);
+		boolean hasError = pushOCRResponseToSF(requestBody,accessToken, countForAPICall);  //api call to push OCR data to SF 
 		if(hasError)
 			out.println(Constants.pushOCRDataError);  //response to the view page
 		else
@@ -268,7 +271,8 @@ public class SubmitToSF extends HttpServlet {
 	 * */
 	private boolean pushOCRResponseToSF(JSONObject requestBody, String accessToken, int maxCount) {
 		try{
-			URL url = new URL(Constants.SFRequest.urlToPushOCRResponse);			
+			//System.out.println("URL  "+ ApiUrl.urlToPushOCRResponse);
+			URL url = new URL(ApiUrl.urlToPushOCRResponse);			
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{
 				System.setProperty("https.proxyHost", Constants.proxyHost);
@@ -291,7 +295,7 @@ public class SubmitToSF extends HttpServlet {
 			outputStream.flush();
 			
 			int statusCode = conn.getResponseCode();
-			System.out.println(statusCode);
+			System.out.println("##########Status code  :"+statusCode);
 			if(statusCode >= 200 && statusCode <= 299)
 			{
 				BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader((conn.getInputStream())));			
@@ -303,16 +307,19 @@ public class SubmitToSF extends HttpServlet {
 				conn.disconnect();
 				
 				JSONObject response = new JSONObject(output.toString());
+				System.out.println("response   :   "+response);
+				//return response;
 				return response.getBoolean(Constants.SFRequest.hasErrorKey);
 			}
 			
-			else if(maxCount<2){
+			else if(maxCount<5){
 				String newAccessToken = getAccessToken();
 				maxCount++;
 				return pushOCRResponseToSF(requestBody, newAccessToken,maxCount);
 			}
 			else{
-				return false;
+				//return new JSONObject();
+				return true;
 			}
 			
 	    }
@@ -320,7 +327,8 @@ public class SubmitToSF extends HttpServlet {
 			e.printStackTrace();
 			System.err.print("inside error in SF pushing ocr data catch "+e);
 		}		
-		return false;
+		//return new JSONObject();
+		return true;
 	}
 	
 	
@@ -330,12 +338,12 @@ public class SubmitToSF extends HttpServlet {
 	 * OUTPUT : String accessToken received in the response
 	 * */
 	private String getAccessToken() {
-		String urlValue = Constants.SFRequest.urlToReceiveAccessToken
-				+ Constants.SFRequest.client_id
-				+ Constants.SFRequest.client_secret
-				+ Constants.SFRequest.grant_type
-				+ Constants.SFRequest.username
-				+ Constants.SFRequest.password;
+		String urlValue = ApiUrl.urlToReceiveAccessToken
+				+ ApiUrl.client_id
+				+ ApiUrl.client_secret
+				+ ApiUrl.grant_type
+				+ ApiUrl.username
+				+ ApiUrl.password;
 				
 		System.out.println("access token called");
 		//String urlValue = "https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?client_id=3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j&client_secret=7967524131757639248&grant_type=password&username=dharmvir_singh@herofincorp.com.herodev2&password=test@1234";
@@ -496,7 +504,7 @@ public class SubmitToSF extends HttpServlet {
 		batchRequests.put(batchRequestsObject);	
 		
 		requestBody.put(Constants.SFRequest.batchRequests, batchRequests);	
-		System.out.println(requestBody);
+		//System.out.println(requestBody);
 		return requestBody;
 	}
 

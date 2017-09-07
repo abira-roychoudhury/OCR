@@ -45,7 +45,7 @@ public class VisionAPICall {
 			
 			//strBody="{ \"requests\":[ { \"image\":{ \"content\":\""+base64String+"\" }, \"features\":[ { \"type\":\"TEXT_DETECTION\", \"maxResults\":1000 } ] } ] }";
 			stringBody = getBody(base64String,type).toString();
-			System.out.println(stringBody);
+			//System.out.println(stringBody);
 			
 			
 			OutputStream outputStream = conn.getOutputStream();

@@ -113,8 +113,8 @@ public class Processing_SF extends HttpServlet {
 		//set description
 		request.setAttribute(Constants.description, descriptionStr);	
 		
-		System.out.println("######################################################fileType "+fileType);
-		System.out.println("######################################################description string "+descriptionStr);
+		//System.out.println("######################################################fileType "+fileType);
+		//System.out.println("######################################################description string "+descriptionStr);
 
 		//checking for correct File type
 		if(checkFileType(descriptionStr, fileType))
@@ -146,7 +146,7 @@ public class Processing_SF extends HttpServlet {
 			}
 			jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
 			jsonCoord = jsonCoord+"}";
-			System.out.println("json "+jsonCoord);
+			//System.out.println("json "+jsonCoord);
 			request.setAttribute(Constants.displaydocument, displayDocument);
 			request.setAttribute(Constants.coordinates, coordinates);
 			request.setAttribute(Constants.jsonCoord, jsonCoord);

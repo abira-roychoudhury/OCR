@@ -134,7 +134,7 @@ public class Processing_OCR extends HttpServlet {
 
 		//set description
 		request.setAttribute(Constants.description, descriptionStr);	
-		System.out.println("######################################################description string "+descriptionStr);
+		//System.out.println("######################################################description string "+descriptionStr);
 
 
 		//checking for correct File type
@@ -167,7 +167,7 @@ public class Processing_OCR extends HttpServlet {
 			}
 			jsonCoord = jsonCoord.substring(0, jsonCoord.length() - 1);
 			jsonCoord = jsonCoord+"}";
-			System.out.println("json "+jsonCoord);
+			//System.out.println("json "+jsonCoord);
 			
 			request.setAttribute(Constants.displaydocument, displayDocument);
 			request.setAttribute(Constants.coordinates, coordinates);
