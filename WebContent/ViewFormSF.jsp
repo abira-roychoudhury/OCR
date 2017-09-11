@@ -23,9 +23,11 @@ var salesforcerecordID = '<%=request.getAttribute("salesforcerecordID")%>'
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <body>
-
+	
 	<% LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>)request.getAttribute("displayDocument");
 		request.setAttribute("displayDocument",displayDocument); %>
+		
+	<div id="submitLoader" class="loader"></div>
 
 	<div class="container">
 	<div class="row" style="margin-top: 50px">
@@ -73,6 +75,7 @@ var salesforcerecordID = '<%=request.getAttribute("salesforcerecordID")%>'
 						</div>
 						
 							<button type="button" id="submit" class="btn btn-primary">Submit</button>
+							<label id="submitMessage"></label>
 					</form>
 				</div>
 			</div>
@@ -97,6 +100,7 @@ var salesforcerecordID = '<%=request.getAttribute("salesforcerecordID")%>'
 			</div>
 		</div> --%>
 </div>
+
 
 <!-- Modal -->
   <div class="modal fade" id="rawdata" role="dialog">

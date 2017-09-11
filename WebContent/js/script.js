@@ -125,6 +125,10 @@ $("#submit").click
 (
     function()
     {
+    	$('#submitMessage').text("");
+    	$("#submitLoader").show();
+      	$('input, button, textarea').attr("disabled", true);
+    	$(".container").addClass('haze');
     	//creating the correctedJson
     	for (var i = 0; i < inputTags.length; i++) {
     		if(inputTags[i].type == "text")
@@ -142,10 +146,16 @@ $("#submit").click
                 type:'post',
                 success:function(data){
                 	console.log(data);
-                	alert(data);
+                	$('#submitMessage').text(data);
+                	$("#submitLoader").hide();
+                	$('input, button').attr("disabled", false);
+                	$('.container').removeClass('haze');
                 },
                 error:function(err){alert(err);
                 	console.log(err)
+                	$("#submitLoader").hide();
+                	$('input, button, textarea').attr("disabled", false);
+                	$('.container').removeClass('haze');
                 }
             }
         );

@@ -26,7 +26,9 @@ var salesforcerecordID = ''
 
 	<% LinkedHashMap<String,String> displayDocument = (LinkedHashMap<String,String>)request.getAttribute("displayDocument");
 		request.setAttribute("displayDocument",displayDocument); %>
-
+		
+	<div id="submitLoader" class="loader"></div>
+	
 	<div class="container">
 	<div class="row" style="margin-top: 50px">
 		<div class="col-md-6">
@@ -73,7 +75,8 @@ var salesforcerecordID = ''
 						</div>
 						
 							<button type="button" id="submit" class="btn btn-primary">Submit</button>
-					</form>
+							<label id="submitMessage"></label>
+				  </form>
 				</div>
 			</div>
 		</div>
@@ -87,7 +90,7 @@ var salesforcerecordID = ''
 				</div>
 				<div class="panel-body">
 					Upload Image : <%=request.getAttribute("Upload Image") %><br>
-					<%-- Image Preprocessing : <%=request.getAttribute("Upload Image") %><br> --%>
+					Image Preprocessing : <%=request.getAttribute("Upload Image") %><br>
 					Base 64 conversion : <%=request.getAttribute("Base 64 conversion") %><br>
 					Vision API Call : <%=request.getAttribute("Vision API Call") %><br>
 					Templating : <%=request.getAttribute("Templating") %><br>
@@ -95,7 +98,7 @@ var salesforcerecordID = ''
 					
 				</div>
 			</div>
-		</div>
+		</div> 
 </div>
 
 <!-- Modal -->

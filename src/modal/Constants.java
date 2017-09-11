@@ -81,8 +81,8 @@ public class Constants {
 	} 
 	
 	//Proxy settings
-	public static final String proxyHost = "";  //"ptproxy.persistent.co.in"; 
-	public static final String proxyPort = "";  //"8080";
+	public static final String proxyHost = "ptproxy.persistent.co.in"; 
+	public static final String proxyPort = "8080";
 
 	//date format
 	public static final String dateFormatSlash = "dd/MM/yyyy";
