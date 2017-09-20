@@ -53,6 +53,7 @@ public class Processing_SF extends HttpServlet {
 		String imgUploadBase64 = request.getParameter("file");
 		String fileType = request.getParameter("fileType");
 		String salesforcerecordID = request.getParameter("salesforcerecordID");
+		System.out.println("salesforceid :"+salesforcerecordID);
 		
 		request.setAttribute("salesforcerecordID",salesforcerecordID);
 		request.setAttribute(Constants.fileType, fileType);

@@ -322,6 +322,8 @@ public class Constants {
 		public static final String GrossTotalIncomeOld__c = "GrossTotalIncomeOld__c";
 		public static final String LastName__c = "LastName__c";
 		public static final String LastNameOld__c = "LastNameOld__c";
+		public static final String MiddleName__c = "MiddleName__c ";
+		public static final String MiddleNameOld__c = "MiddleNameOld__c";
 		public static final String OriginalOrRevised__c = "OriginalOrRevised__c";
 		public static final String OriginalOrRevisedOld__c = "OriginalOrRevisedOld__c";
 		public static final String PANNo__c = "PANNo__c";

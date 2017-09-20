@@ -16,6 +16,7 @@ public class SalesForceTemplate {
 	String Gender__c = "";
 	String GrossTotalIncome__c = "";
 	String LastName__c = "";
+	String MiddleName__c = "";
 	String OriginalOrRevised__c = "";
 	String PANNo__c = "";
 	String State__c = "";
@@ -37,6 +38,7 @@ public class SalesForceTemplate {
 	String GenderOld__c = "";
 	String GrossTotalIncomeOld__c = "";
 	String LastNameOld__c = "";
+	String MiddleNameOld__c = "";
 	String OriginalOrRevisedOld__c = "";
 	String PANNoOld__c = "";
 	String StateOld__c = "";
@@ -162,6 +164,12 @@ public class SalesForceTemplate {
 	public void setLastName__c(String lastName__c) {
 		LastName__c = lastName__c;
 	}
+	public String getMiddleName__c() {
+		return MiddleName__c;
+	}
+	public void setMiddleName__c(String middleName__c) {
+		MiddleName__c = middleName__c;
+	}
 	public String getOriginalOrRevised__c() {
 		return OriginalOrRevised__c;
 	}
@@ -198,6 +206,8 @@ public class SalesForceTemplate {
 	public void setZipCode__c(String zipCode__c) {
 		ZipCode__c = zipCode__c;
 	}
+		
+	
 	
 	
 	
@@ -286,6 +296,12 @@ public class SalesForceTemplate {
 	}
 	public void setLastNameOld__c(String lastNameOld__c) {
 		LastNameOld__c = lastNameOld__c;
+	}
+	public String getMiddleNameOld__c() {
+		return MiddleNameOld__c;
+	}
+	public void setMiddleNameOld__c(String middleNameOld__c) {
+		MiddleNameOld__c = middleNameOld__c;
 	}
 	public String getOriginalOrRevisedOld__c() {
 		return OriginalOrRevisedOld__c;

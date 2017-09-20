@@ -60,6 +60,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setFullNameOld__c(fullnameOriginal);			
 			salesForceTemplateObject.setFirstNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.firstName+"]"));			
 			salesForceTemplateObject.setLastNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.lastName+"]"));
+			salesForceTemplateObject.setMiddleNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.middleName+"]"));
 			salesForceTemplateObject.setFatherNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.fatherName+"]"));
 			salesForceTemplateObject.setDOBOrAgeOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.dob+"]"));
 			salesForceTemplateObject.setPANNoOld__c(request.getParameter(Constants.originalJson+"["+Constants.PanCard.panNumber+"]"));			
@@ -71,6 +72,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setFullName__c(fullnameCorrected);
 			salesForceTemplateObject.setFirstName__c(request.getParameter(Constants.correctedJson+"["+Constants.PanCard.firstName+"]"));
 			salesForceTemplateObject.setLastName__c(request.getParameter(Constants.correctedJson+"["+Constants.PanCard.lastName+"]"));
+			salesForceTemplateObject.setMiddleName__c(request.getParameter(Constants.correctedJson+"["+Constants.PanCard.middleName+"]"));
 			salesForceTemplateObject.setFatherName__c(request.getParameter(Constants.correctedJson+"["+Constants.PanCard.fatherName+"]"));
 			salesForceTemplateObject.setDOBOrAge__c(request.getParameter(Constants.correctedJson+"["+Constants.PanCard.dob+"]"));
 			salesForceTemplateObject.setPANNo__c(request.getParameter(Constants.correctedJson+"["+Constants.PanCard.panNumber+"]"));			
@@ -98,6 +100,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setDOBOrAgeOld__c(dobOriginal);
 			salesForceTemplateObject.setFirstNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.firstName+"]"));
 			salesForceTemplateObject.setLastNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.lastName+"]"));
+			salesForceTemplateObject.setMiddleNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.middleName+"]"));
 			salesForceTemplateObject.setFatherNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name+"]"));
 			salesForceTemplateObject.setGenderOld__c(request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.gender+"]"));
 			salesForceTemplateObject.setAadharNoOld__c(request.getParameter(Constants.originalJson+"["+Constants.AadharCardPage1.aadharNumber+"]"));
@@ -115,6 +118,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setDOBOrAge__c(dobCorrected);
 			salesForceTemplateObject.setFirstName__c(request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.firstName+"]"));
 			salesForceTemplateObject.setLastName__c(request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.lastName+"]"));
+			salesForceTemplateObject.setMiddleName__c(request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.middleName+"]"));
 			salesForceTemplateObject.setFatherName__c(request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.father+"'s "+Constants.AadharCardPage1.name+"]"));
 			salesForceTemplateObject.setGender__c(request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.gender+"]"));
 			salesForceTemplateObject.setAadharNo__c(request.getParameter(Constants.correctedJson+"["+Constants.AadharCardPage1.aadharNumber+"]"));
@@ -149,6 +153,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setVoterCardNoOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.voterId+"]"));
 			salesForceTemplateObject.setFirstNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.firstName+"]"));
 			salesForceTemplateObject.setLastNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.lastName+"]"));
+			salesForceTemplateObject.setMiddleNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.middleName+"]"));
 			salesForceTemplateObject.setFatherNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.fatherName+"]"));
 			salesForceTemplateObject.setGenderOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.sex+"]"));
 			salesForceTemplateObject.setAddressOld__c(request.getParameter(Constants.originalJson+"["+Constants.VoterCard.address+"]"));
@@ -166,6 +171,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setVoterCardNo__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.voterId+"]"));
 			salesForceTemplateObject.setFirstName__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.firstName+"]"));
 			salesForceTemplateObject.setLastName__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.lastName+"]"));
+			salesForceTemplateObject.setMiddleName__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.middleName+"]"));
 			salesForceTemplateObject.setFatherName__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.fatherName+"]"));
 			salesForceTemplateObject.setGender__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.sex+"]"));
 			salesForceTemplateObject.setAddress__c(request.getParameter(Constants.correctedJson+"["+Constants.VoterCard.address+"]"));
@@ -187,6 +193,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setAadharNoOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.aadharNumber+"]"));			
 			salesForceTemplateObject.setFirstNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.firstName+"]"));
 			salesForceTemplateObject.setLastNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.lastName+"]"));
+			salesForceTemplateObject.setMiddleNameOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.middleName+"]"));
 			salesForceTemplateObject.setStatusOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.status[0]+"]"));
 			salesForceTemplateObject.setDesignationofAOOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.designation+"]"));
 			salesForceTemplateObject.setOriginalOrRevisedOld__c(request.getParameter(Constants.originalJson+"["+Constants.ITReturn.orgRev+"]"));
@@ -208,6 +215,7 @@ public class SubmitToSF extends HttpServlet {
 			salesForceTemplateObject.setAadharNo__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.aadharNumber+"]"));			
 			salesForceTemplateObject.setFirstName__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.firstName+"]"));
 			salesForceTemplateObject.setLastName__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.lastName+"]"));
+			salesForceTemplateObject.setMiddleName__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.middleName+"]"));
 			salesForceTemplateObject.setStatus__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.status[0]+"]"));
 			salesForceTemplateObject.setDesignationofAO__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.designation+"]"));
 			salesForceTemplateObject.setOriginalOrRevised__c(request.getParameter(Constants.correctedJson+"["+Constants.ITReturn.orgRev+"]"));
@@ -253,6 +261,7 @@ public class SubmitToSF extends HttpServlet {
 		int countForAPICall = 0;
 		ApiUrl.getURLs();
 		JSONObject requestBody = createSFRequestBody(salesForceTemplateObject, salesforcerecordID);	//forming the response body
+		System.out.println("requestbody :"+requestBody);
 		//JSONObject responsefrompush = pushOCRResponseToSF(requestBody,accessToken, countForAPICall);
 		//out.println(responsefrompush);
 		boolean hasError = pushOCRResponseToSF(requestBody,accessToken, countForAPICall);  //api call to push OCR data to SF 
@@ -446,14 +455,14 @@ public class SubmitToSF extends HttpServlet {
 		
 		richInput.put(Constants.SFRequest.InterestPayable__c, salesForceTemplateObject.getInterestPayable__c());
 		richInput.put(Constants.SFRequest.InterestPayableOld__c, salesForceTemplateObject.getInterestPayableOld__c());
-
 		
 		richInput.put(Constants.SFRequest.LastName__c, salesForceTemplateObject.getLastName__c());
 		richInput.put(Constants.SFRequest.LastNameOld__c, salesForceTemplateObject.getLastNameOld__c());
+		richInput.put(Constants.SFRequest.MiddleName__c, salesForceTemplateObject.getMiddleName__c());
+		richInput.put(Constants.SFRequest.MiddleNameOld__c, salesForceTemplateObject.getMiddleNameOld__c());		
 		
 		richInput.put(Constants.SFRequest.NetTaxPayable__c, salesForceTemplateObject.getNetTaxPayable__c());
 		richInput.put(Constants.SFRequest.NetTaxPayableOld__c, salesForceTemplateObject.getNetTaxPayableOld__c());
-
 		
 		richInput.put(Constants.SFRequest.OriginalOrRevised__c, salesForceTemplateObject.getOriginalOrRevised__c());
 		richInput.put(Constants.SFRequest.OriginalOrRevisedOld__c, salesForceTemplateObject.getOriginalOrRevisedOld__c());
@@ -466,7 +475,6 @@ public class SubmitToSF extends HttpServlet {
 		richInput.put(Constants.SFRequest.RefundOld__c, salesForceTemplateObject.getRefundOld__c());
 		richInput.put(Constants.SFRequest.SelfAsssessmentTax__c, salesForceTemplateObject.getSelfAsssessmentTax__c());
 		richInput.put(Constants.SFRequest.SelfAsssessmentTaxOld__c, salesForceTemplateObject.getSelfAsssessmentTaxOld__c());
-
 		
 		richInput.put(Constants.SFRequest.State__c, salesForceTemplateObject.getState__c());
 		richInput.put(Constants.SFRequest.StateOld__c, salesForceTemplateObject.getStateOld__c());
