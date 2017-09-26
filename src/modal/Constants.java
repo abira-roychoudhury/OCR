@@ -274,24 +274,9 @@ public class Constants {
 		public static final String urlValueToReceiveAccessToken = "v39.0/sobjects/EKYCStaging__c/";
 		public static final String method = "method";
 		public static final String methodType = "PATCH";
-		
-		/*public static final String urlToReceiveAccessToken = "https://fincorp--herofinqa.cs57.my.salesforce.com/services/oauth2/token?";
-				//"https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?";
-		public static final String client_id = "client_id=3MVG959Nd8JMmavSrMp7slzowB1._S0SzOQgiw_7hTd39FVOe3lyImeKR.OJwyFq7p8d9vbm5Db28AY8ynQmR&";
-				//"client_id=3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j&";
-		public static final String client_secret = "client_secret=2209237443211164129&";
-				//"client_secret=7967524131757639248&";
-		public static final String grant_type = "grant_type=password&";
-		public static final String username = "username= ranvijay.singh@hfclmail.com.herofinqa&";
-				//"username=dharmvir_singh@herofincorp.com.herodev2&";
-		public static final String password = "password=Hero@1234";
-				//"password=test@1234";
-*/		
 		public static final String accessTokenKey = "access_token";
 		
 		
-		//public static final String urlToPushOCRResponse = "https://fincorp--herofinqa.cs57.my.salesforce.com/services/data/v39.0/composite/batch";
-				//"https://fincorp--herodev2.cs57.my.salesforce.com/services/data/v39.0/composite/batch";
 		public static final String hasErrorKey = "hasErrors";
 		
 		public static final String AadharNo__c = "AadharNo__c";
@@ -322,7 +307,7 @@ public class Constants {
 		public static final String GrossTotalIncomeOld__c = "GrossTotalIncomeOld__c";
 		public static final String LastName__c = "LastName__c";
 		public static final String LastNameOld__c = "LastNameOld__c";
-		public static final String MiddleName__c = "MiddleName__c ";
+		public static final String MiddleName__c = "MiddleName__c";
 		public static final String MiddleNameOld__c = "MiddleNameOld__c";
 		public static final String OriginalOrRevised__c = "OriginalOrRevised__c";
 		public static final String OriginalOrRevisedOld__c = "OriginalOrRevisedOld__c";
