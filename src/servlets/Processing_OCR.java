@@ -63,6 +63,7 @@ public class Processing_OCR extends HttpServlet {
 		JSONArray textAnnotationArray = new JSONArray();
 		String imgName = Constants.imgFile+start.getTime()+Constants.dot+Constants.jpg;
 		File imgFile = new File(imgName);
+		boolean proxyError = false;
 		
 		//uploading the image file
 		DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -131,6 +132,8 @@ public class Processing_OCR extends HttpServlet {
 		//GET description String from textAnnotation JSOANArray
 		descriptionStr = getDescription(textAnnotationArray);
 		
+		if(descriptionStr.isEmpty())
+			proxyError = true;
 
 		//set description
 		request.setAttribute(Constants.description, descriptionStr);	
@@ -195,14 +198,20 @@ public class Processing_OCR extends HttpServlet {
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ViewImage.jsp");
 			dispatcher.forward(request, response);
 		}
+		
 		else
 		{
 			//type mismatch error report
 			response.setContentType(Constants.contentType);
 			PrintWriter out = response.getWriter();
-			out.println(Constants.fileTypeMismatch1);
-			if(fileType.equals(Constants.AadharCardPage1.aadharCard))
-				out.println(Constants.fileTypeMismatchAadharCard);				
+			if(proxyError)
+				out.println(Constants.proxyError);
+			else
+			{
+				out.println(Constants.fileTypeMismatch1);
+				if(fileType.equals(Constants.AadharCardPage1.aadharCard))
+					out.println(Constants.fileTypeMismatchAadharCard);	
+			}						
 		}
 		//deleting image file
 		System.out.println("Delete imgFile :"+imgFile.delete());

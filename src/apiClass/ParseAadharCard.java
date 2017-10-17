@@ -465,11 +465,14 @@ public class ParseAadharCard {
 				}
 				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.address.toLowerCase()))
 				{
+					//System.out.println("Inside address ");
 					address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
 					while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
 						i++;						
 						address = address + Constants.newLine + splitDesc[i];		
 					}		
+					address.replaceAll(Constants.AadharCardPage1.address.toUpperCase(), "");
+					System.out.println("inside address : "+address);
 					Address completeAddr = new ParseAddress().getAddress(address);
 					aadharCardObj.setAddress(completeAddr);
 				}
@@ -478,8 +481,7 @@ public class ParseAadharCard {
 						splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.identification.toLowerCase()) ||
 						splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.authority.toLowerCase()))
 				{
-						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1) i++;
-						
+						//System.out.println("inside unique identification ");
 						i++;
 						address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
 						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
@@ -487,6 +489,8 @@ public class ParseAadharCard {
 							address = address + Constants.newLine + splitDesc[i];		
 						}				
 					
+						address.replace(Constants.AadharCardPage1.address, "");
+						System.out.println("inside unique : "+address);
 						Address completeAddr = new ParseAddress().getAddress(address);
 						aadharCardObj.setAddress(completeAddr);
 				}

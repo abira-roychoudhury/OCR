@@ -280,7 +280,7 @@ public class SubmitToSF extends HttpServlet {
 	 * */
 	private boolean pushOCRResponseToSF(JSONObject requestBody, String accessToken, int maxCount) {
 		try{
-			//System.out.println("URL  "+ ApiUrl.urlToPushOCRResponse);
+			System.out.println("URL  "+ ApiUrl.urlToPushOCRResponse);
 			URL url = new URL(ApiUrl.urlToPushOCRResponse);			
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{
@@ -357,6 +357,7 @@ public class SubmitToSF extends HttpServlet {
 		System.out.println("access token called");
 		//String urlValue = "https://fincorp--herodev2.cs57.my.salesforce.com/services/oauth2/token?client_id=3MVG959Nd8JMmavQe5kgiSSQJpws6EydIsyaTN07ms2UOmCxXdesnlc3jjJZagffJVi2.4__c3gJUWMfLPG0j&client_secret=7967524131757639248&grant_type=password&username=dharmvir_singh@herofincorp.com.herodev2&password=test@1234";
 		try{
+			System.out.println("url for access token : "+urlValue);
 			URL url = new URL(urlValue);
 			System.setProperty("jdk.http.auth.tunneling.disabledSchemes",""); 
 			try{

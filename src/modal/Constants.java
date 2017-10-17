@@ -39,6 +39,7 @@ public class Constants {
 	public static final String contentType = "text/plain";
 	
 	//error message
+	public static final String proxyError = "There has been an issue with the proxy settings. Please set the proxy in the server";
 	public static final String fileTypeMismatch1 = "The Image file uploaded and the File Type selected does not match";
 	public static final String fileTypeMismatchAadharCard ="OR The aadhar number could not be detected properly from the image uploaded";
 	public static final String pushOCRDataError = "There has been an error while submitting. Please try again";

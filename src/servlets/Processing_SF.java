@@ -54,9 +54,10 @@ public class Processing_SF extends HttpServlet {
 		String fileType = request.getParameter("fileType");
 		String salesforcerecordID = request.getParameter("salesforcerecordID");
 		System.out.println("salesforceid :"+salesforcerecordID);
-		
+		System.out.println("###########################\n"+imgUploadBase64);
 		request.setAttribute("salesforcerecordID",salesforcerecordID);
 		request.setAttribute(Constants.fileType, fileType);
+		boolean proxyError = false; 
 		
 		//Initialization
 		Date start = new Date(),end = new Date();
@@ -70,6 +71,7 @@ public class Processing_SF extends HttpServlet {
 		String filePath = imgFile.getAbsolutePath();
 		//converting base64 image into a file
 		byte imageByte[] = Base64.decodeBase64(imgUploadBase64);
+		System.out.println("image Byte : "+imageByte);
 		FileOutputStream fos = new FileOutputStream(filePath); 
 		fos.write(imageByte); 
 		fos.close();	
@@ -109,6 +111,10 @@ public class Processing_SF extends HttpServlet {
 
 		//GET description String from textAnnotation JSOANArray
 		descriptionStr = getDescription(textAnnotationArray);
+		
+		/*//set proper error message if the vision api response was improper
+		if(descriptionStr.isEmpty())
+			proxyError = true;*/
 
 
 		//set description
@@ -179,9 +185,14 @@ public class Processing_SF extends HttpServlet {
 			//type mismatch error report
 			response.setContentType(Constants.contentType);
 			PrintWriter out = response.getWriter();
-			out.println(Constants.fileTypeMismatch1);
-			if(fileType.equals(Constants.AadharCardPage1.aadharCard))
-				out.println(Constants.fileTypeMismatchAadharCard);				
+			if(proxyError)
+				out.println(Constants.proxyError);
+			else
+			{
+				out.println(Constants.fileTypeMismatch1);
+				if(fileType.equals(Constants.AadharCardPage1.aadharCard))
+					out.println(Constants.fileTypeMismatchAadharCard);	
+			}						
 		}
 		//deleting image file
 		System.out.println("Delete imgFile :"+imgFile.delete());

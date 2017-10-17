@@ -1,6 +1,15 @@
 
 $(function(){
 	
+	$( "#imagePanel" )
+    .mouseover(function() {
+      $( '#image-panel-body' ).toggleClass('scrollDiv');
+    })
+    .mouseout(function() {
+        $( '#image-panel-body' ).toggleClass('scrollDiv');
+    });
+
+	
 var originalJson = {};
 var correctedJson = {};
 var inputTags = document.getElementsByTagName('input');
@@ -161,6 +170,5 @@ $("#submit").click
         );
     }
 );
-
 
 });

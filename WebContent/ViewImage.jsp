@@ -38,10 +38,10 @@ var salesforcerecordID = ''
 				</div>
 
 		
-				<div class="panel-body">
-					
-					<img id="image" alt=""  class="col-sm-12 col-md-12 col-xs-12"  src="" style="margin-bottom:10px">
-					
+				<div class="panel-body scrollDiv" id="image-panel-body">
+					<div id="imagePanel">
+						<img id="image" alt=""  class="col-sm-12 col-md-12 col-xs-12"  src="" style="margin-bottom:10px">
+					</div>
 					<div class="text-center" >
 						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#rawdata">Raw Data</button>
 					</div>
@@ -123,7 +123,6 @@ var salesforcerecordID = ''
     </div>
   </div>
 	
-  <script src='js/jquery.zoom.js'></script>
   <script src= "js/script.js?x=6" type="text/javascript"></script>
 </body>
 </html>
