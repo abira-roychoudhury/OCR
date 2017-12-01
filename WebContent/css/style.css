@@ -1,3 +1,8 @@
+.padding-small{
+	padding-left : 0px !important;
+	padding-right : 0px !important;
+} 
+
 #image:hover
 {
    	z-index: 2;

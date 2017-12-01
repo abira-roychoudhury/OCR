@@ -29,7 +29,7 @@ var salesforcerecordID = '<%=request.getAttribute("salesforcerecordID")%>'
 		
 	<div id="submitLoader" class="loader"></div>
 
-	<div class="container">
+	<div class="container padding-small">
 	<div class="row" style="margin-top: 50px">
 		<div class="col-md-6">
 			<div class="panel panel-default">
@@ -58,22 +58,24 @@ var salesforcerecordID = '<%=request.getAttribute("salesforcerecordID")%>'
 				<div class="panel-body">
 					<form>
 						<div class="view-panel" style="">
-							<c:forEach var="doc" items="${displaydocument}" varStatus="itemsRow">
-								<div class="form-group">
-									<c:set var = "addrKey" scope = "session" value = "Address"/>
-									<label for="${doc.key}">${doc.key}</label>
-									<c:choose>
-         						         <c:when test = "${doc.key == addrKey}">
-								            <textarea class="form-control" id="${doc.key}" name="${doc.key}" rows="4" cols="50">${doc.value}</textarea>
-								         </c:when>								         		         
-								         <c:otherwise>
-								            <input class="form-control" type="text" value="${doc.value}" id="${doc.key}" name="${doc.key}">
-								          </c:otherwise>
-								      </c:choose>									
-								</div>
+							<c:forEach var="doc" items="${displaydocument}" varStatus="itemsRow">							
+								<c:set var = "addrKey" scope = "session" value = "Address"/>
+								<c:choose>
+       						        <c:when test = "${doc.key == addrKey}"> 	
+										<div class="form-group  col-sm-12">
+	       						    	    	<label for="${doc.key}">${doc.key}</label>
+							            	<textarea class="form-control" id="${doc.key}" name="${doc.key}" rows="4" cols="50">${doc.value}</textarea>
+							            </div>	
+						         	</c:when>								         		         
+						         	<c:otherwise>
+							         	<div class="form-group  col-sm-6">
+							        		<label for="${doc.key}">${doc.key}</label>
+							            	<input class="form-control col-sm-6" type="text" value="${doc.value}" id="${doc.key}" name="${doc.key}">
+							          	</div>
+						         	</c:otherwise>
+						      	</c:choose>								
 							</c:forEach>
-						</div>
-						
+						</div> 							
 							<button type="button" id="submit" class="btn btn-primary">Submit</button>
 							<label id="submitMessage"></label>
 					</form>
