@@ -134,6 +134,7 @@ public class Constants {
 		public static final String middleName = "Middle Name";
 		public static final String year = "Year of Birth";
 		public static final String dob = "DOB";
+		public static final String dobError = "08:";
 		public static final String gender = "Gender";
 		public static final String aadharNumber = "Aadhar Number";
 		public static final String government = "Government";
@@ -144,6 +145,7 @@ public class Constants {
 		public static final String identification = "Identification";
 		public static final String qrUid = "uid";
 		public static final String qrName = "name";
+		public static final String qrGname = "gname";
 		public static final String qrFather = "father";
 		public static final String qrGender = "gender";
 		public static final String qrYob = "yob";
@@ -223,12 +225,13 @@ public class Constants {
 		public static final String status[] = {"Status","States"}; 
 		public static final String grossIncome[] = {"Gross","Total","Income"};
 		public static final String notRequiredRows[] = {"Name","PAN","Flat","Door","Block","Premises",
-														"Building","Village","Road","Street","Post","Office",
+														"Building","Village","Road/","Street/","Post","Office","Pin",
 														"Form","No","which","has","been","electronically","transmitted",
-														"Town","City","District","Area","Locality","State","ZipCode","Aadhar","Enrollment"
-														};
+														"TRANSMISSION", "ELECTRONIC", "INFORMATION", "PERSONAL","TAX","THEREON","COMPUTATION","INCOME",
+														"Town/","City/","District","Area/","Locality","State","ZipCode","Aadhar","Aadhaar","Enrollment",
+														"ITR-"};
 		public static final String statusType[] = {"Individual","HUF","Other than individual/HUF","ERI","External Agency","Tax Professional",
-													"TDS User"};
+													"TDS User","Individal","INDL"};
 		public static final String pan = "PAN";
 		public static final String aadharNumber = "Aadhar Number";
 		public static final String assessmentYear = "Assessment Year";

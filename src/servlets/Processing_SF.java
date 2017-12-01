@@ -54,7 +54,7 @@ public class Processing_SF extends HttpServlet {
 		String fileType = request.getParameter("fileType");
 		String salesforcerecordID = request.getParameter("salesforcerecordID");
 		System.out.println("salesforceid :"+salesforcerecordID);
-		System.out.println("###########################\n"+imgUploadBase64);
+		//System.out.println("###########################\n"+imgUploadBase64);
 		request.setAttribute("salesforcerecordID",salesforcerecordID);
 		request.setAttribute(Constants.fileType, fileType);
 		boolean proxyError = false; 
@@ -71,7 +71,7 @@ public class Processing_SF extends HttpServlet {
 		String filePath = imgFile.getAbsolutePath();
 		//converting base64 image into a file
 		byte imageByte[] = Base64.decodeBase64(imgUploadBase64);
-		System.out.println("image Byte : "+imageByte);
+		//System.out.println("image Byte : "+imageByte);
 		FileOutputStream fos = new FileOutputStream(filePath); 
 		fos.write(imageByte); 
 		fos.close();	
@@ -79,6 +79,7 @@ public class Processing_SF extends HttpServlet {
 		//uploading image completed logging upload image
 		timelogging.fileDesc(fileName, fileType);
 		int timeDifference = timelogging.fileLog(Constants.uploadImage, start, end);
+		int totalTimeTaken = timeDifference;
 		request.setAttribute(Constants.uploadImage, timeDifference);
 
 		//Calling ImageEnhancement and getting back a preprocessed base64 image string
@@ -87,6 +88,7 @@ public class Processing_SF extends HttpServlet {
 		String processedImgBase64= ie.imagePreprocessing(filePath, fileType);	
 		end = new Date();
 		timeDifference = timelogging.fileLog(Constants.base64conversion, start, end);
+		totalTimeTaken += timeDifference;
 		request.setAttribute(Constants.base64conversion, timeDifference);
 
 		//compressed image property 
@@ -103,6 +105,7 @@ public class Processing_SF extends HttpServlet {
 		JSONObject result = vac.performOCR(processedImgBase64,visionTextDetectionType);
 		end = new Date();
 		timeDifference = timelogging.fileLog(Constants.visionAPICall, start, end);
+		totalTimeTaken += timeDifference;
 		request.setAttribute(Constants.visionAPICall, timeDifference);
 
 
@@ -133,7 +136,9 @@ public class Processing_SF extends HttpServlet {
 			request.setAttribute(Constants.document, document);
 			end = new Date();
 			timeDifference = timelogging.fileLog(Constants.templating, start, end);
+			totalTimeTaken += timeDifference;
 			request.setAttribute(Constants.templating, timeDifference);
+			timelogging.fileLog("Total Time Taken", totalTimeTaken);
 			timelogging.fileWrite();
 
 

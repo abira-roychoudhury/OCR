@@ -38,6 +38,10 @@ public class TimestampLogging {
 		return diff;
 	}
 	
+	public void fileLog(String functionName, int time){
+		logs = logs +"\n"+ functionName +"    "+time;		
+	}
+	
 	/* DESCRIPTION : Appends the image fileName and fileType to the log
 	 * INPUT : String fileName and String fileType
 	 * OUTPUT : 

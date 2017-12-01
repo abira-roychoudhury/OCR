@@ -316,7 +316,7 @@ public class SubmitToSF extends HttpServlet {
 				conn.disconnect();
 				
 				JSONObject response = new JSONObject(output.toString());
-				System.out.println("response   :   "+response);
+				System.out.println("###########response   :   "+response);
 				//return response;
 				return response.getBoolean(Constants.SFRequest.hasErrorKey);
 			}

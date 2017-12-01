@@ -292,6 +292,7 @@ public class ParseAadharCard {
 	 * */
 	public AadharCard parseContent(String content,String filePath,AadharCard aadharCardObj)throws WriterException, IOException
 	{
+		System.out.println("called for aadhar card inside parse content");
 		int year = 0,dob=0;
 		String uid="",name="",fname = "",gender="",aadharNumber="",dobstr="",address="";
 		Calendar cal = Calendar.getInstance();
@@ -299,6 +300,8 @@ public class ParseAadharCard {
 
 		String resultQR;
 		try {
+			
+			System.out.println("inside QR");
 
 			resultQR = QRScan.scanQR(filePath);
 			if(resultQR.isEmpty() || resultQR.matches("^[0-9]{1,12}$"))
@@ -314,15 +317,15 @@ public class ParseAadharCard {
 				}
 				dob=1;
 			}
-
+			System.out.println("result QR "+resultQR);
 			String tokens[] = resultQR.split(Constants.doubleQuote+Constants.space);
 			for(String token : tokens){
 				token=token.trim();
 				if(token.contains(Constants.AadharCardPage1.qrUid))
 					uid=token.substring(token.lastIndexOf(Constants.equal)+2);
-				else if(token.contains(Constants.AadharCardPage1.qrName))
+				else if(token.contains(Constants.AadharCardPage1.qrName) && name.isEmpty())
 					name=token.substring(token.lastIndexOf(Constants.equal)+2);
-				else if(token.contains(Constants.AadharCardPage1.qrFather))
+				else if(token.contains(Constants.AadharCardPage1.qrFather) || token.contains(Constants.AadharCardPage1.qrGname))
 					fname=token.substring(token.lastIndexOf(Constants.equal)+2);
 				else if(token.contains(Constants.AadharCardPage1.qrGender))
 					gender=(token.substring(token.lastIndexOf(Constants.equal)+2).equals("M")?Constants.male:Constants.female);
@@ -330,23 +333,23 @@ public class ParseAadharCard {
 					year=Integer.parseInt(token.substring(token.lastIndexOf(Constants.equal)+2));
 
 				else if(token.contains(Constants.AadharCardPage1.qrCo))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrHouse))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrStreet))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrLm))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrLoc))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrVtc))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrPo))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
-				else if(token.contains(Constants.AadharCardPage1.qrDist))
-					addr.setCity(token.substring(token.lastIndexOf(Constants.equal)+2));
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);	
 				else if(token.contains(Constants.AadharCardPage1.qrSubdist))
-					address = address + token.substring(token.lastIndexOf(Constants.equal)+2);	
+					address = address +" "+ token.substring(token.lastIndexOf(Constants.equal)+2);
+				else if(token.contains(Constants.AadharCardPage1.qrDist))
+					addr.setCity(token.substring(token.lastIndexOf(Constants.equal)+2));					
 				else if(token.contains(Constants.AadharCardPage1.qrState))
 					addr.setState(token.substring(token.lastIndexOf(Constants.equal)+2));
 				else if(token.contains(Constants.AadharCardPage1.qrPc))
@@ -363,12 +366,24 @@ public class ParseAadharCard {
 			aadharCardObj.setAddress(addr);
 			
 		} catch (NotFoundException | BarCodeException e1) {
+			System.out.println("inside catch");
 			content = content.concat("\\n "+Constants.eof);
+			try
+			{
+				if(content.toUpperCase().contains(Constants.female)) 
+					gender = Constants.female;
+				else if(content.toUpperCase().contains(Constants.male)) 
+					gender = Constants.male;		
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 			String splitDesc[] = content.split("\\n");
 			int i;
 			for(i = 0;i<splitDesc.length;i++)
 			{
-				//System.out.println(splitDesc[i]);
+				System.out.println(splitDesc[i]);
 
 				String number = extractNumber(splitDesc[i].replace(Constants.space, "").trim());
 				//System.out.println(number);
@@ -417,6 +432,7 @@ public class ParseAadharCard {
 					{
 						fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
 						name = splitDesc[i-2];
+						System.out.println("inside first if name: "+name+"father: "+fname);
 					}
 					int j = i;
 					while(name.length() < 5){
@@ -425,6 +441,7 @@ public class ParseAadharCard {
 						{
 							fname = name.substring(name.lastIndexOf(Constants.AadharCardPage1.father)+7).replace(Constants.colon, "").trim();
 							name = splitDesc[j-1];
+							System.out.println("inside while if name: "+name+"father: "+fname);
 						}
 					}
 				}
@@ -465,9 +482,10 @@ public class ParseAadharCard {
 				}
 				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.address.toLowerCase()))
 				{
-					//System.out.println("Inside address ");
+					System.out.println("Inside address "+splitDesc[i]);
 					address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
 					while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
+						System.out.println("Inside address "+splitDesc[i]);
 						i++;						
 						address = address + Constants.newLine + splitDesc[i];		
 					}		
@@ -483,10 +501,12 @@ public class ParseAadharCard {
 				{
 						//System.out.println("inside unique identification ");
 						i++;
+						System.out.println("Inside uia "+splitDesc[i]);
 						address = splitDesc[i].substring(splitDesc[i].lastIndexOf(Constants.colon)+1);
 						while(!splitDesc[i].matches("^.+?\\d{6}$") && i<splitDesc.length-1){
 							i++;						
-							address = address + Constants.newLine + splitDesc[i];		
+							address = address + Constants.newLine + splitDesc[i];
+							System.out.println("Inside uia "+splitDesc[i]);
 						}				
 					
 						address.replace(Constants.AadharCardPage1.address, "");
@@ -494,19 +514,18 @@ public class ParseAadharCard {
 						Address completeAddr = new ParseAddress().getAddress(address);
 						aadharCardObj.setAddress(completeAddr);
 				}
+				else if(splitDesc[i].toLowerCase().contains(Constants.AadharCardPage1.father.toLowerCase()) && fname.isEmpty()){
+					fname = splitDesc[i];
+					fname = fname.substring(fname.indexOf(Constants.AadharCardPage1.father)+8);
+					if(name.isEmpty() || name.length()<3)
+						name = splitDesc[i-1];
+				}
+				else if(year == 0 && dobstr.isEmpty() && splitDesc[i].contains(Constants.AadharCardPage1.dobError)){
+					dobstr = splitDesc[i].substring(splitDesc[i].indexOf(Constants.AadharCardPage1.dobError)+3);
+				}
 			}
 
-			try
-			{
-				if(content.toUpperCase().contains(Constants.female)) 
-					gender = Constants.female;
-				else if(content.toUpperCase().contains(Constants.male)) 
-					gender = Constants.male;		
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			
 		}
 		aadharCardObj.setName(name);
 		aadharCardObj.setFatherName(fname);

@@ -291,7 +291,8 @@ public class ParseITReturn {
 		String name="",panNumber="",assessmentYear="",address="",ward="",aadharNumber="",originalRevised="",eFilingAck="",date="",
 				grossIncome="",status="";
 		
-		assessmentYear = getAssessmentYear(content);		
+		assessmentYear = getAssessmentYear(content);
+		date = getDate(content);
 				
 		if(content.toLowerCase().indexOf(Constants.ITReturn.original.toLowerCase())
 				!= content.toLowerCase().lastIndexOf(Constants.ITReturn.original.toLowerCase()))
@@ -304,22 +305,23 @@ public class ParseITReturn {
 		upperIndex = getUpperIndex(content);
 		content = content.substring(content.toLowerCase().indexOf(Constants.ITReturn.name.toLowerCase()),upperIndex);
 		
-		//panNumber = getPanNumber(content);		
 		aadharNumber = getAadharNumber(content);
+		panNumber = getPanNumber(content);
+		
 		
 		String splitDesc[] = content.split("\\n");
 				
 		for(int index = 0;index<splitDesc.length;index++)
 		{
-			//System.out.println(splitDesc[index]);
+			System.out.println(splitDesc[index]);
 			
 			if(Arrays.stream(Constants.ITReturn.status).parallel().anyMatch(splitDesc[index]::contains)){
 				if(splitDesc[index].trim().lastIndexOf(" ")>0)
 					status = splitDesc[index].substring(splitDesc[index].trim().lastIndexOf(" ")).trim();
 			}
 			
-			else if(!isRequired(splitDesc[index]))					
-				continue;
+			else if(!isRequired(splitDesc[index]) || splitDesc[index].toLowerCase().contains(Constants.ITReturn.original.toLowerCase()))					
+				continue;  //do nothing skip the line
 			
 			else if(name.isEmpty()){
 				name = splitDesc[index];
@@ -332,6 +334,7 @@ public class ParseITReturn {
 					ward = splitDesc[index].substring(0,splitDesc[index].indexOf(Constants.ITReturn.original));
 				else
 					ward = splitDesc[index];
+				ward = ward.substring(ward.indexOf(Constants.ITReturn.closingBracket) + 1);
 			}
 			
 			else if(Arrays.stream(Constants.ITReturn.eFiling).parallel().anyMatch(splitDesc[index]::contains)){
@@ -339,20 +342,41 @@ public class ParseITReturn {
 				//if the ack number is in the next line
 				if(eFilingAck.isEmpty())
 					eFilingAck = getEFilingAckNumber(splitDesc[++index]);
+				//if it is still empty then search in 2 lines above it
+				if(eFilingAck.isEmpty())
+					eFilingAck = getEFilingAckNumber(splitDesc[index-2]);
 				//if date is in the same line
-				else if(Arrays.stream(Constants.ITReturn.date).parallel().anyMatch(splitDesc[index]::contains))
-					date  = splitDesc[index].substring(splitDesc[index].lastIndexOf(Constants.ITReturn.closingBracket)+1);
-				}
+				else if(Arrays.stream(Constants.ITReturn.date).parallel().anyMatch(splitDesc[index]::contains)){
+					if(date.isEmpty()){
+						date  = splitDesc[index].substring(splitDesc[index].lastIndexOf(Constants.ITReturn.date[2])+5);
+						if(date.contains(Constants.ITReturn.date[1]) || date.contains(Constants.ITReturn.date[2]))
+							date = splitDesc[++index];
+					}
+					grossIncome = getNumber(splitDesc[++index]);
+					if(grossIncome.isEmpty())
+						grossIncome = getNumber(splitDesc[++index]);
+					if(grossIncome.isEmpty())
+						index-=2;
+				}					
+			}
 			
 			else if(Arrays.stream(Constants.ITReturn.date).parallel().anyMatch(splitDesc[index]::contains)){
-				date  = splitDesc[index].substring(splitDesc[index].lastIndexOf(Constants.ITReturn.closingBracket)+1);
+				if(date.isEmpty()){
+					date  = splitDesc[index].substring(splitDesc[index].lastIndexOf(Constants.ITReturn.date[2])+5);
+					if(date.contains(Constants.ITReturn.date[1]) || date.contains(Constants.ITReturn.date[2]))
+						date = splitDesc[++index];
+				}
+				grossIncome = getNumber(splitDesc[++index]);
+				if(grossIncome.isEmpty())
+					grossIncome = getNumber(splitDesc[++index]);
+				if(grossIncome.isEmpty())
+					index-=2;
+								
 			}
 			
 			else if(Arrays.stream(Constants.ITReturn.grossIncome).parallel().anyMatch(splitDesc[index]::contains)){
-
-				//System.out.println(splitDesc[index]+"||||||"+splitDesc[index+1]);
-				
-				grossIncome = getNumber(splitDesc[index]);
+				if(grossIncome.isEmpty())
+					grossIncome = getNumber(splitDesc[index]);
 				if(grossIncome.isEmpty())
 					grossIncome = getNumber(splitDesc[++index]);
 			}
@@ -360,24 +384,23 @@ public class ParseITReturn {
 			else if(Arrays.stream(Constants.ITReturn.statusType).parallel().anyMatch(splitDesc[index]::contains)){
 				status = splitDesc[index].trim();
 			}
-			else if(splitDesc[index].toLowerCase().contains(Constants.ITReturn.original.toLowerCase()))
-				continue; //do nothing
 			
 			else{
-				if(!splitDesc[index].equals(aadharNumber)){
-					//System.out.println(splitDesc[index]);
-					address = address + splitDesc[index] + ",\n";
-				}
+				if(!(splitDesc[index].contains(panNumber) || splitDesc[index].isEmpty()))
+					address = address + splitDesc[index] + "\n";
 			}
-				
+								
 			
 		}
 		
+		name = name.replace(panNumber, "").trim();
+		address = address.replace(aadharNumber, "").replace(date, "").trim();
 		iTReturnObject.setAssessmentYear(assessmentYear);
 		iTReturnObject.setPanNumber(panNumber);
 
-		if(!aadharNumber.equalsIgnoreCase(eFilingAck))
+		if(!eFilingAck.contains(aadharNumber))
 			iTReturnObject.setAadharNumber(aadharNumber);
+		
 		
 		iTReturnObject.setName(name);
 		iTReturnObject.setDesignationOfAO(ward);
@@ -395,6 +418,34 @@ public class ParseITReturn {
 	}
 
 	
+	private String getDate(String content) {
+		String date = "";
+		Pattern pattern = Pattern.compile("[0-9]{2}-[0-9]{2}-[0-9]{4}");
+		Matcher matcher = pattern.matcher(content);
+		if (matcher.find())
+		{
+			try{
+				date = matcher.group(0);
+			}catch(Exception e){}
+		}
+		return date;
+	}
+
+
+	private String getPanNumber(String content) {
+		String pan = "";
+		Pattern pattern = Pattern.compile("[A-Z]{5}[0-9]{4}[A-Z]");
+		Matcher matcher = pattern.matcher(content);
+		if (matcher.find())
+		{
+			try{
+				pan = matcher.group(0);
+			}catch(Exception e){}
+		}
+		return pan;
+	}
+
+
 	/* DESCRIPTION : Searches for the Assessment Year in the entire String 
 	 * INPUT : String containing Assessment year
 	 * OUTPUT : Assessment year
@@ -474,7 +525,7 @@ public class ParseITReturn {
 		boolean found = false;
 		for(char c : content.toCharArray())
 		{
-			if(Character.isDigit(c) && sb.length()<15)
+			if(Character.isDigit(c) && sb.length()<=15)
 			{
 				sb.append(c);
 				found = true;
@@ -512,7 +563,7 @@ public class ParseITReturn {
 			}
 			index++;
 		}
-		if(stringBuilderObj.length()>=4)
+		if(stringBuilderObj.length()>4)
 			return stringBuilderObj.toString();    //return true if the string found is of minimum length greater than 4
 		else
 		{

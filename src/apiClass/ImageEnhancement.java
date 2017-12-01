@@ -84,13 +84,11 @@ public class ImageEnhancement {
 		Mat imgMat = loadOpenCvImage(filepath);
 		//Mat imgMat2 = preprocess(imgMat, documentType);
 		
-		if(!(documentType.equalsIgnoreCase(Constants.VoterCard.voterCard) ||
-				documentType.equalsIgnoreCase(Constants.ITReturn.iTReturn)))
+		if(!(documentType.equalsIgnoreCase(Constants.VoterCard.voterCard) || documentType.equalsIgnoreCase(Constants.ITReturn.iTReturn)))
 			imgMat = imageCompress(imgMat);
 		
 		File img = saveImage(imgMat);
-		String imgBase64 = convertToBase64(img.getAbsolutePath());
-		
+		String imgBase64 = convertToBase64(img.getAbsolutePath());		
 		img.delete();
 		return imgBase64;		
 	}

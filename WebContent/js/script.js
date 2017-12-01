@@ -124,19 +124,15 @@ function drawPoly(base64,ox,oy,owidth,oheight){
 
 draw(img);
 
-
-
-function formOriginal(){
-	
-}
-
 $("#submit").click
 (
     function()
     {
+    	var d1 = new Date();
+    	var n1 = d1.getTime();
     	$('#submitMessage').text("");
     	$("#submitLoader").show();
-      	$('input, button, textarea').attr("disabled", true);
+    	$('input, button, textarea').attr("disabled", true);
     	$(".container").addClass('haze');
     	//creating the correctedJson
     	for (var i = 0; i < inputTags.length; i++) {
@@ -147,27 +143,40 @@ $("#submit").click
     		correctedJson[textareaTag[i].id] = textareaTag[i].value;
     	}
     	
-        $.ajax
-        (
-            {
-                url:'/OCR/SubmitToSF',
-                data: {"fileType":fileType,"salesforcerecordID":salesforcerecordID,"originalJson":originalJson,"correctedJson":correctedJson},
-                type:'post',
-                success:function(data){
-                	console.log(data);
-                	$('#submitMessage').text(data);
-                	$("#submitLoader").hide();
-                	$('input, button').attr("disabled", false);
-                	$('.container').removeClass('haze');
-                },
-                error:function(err){alert(err);
-                	console.log(err)
-                	$("#submitLoader").hide();
-                	$('input, button, textarea').attr("disabled", false);
-                	$('.container').removeClass('haze');
-                }
-            }
-        );
+    	if(document.getElementById('First Name').value == "" || document.getElementById('Last Name').value == ""){
+    		$('#submitMessage').text('First Name or Last Name cannot be empty');
+        	$("#submitLoader").hide();
+        	$('input, button, textarea').attr("disabled", false);
+        	$('.container').removeClass('haze');
+    	}
+    	else{
+    		 $.ajax
+    	        (
+    	            {
+    	                url:'/OCR/SubmitToSF',
+    	                data: {"fileType":fileType,"salesforcerecordID":salesforcerecordID,"originalJson":originalJson,"correctedJson":correctedJson},
+    	                type:'post',
+    	                success:function(data){
+    	                	console.log(data);
+    	                	$('#submitMessage').text(data);
+    	                	$("#submitLoader").hide();
+    	                	$('input, button, textarea').attr("disabled", false);
+    	                	$('.container').removeClass('haze');
+    	                	var d2 = new Date();
+    	                	var n2 = d2.getTime();
+    	                	var diff = n2 - n1;
+    	                	alert("Submit Time Difference :"+diff);
+    	                },
+    	                error:function(err){alert(err);
+    	                	console.log(err)
+    	                	$("#submitLoader").hide();
+    	                	$('input, button, textarea').attr("disabled", false);
+    	                	$('.container').removeClass('haze');
+    	                }
+    	            }
+    	        );
+    	}    	
+       
     }
 );
 
